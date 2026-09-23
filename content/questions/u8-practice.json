@@ -1,0 +1,539 @@
+[
+ {
+  "id": "prac-u8-001",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.2",
+  "q": "The minimum number of states in a DFA accepting binary strings divisible by 3 is",
+  "opts": [
+   "3",
+   "4",
+   "2",
+   "6"
+  ],
+  "ans": 0,
+  "exp": "Process the string most-significant bit first; the only information needed is the remainder modulo 3, which takes values 0, 1 and 2. Each bit read maps remainder $r$ to $2r$ or $2r+1$ modulo 3, so three states suffice and none can be merged.",
+  "trick": "For divisibility by k, the DFA needs exactly k states — one per remainder.",
+  "diff": "medium",
+  "tags": [
+   "DFA",
+   "divisibility"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-002",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.2",
+  "q": "Which language is NOT regular?",
+  "opts": [
+   "$\\{a^nb^n \\mid n \\ge 0\\}$",
+   "$\\{a^nb^m \\mid n,m \\ge 0\\}$",
+   "$\\{w \\in \\{a,b\\}^* \\mid |w| \\text{ is even}\\}$",
+   "$\\{w \\mid w \\text{ ends in } ab\\}$"
+  ],
+  "ans": 0,
+  "exp": "$a^nb^n$ requires counting an unbounded number of $a$'s to match them against $b$'s, which a finite automaton cannot do; the pumping lemma makes this precise. The other three need only a fixed amount of memory.",
+  "trick": "If a language requires matching two unbounded counts, it is not regular. That single test settles most of these.",
+  "diff": "easy",
+  "tags": [
+   "regular languages",
+   "pumping lemma"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-003",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.2",
+  "q": "If an NFA has $n$ states, the equivalent DFA constructed by subset construction has at most",
+  "opts": [
+   "$2n$ states",
+   "$2^n$ states",
+   "$n$ states",
+   "$n^2$ states"
+  ],
+  "ans": 1,
+  "exp": "Each DFA state corresponds to a subset of the NFA's states, and a set of $n$ elements has $2^n$ subsets. The bound is tight — languages exist that genuinely force exponentially many DFA states.",
+  "trick": "",
+  "diff": "easy",
+  "tags": [
+   "subset construction"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-004",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.2",
+  "q": "Regular languages are closed under all of the following EXCEPT",
+  "opts": [
+   "none of these — they are closed under all of them",
+   "union and intersection",
+   "complement and difference",
+   "Kleene star and concatenation"
+  ],
+  "ans": 0,
+  "exp": "Regular languages are closed under union, intersection, complement, difference, concatenation, Kleene star, reversal and homomorphism. This full closure is one of their defining conveniences, and contrasts with CFLs, which are not closed under intersection or complement.",
+  "trick": "Regular: closed under everything standard. CFL: NOT closed under intersection or complement. That contrast is the exam's favourite.",
+  "diff": "medium",
+  "tags": [
+   "closure properties"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-005",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.3",
+  "q": "Context-free languages are NOT closed under",
+  "opts": [
+   "concatenation",
+   "union",
+   "Kleene star",
+   "intersection"
+  ],
+  "ans": 3,
+  "exp": "The standard counterexample: $L_1 = \\{a^nb^nc^m\\}$ and $L_2 = \\{a^mb^nc^n\\}$ are both context free, but $L_1 \\cap L_2 = \\{a^nb^nc^n\\}$ is not. CFLs are closed under union, concatenation and star but not intersection or complement.",
+  "trick": "",
+  "diff": "medium",
+  "tags": [
+   "CFL",
+   "closure"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-006",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.3",
+  "q": "A grammar in Chomsky Normal Form has productions only of the form",
+  "opts": [
+   "$A \\rightarrow \\alpha$ where $|\\alpha| \\le 2$",
+   "$A \\rightarrow aB$ or $A \\rightarrow a$",
+   "$A \\rightarrow BC$ or $A \\rightarrow a$",
+   "$A \\rightarrow a\\alpha$ where $\\alpha$ is a string of variables"
+  ],
+  "ans": 2,
+  "exp": "CNF allows exactly two shapes: a variable going to two variables, or a variable going to one terminal (plus $S \\rightarrow \\varepsilon$ if the empty string is in the language). The form $A \\rightarrow aB$ describes a right-linear (regular) grammar, and $A \\rightarrow a\\alpha$ with $\\alpha$ a string of variables is Greibach Normal Form.",
+  "trick": "CNF: two variables or one terminal. GNF: one terminal followed by variables.",
+  "diff": "easy",
+  "tags": [
+   "CNF",
+   "normal forms"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-007",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.3",
+  "q": "A pushdown automaton accepting by empty stack and one accepting by final state",
+  "opts": [
+   "differ: final state is strictly weaker",
+   "recognise exactly the same class of languages",
+   "differ: empty stack is strictly weaker",
+   "are both weaker than a deterministic PDA"
+  ],
+  "ans": 1,
+  "exp": "The two acceptance modes are equivalent for non-deterministic PDAs — each can be converted to the other. Note this equivalence fails for *deterministic* PDAs, where acceptance by empty stack gives only the prefix-free languages.",
+  "trick": "",
+  "diff": "medium",
+  "tags": [
+   "PDA"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-008",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.4",
+  "q": "Which class of languages corresponds to linear bounded automata in the Chomsky hierarchy?",
+  "opts": [
+   "Regular (type 3)",
+   "Recursively enumerable (type 0)",
+   "Context-free (type 2)",
+   "Context-sensitive (type 1)"
+  ],
+  "ans": 3,
+  "exp": "The hierarchy pairs type 0 with Turing machines, type 1 with linear bounded automata, type 2 with pushdown automata and type 3 with finite automata. An LBA is a Turing machine whose tape is bounded by a linear function of the input length.",
+  "trick": "Type 3 FA, type 2 PDA, type 1 LBA, type 0 TM. Memorise the ladder in both directions.",
+  "diff": "easy",
+  "tags": [
+   "Chomsky hierarchy"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-009",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.4",
+  "q": "Recursive languages are closed under complement, but recursively enumerable languages are not. The reason is",
+  "opts": [
+   "r.e. languages have no Turing machine",
+   "recursive languages are finite",
+   "a recursive language has a TM that always halts, so swapping accept and reject states works; an r.e. language's TM may loop forever",
+   "complement is not defined for r.e. languages"
+  ],
+  "ans": 2,
+  "exp": "For a recursive (decidable) language the deciding machine halts on every input, so exchanging the accepting and rejecting outcomes decides the complement. An r.e. language's recogniser may run forever on strings not in the language, and 'never halting' cannot be converted into 'accept'.",
+  "trick": "If L and its complement are both r.e., then L is recursive. That theorem is what most decidability questions hinge on.",
+  "diff": "medium",
+  "tags": [
+   "recursive",
+   "recursively enumerable"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-010",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.5",
+  "q": "The halting problem is",
+  "opts": [
+   "decidable only for deterministic machines",
+   "neither decidable nor recursively enumerable",
+   "decidable",
+   "undecidable but recursively enumerable"
+  ],
+  "ans": 3,
+  "exp": "No algorithm decides halting for all machine-input pairs, so it is undecidable. It is r.e. because you can simulate the machine and accept if it halts — the simulation just may never terminate on the 'no' instances. Its complement is not r.e.",
+  "trick": "",
+  "diff": "medium",
+  "tags": [
+   "halting problem",
+   "decidability"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-011",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.6",
+  "q": "Which parser is the most powerful of the following?",
+  "opts": [
+   "LR(0)",
+   "CLR(1)",
+   "SLR(1)",
+   "LALR(1)"
+  ],
+  "ans": 1,
+  "exp": "The power ordering is $LR(0) \\subset SLR(1) \\subset LALR(1) \\subset CLR(1)$. CLR(1) keeps full lookahead in every item set; LALR(1) merges states with identical cores, which shrinks the table but can introduce reduce-reduce conflicts that CLR(1) does not have.",
+  "trick": "Power: LR(0) < SLR(1) < LALR(1) < CLR(1). Table size: CLR(1) is the largest, LALR(1) the practical compromise.",
+  "diff": "medium",
+  "tags": [
+   "LR parsing"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-012",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.6",
+  "q": "A grammar containing left recursion",
+  "opts": [
+   "cannot be parsed at all",
+   "can be LL(1) after left factoring",
+   "can never be LL(1)",
+   "is always ambiguous"
+  ],
+  "ans": 2,
+  "exp": "A top-down predictive parser would expand $A \\rightarrow A\\alpha$ forever without consuming input, so left recursion makes the LL(1) table conflict. Left factoring removes common prefixes, a different problem; removing left recursion requires the standard elimination transformation. Bottom-up LR parsers handle left recursion happily.",
+  "trick": "Left recursion kills LL, common prefixes need left factoring, and LR parsers do not care about either.",
+  "diff": "medium",
+  "tags": [
+   "LL(1)",
+   "left recursion"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-013",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.6",
+  "q": "For the grammar $S \\rightarrow aSb \\mid \\varepsilon$, FOLLOW(S) is",
+  "opts": [
+   "$\\{b, \\$\\}$",
+   "$\\{a, \\$\\}$",
+   "$\\{\\varepsilon, b\\}$",
+   "$\\{a, b\\}$"
+  ],
+  "ans": 0,
+  "exp": "$S$ is the start symbol, so $\\$$ is in FOLLOW(S). In the production $S \\rightarrow aSb$, the symbol immediately after $S$ is the terminal $b$, so $b$ joins as well. $\\varepsilon$ is never a member of a FOLLOW set.",
+  "trick": "$\\varepsilon$ can appear in FIRST but never in FOLLOW. The start symbol always has \\$ in its FOLLOW.",
+  "diff": "medium",
+  "tags": [
+   "FIRST FOLLOW"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-014",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.7",
+  "q": "In a syntax-directed definition, an attribute whose value is computed from the attributes of a node's children is called",
+  "opts": [
+   "inherited",
+   "global",
+   "synthesized",
+   "static"
+  ],
+  "ans": 2,
+  "exp": "Synthesized attributes flow upwards from children to parent; inherited attributes flow downwards or sideways from parent and siblings. A grammar using only synthesized attributes is S-attributed and can be evaluated during a bottom-up parse in a single pass.",
+  "trick": "Synthesized = up from children. Inherited = down from parent. S-attributed uses only synthesized.",
+  "diff": "easy",
+  "tags": [
+   "attribute grammar"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-015",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.8",
+  "q": "In call by name, the actual parameter is",
+  "opts": [
+   "re-evaluated each time it is used in the body",
+   "evaluated only if the result is needed, then cached",
+   "passed as a memory address",
+   "evaluated once before the call"
+  ],
+  "ans": 0,
+  "exp": "Call by name textually substitutes the argument expression, so every use re-evaluates it — which is why side effects can fire repeatedly and why Jensen's device works. Evaluating once before the call is call by value; evaluate-once-and-cache is call by need; passing an address is call by reference.",
+  "trick": "value = once before; reference = address; name = re-evaluate every use; need = lazy with caching.",
+  "diff": "medium",
+  "tags": [
+   "parameter passing"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-016",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.9",
+  "q": "Replacing the expression `4 * 3.14` with `12.56` at compile time is called",
+  "opts": [
+   "dead code elimination",
+   "strength reduction",
+   "common subexpression elimination",
+   "constant folding"
+  ],
+  "ans": 3,
+  "exp": "Constant folding evaluates expressions whose operands are all known constants. Strength reduction replaces an expensive operation with a cheaper one (multiplication by addition inside a loop), which is a different transformation.",
+  "trick": "Folding = compute constants now. Strength reduction = swap an expensive operator for a cheap one.",
+  "diff": "easy",
+  "tags": [
+   "optimisation"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-017",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.10",
+  "q": "Which optimisation moves a computation whose operands do not change out of a loop?",
+  "opts": [
+   "Induction variable elimination",
+   "Loop invariant code motion",
+   "Loop unrolling",
+   "Peephole optimisation"
+  ],
+  "ans": 1,
+  "exp": "If an expression inside a loop produces the same value every iteration, evaluating it once before the loop is safe and saves work proportional to the trip count. Unrolling replicates the body to cut branch overhead, a separate transformation.",
+  "trick": "",
+  "diff": "easy",
+  "tags": [
+   "loop optimisation"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-018",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.10",
+  "q": "A basic block is",
+  "opts": [
+   "a maximal sequence of statements with a single entry at the start and a single exit at the end",
+   "any sequence of three-address instructions",
+   "a function",
+   "a loop body"
+  ],
+  "ans": 0,
+  "exp": "Control enters a basic block only at its first instruction and leaves only at its last, so no branching in or out occurs in the middle. That property is what lets local optimisations rearrange the block freely.",
+  "trick": "",
+  "diff": "easy",
+  "tags": [
+   "basic block",
+   "flow graph"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-019",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.9",
+  "q": "The three-address code representation that uses pointers into a list of quadruples is called",
+  "opts": [
+   "quadruples",
+   "indirect triples",
+   "postfix notation",
+   "triples"
+  ],
+  "ans": 1,
+  "exp": "Triples avoid the explicit temporary name of a quadruple by referring to instruction positions, but that makes reordering during optimisation painful. Indirect triples add a level of indirection — a list of pointers to triples — so instructions can be reordered by permuting the pointer list.",
+  "trick": "Quadruples: easy to reorder, uses temporaries. Triples: compact, hard to reorder. Indirect triples: compact AND reorderable.",
+  "diff": "medium",
+  "tags": [
+   "intermediate code"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-020",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.1",
+  "q": "Cantor's diagonal argument is used in the theory of computation to show that",
+  "opts": [
+   "the set of Turing machines is uncountable",
+   "every language is decidable",
+   "there are more languages over an alphabet than there are Turing machines, so some languages are not recursively enumerable",
+   "regular languages are closed under complement"
+  ],
+  "ans": 2,
+  "exp": "Turing machines can be encoded as finite strings, so they are countably infinite. The set of languages over an alphabet is the power set of a countably infinite set and is therefore uncountable. Diagonalisation makes the mismatch explicit, so some languages have no recogniser at all.",
+  "trick": "",
+  "diff": "medium",
+  "tags": [
+   "diagonalisation",
+   "countability"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-021",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.5",
+  "q": "Rice's theorem states that",
+  "opts": [
+   "all syntactic properties of Turing machines are undecidable",
+   "the halting problem is decidable for linear bounded automata",
+   "context-free languages have decidable equivalence",
+   "every non-trivial semantic property of the language recognised by a Turing machine is undecidable"
+  ],
+  "ans": 3,
+  "exp": "Rice's theorem covers properties of the *language* a machine accepts — emptiness, finiteness, regularity and so on — and declares every non-trivial one undecidable. Properties of the machine's description, such as its state count, are syntactic and often perfectly decidable.",
+  "trick": "If the property is about what the machine ACCEPTS and some machines have it while others do not, Rice says undecidable. No further reasoning needed.",
+  "diff": "hard",
+  "tags": [
+   "Rice theorem"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u8-022",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 8,
+  "topic": "8.3",
+  "q": "The language $\\{a^nb^nc^n \\mid n \\ge 1\\}$ is",
+  "opts": [
+   "context-free but not regular",
+   "context-sensitive but not context-free",
+   "regular",
+   "not recursively enumerable"
+  ],
+  "ans": 1,
+  "exp": "A PDA has one stack, enough to match $a$'s against $b$'s but not simultaneously against $c$'s — the CFL pumping lemma confirms it is not context free. A linear bounded automaton handles it comfortably, placing it in the context-sensitive class.",
+  "trick": "One matching pair ⇒ context free. Two simultaneous matching pairs ⇒ context sensitive.",
+  "diff": "medium",
+  "tags": [
+   "Chomsky hierarchy"
+  ],
+  "srcUrl": ""
+ }
+]

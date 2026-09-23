@@ -1,0 +1,1094 @@
+{
+ "unit": 9,
+ "summary": "Data communication and networking is consistently the largest single source of marks in Paper 2: signals and capacity limits, encoding and multiplexing, error detection and correction, the OSI and TCP/IP layer models, sliding-window and multiple-access protocols, IP addressing and subnetting, routing, TCP congestion control, application protocols, security, mobile technology and cloud/IoT.",
+ "topics": [
+  {
+   "id": "9.1",
+   "title": "Data Communication Fundamentals",
+   "summary": "Signals, bandwidth, the Nyquist and Shannon capacity limits, impairments, delay components and switching.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "Data communication is the business of moving information between two devices over some physical path. Five things have to be present for it to happen at all: a **message**, a **sender**, a **receiver**, a **transmission medium**, and a **protocol** — an agreed set of rules without which two devices can exchange voltages but not meaning.\n\nThe whole of this unit is really an answer to one question: the medium is analog, noisy and shared, so how do we push digital information through it reliably, in the right order, to the right machine, fast? Topic 9.1 sets up the physics and the arithmetic that the rest of the unit leans on.\n\n## Direction of flow\n\n- **Simplex** — one direction only. A keyboard sends, a monitor receives. The entire channel capacity is used by the one transmitter.\n- **Half duplex** — both directions, but not at the same time. A walkie-talkie. The full capacity is available to whichever side currently holds the channel.\n- **Full duplex** — both directions simultaneously. A telephone. Capacity is either split between the two directions or two separate physical paths are used.\n\nNote the exam wording carefully: half duplex gives each side the *whole* bandwidth when it is its turn; full duplex often gives each side *half*. Candidates routinely get this backwards.\n\n## Analog and digital\n\nAn **analog signal** takes infinitely many values over a continuous range; a **digital signal** takes a finite number of discrete levels. A periodic analog signal is described by amplitude, frequency $f$ and phase; period and frequency are reciprocals, $T = 1/f$.\n\nFourier analysis says any composite signal decomposes into a sum of simple sine waves. The **bandwidth** of the signal is then the width of the band of frequencies it contains:\n\n$$B = f_{\\text{high}} - f_{\\text{low}}$$\n\nA digital signal, being a square wave, is a composite of infinitely many harmonics, so it theoretically needs infinite bandwidth. In practice we send only the first few harmonics — which is exactly why a digital signal sent over a band-limited channel arrives rounded off rather than square.\n\nTransmitting a digital signal directly over a channel is called **baseband** transmission and needs a low-pass channel. Converting it to an analog carrier first is **broadband** transmission and works over a band-pass channel.\n\n## Bit rate, baud rate, and the two capacity limits\n\n**Bit rate** $N$ is bits per second. **Baud rate** (signal rate) $S$ is *signal elements* per second. If each signal element carries $r$ bits then\n\n$$N = S \\times r, \\qquad r = \\log_2 L$$\n\nwhere $L$ is the number of distinct signal levels. Baud rate determines the bandwidth needed; bit rate determines how much information gets through. Baud rate is never greater than bit rate for multilevel signalling, and is less than or equal to it — except in schemes like Manchester where one bit uses two signal elements and the baud rate is *double* the bit rate.\n\n**Nyquist** gives the capacity of a *noiseless* channel of bandwidth $B$ Hz using $L$ levels:\n\n$$C = 2B \\log_2 L \\ \\text{bits/s}$$\n\n**Shannon** gives the capacity of a *noisy* channel, and the number of levels does not appear at all:\n\n$$C = B \\log_2\\!\\left(1 + \\frac{S}{N}\\right) \\ \\text{bits/s}$$\n\nwhere $S/N$ is the signal-to-noise **power ratio**, not the decibel figure. Convert with\n\n$$\\mathrm{SNR_{dB}} = 10\\log_{10}\\frac{S}{N}$$\n\nShannon is an upper bound you cannot beat by any coding scheme; Nyquist tells you how many levels you would need to reach a target rate. The standard exam problem gives you both and asks you to find $L$: compute the Shannon limit first, then set Nyquist equal to it and solve.\n\nA useful decibel fact: $3$ dB is a factor of $2$, $10$ dB a factor of $10$, $20$ dB a factor of $100$, $30$ dB a factor of $1000$. So SNR of $30$ dB means $S/N = 1000$ and $\\log_2(1001) \\approx 9.97$."
+    },
+    {
+     "t": "cal",
+     "kind": "formula",
+     "title": "The four numbers you must be able to reproduce",
+     "text": "- Nyquist (noiseless): $C = 2B\\log_2 L$\n- Shannon (noisy): $C = B\\log_2(1 + S/N)$\n- Decibels: $\\mathrm{SNR_{dB}} = 10\\log_{10}(S/N)$; gain in dB $= 10\\log_{10}(P_2/P_1)$\n- Bit rate from signal rate: $N = S\\log_2 L$"
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — combining Shannon and Nyquist",
+     "text": "**Problem.** A telephone-grade channel has bandwidth $4$ kHz and an SNR of $30$ dB. What is its theoretical capacity, and how many signal levels would a noiseless system need to achieve that rate?\n\n**Step 1 — convert the SNR out of decibels.**\n$30 = 10\\log_{10}(S/N) \\Rightarrow \\log_{10}(S/N) = 3 \\Rightarrow S/N = 1000$.\n\n**Step 2 — Shannon capacity.**\n$$C = 4000 \\times \\log_2(1 + 1000) = 4000 \\times \\log_2 1001$$\n$\\log_2 1001 = \\ln 1001/\\ln 2 = 6.9088/0.6931 = 9.967$.\n$$C = 4000 \\times 9.967 = 39\\,868 \\approx 39.9 \\ \\text{kbps}$$\n\n**Step 3 — how many levels does Nyquist need for that rate?**\n$$39\\,868 = 2 \\times 4000 \\times \\log_2 L \\Rightarrow \\log_2 L = \\frac{39\\,868}{8000} = 4.98 \\Rightarrow L = 2^{4.98} \\approx 31.6$$\n\nLevels must be a power of two for clean binary encoding, so we would choose $L = 32$, giving $C = 2 \\times 4000 \\times 5 = 40$ kbps. We cannot actually *use* $40$ kbps because Shannon caps us at $39.9$ kbps; we would run $32$ levels at a slightly lower rate. This is the whole reason the old $33.6$ kbps modems stalled where they did.\n\n**Sanity check.** Doubling the bandwidth doubles $C$ in both formulas. Doubling $S/N$ adds only $B\\log_2 2 \\approx B$ bits/s in Shannon — bandwidth is far more valuable than power."
+    },
+    {
+     "t": "md",
+     "text": "## Transmission impairments\n\nThree things degrade a signal on the wire.\n\n- **Attenuation** — loss of energy with distance, fixed by amplifiers (analog) or repeaters (digital). Measured in dB; a negative dB figure means loss.\n- **Distortion** — the shape changes because different frequency components travel at different speeds and arrive with different delays. Only composite signals suffer it.\n- **Noise** — thermal noise (random electron motion), induced noise (motors, appliances), crosstalk (one wire's signal appearing on another), and impulse noise (short high-energy spikes from lightning or switching).\n\n## Performance: the four delays\n\nTotal time for a packet to reach a destination is the sum of\n\n$$d_{\\text{total}} = d_{\\text{proc}} + d_{\\text{queue}} + d_{\\text{trans}} + d_{\\text{prop}}$$\n\n- **Transmission delay** $= L/R$: message length in bits over link rate. It depends on the *size* of the packet.\n- **Propagation delay** $= d/v$: distance over signal speed ($\\approx 2\\times10^8$ m/s in copper or fibre, $3\\times10^8$ m/s in free space). It depends on the *distance*, never on the packet size.\n- **Queuing delay** — time spent waiting in router buffers; the only variable one, and the source of jitter.\n- **Processing delay** — header examination and lookup at each node.\n\nThe **bandwidth–delay product** $= \\text{bandwidth} \\times \\text{propagation delay}$ gives the number of bits \"in flight\" on the link at any instant. It is the single most useful quantity in the whole unit: it fixes the minimum window size for full link utilisation (topic 9.5) and the minimum Ethernet frame size (topic 9.6).\n\n## Switching\n\n- **Circuit switching** — a dedicated physical path is reserved end to end before any data flows. Three phases: setup, data transfer, teardown. Resources are reserved even when idle, so it wastes capacity for bursty traffic but gives constant delay. The telephone network.\n- **Packet switching (datagram)** — no setup; each packet carries a full destination address and is routed independently, so packets may arrive out of order or by different routes. The Internet.\n- **Packet switching (virtual circuit)** — a logical path is set up and each packet then carries only a short VC identifier. Packets follow one path and arrive in order. Frame Relay, ATM, MPLS.\n- **Message switching** — store-and-forward of an entire message at each hop, with no size limit. Obsolete for interactive traffic because each node must buffer the whole message.\n\nFor circuit switching, total time $=$ setup time $+$ propagation $+$ transmission. For packet switching over $k$ hops with $p$ packets, the store-and-forward pipeline gives a total transmission time of $(p + k - 1) \\times t_p$ where $t_p$ is the per-packet transmission time on one hop."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.1-1",
+     "q": "A noiseless 3 kHz channel transmits at 12 kbps. How many signal levels does it use?",
+     "opts": [
+      "4",
+      "8",
+      "16",
+      "2"
+     ],
+     "ans": 0,
+     "exp": "Nyquist: $C = 2B\\log_2 L$, so $12000 = 2\\times3000\\times\\log_2 L$, giving $\\log_2 L = 2$ and $L = 4$."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.1-2",
+     "q": "A 1 Gbps link is 2000 km long with signal speed $2\\times10^8$ m/s. How many bits are on the wire at one instant?",
+     "opts": [
+      "$10^4$",
+      "$10^5$",
+      "$10^6$",
+      "$10^7$"
+     ],
+     "ans": 3,
+     "exp": "Propagation delay $= 2\\times10^6 / 2\\times10^8 = 10^{-2}$ s. Bandwidth-delay product $= 10^9 \\times 10^{-2} = 10^7$ bits."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Read the dB before you reach for the log",
+     "body": "SNR in decibels is almost always a multiple of 10 or 3 in exam papers. $10$ dB $\\to 10$, $20$ dB $\\to 100$, $30$ dB $\\to 1000$, $3$ dB $\\to 2$, $6$ dB $\\to 4$. And if $S/N \\gg 1$, Shannon simplifies to $C \\approx B \\times \\mathrm{SNR_{dB}}/3$ because $\\log_2 10 \\approx 3.32$ and $10\\log_{10}$ undoes to roughly one bit per 3 dB. For $B=4$ kHz, $30$ dB: $4000\\times30/3 = 40$ kbps — the exact answer to one significant figure in two seconds."
+    },
+    {
+     "title": "Nyquist has a 2, Shannon does not",
+     "body": "The commonest slip under time pressure is writing $C=2B\\log_2(1+S/N)$. Remember that Nyquist counts *both* the rising and falling opportunities in a cycle, hence the factor 2; Shannon is derived from information theory and has no such factor. If a problem mentions noise or SNR at all, there is no 2."
+    },
+    {
+     "title": "Which delay depends on what",
+     "body": "Transmission delay scales with packet size and not distance; propagation delay scales with distance and not packet size. If a question doubles the link length, only propagation changes. If it doubles the frame size, only transmission changes. Half of all performance MCQs are decided by this one distinction."
+    },
+    {
+     "title": "Baud rate is a bandwidth question",
+     "body": "When asked for the minimum bandwidth needed, work in baud, not bits per second. Minimum bandwidth is roughly the signal rate divided by 2 for a simple scheme, so $N$ bps with $L$ levels needs about $N/(2\\log_2 L)$ Hz."
+    }
+   ],
+   "traps": [
+    {
+     "title": "S/N versus SNR in dB",
+     "body": "Shannon takes the raw power ratio. Substituting the decibel value directly — $C = 4000\\log_2(1+30)$ — gives about 19.7 kbps and is a distractor option in every paper that asks this. Always convert first."
+    },
+    {
+     "title": "Half duplex bandwidth",
+     "body": "In half duplex each station gets the *entire* bandwidth during its transmission turn; in full duplex the capacity is typically shared between the two directions. Examiners phrase this as 'the capacity of the channel is divided between the two directions' and expect you to pick full duplex."
+    },
+    {
+     "title": "Nyquist is an upper bound only without noise",
+     "body": "Nyquist says nothing about noise, so naively increasing $L$ appears to give unlimited capacity. It does not: as levels get closer together noise makes them indistinguishable. Shannon is always the binding constraint when a noise figure is supplied."
+    }
+   ]
+  },
+  {
+   "id": "9.2",
+   "title": "Transmission Media, Encoding, Modulation and Multiplexing",
+   "summary": "Guided and unguided media, line codes such as NRZ and Manchester, digital and analog modulation, PCM, and FDM/TDM/WDM/CDM.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "Once we know how much a channel can carry, the next question is how to put bits on it. That is a chain of three decisions: which **medium**, which **encoding** or **modulation** to turn bits into signals, and which **multiplexing** scheme to let several conversations share one expensive link.\n\n## Guided media\n\n**Twisted pair** is two insulated copper conductors twisted together; the twisting makes the noise picked up by the two wires nearly identical so that the receiver, which reads the *difference*, cancels it. UTP is categorised: Cat 3 (16 MHz, old 10 Mbps LANs), Cat 5/5e (100 MHz, 100 Mbps–1 Gbps), Cat 6 (250 MHz), Cat 7 (600 MHz, shielded). The connector is RJ-45. STP adds a metal foil around each pair.\n\n**Coaxial cable** carries a central conductor inside a braided outer shield, giving a much wider usable frequency range than twisted pair. RG-58 for thin Ethernet, RG-59 for cable TV. Connector: BNC.\n\n**Fibre optic** carries light rather than current, using total internal reflection when the angle of incidence exceeds the critical angle. Three modes:\n- **Multimode step-index** — abrupt core/cladding boundary, many paths of different lengths, so pulses spread (modal dispersion) and distance is limited.\n- **Multimode graded-index** — refractive index falls gradually from the centre, bending rays back and equalising travel times, reducing dispersion.\n- **Single-mode** — core so narrow (about 8–10 µm) that only one ray path exists; highest bandwidth and longest reach, used in backbones.\n\nFibre is immune to electromagnetic interference, has very low attenuation, cannot be tapped easily, and is lighter — but is costly, needs skilled splicing, and is unidirectional (a pair is needed for duplex).\n\n**Unguided media** broadcast into free space: radio waves (omnidirectional, penetrate walls, used for AM/FM and WLAN), microwaves (line-of-sight, directional, terrestrial links and satellites), and infrared (short-range, blocked by walls, so no inter-room interference — TV remotes, IrDA).\n\n## Line coding: digital data to digital signal\n\nThe job is to produce a signal that the receiver can sample at the right instants. A good line code has (a) no DC component, so it can pass through transformers and be sent over AC-coupled lines, (b) enough transitions for the receiver to recover the clock, and (c) modest bandwidth.\n\n| Scheme | How a bit is drawn | Self-clocking? | DC balance | Baud vs bit rate |\n|---|---|---|---|---|\n| Unipolar NRZ | 1 = positive, 0 = zero | no | very poor | $S = N$ |\n| Polar NRZ-L | 1 = negative, 0 = positive (level determines bit) | no | poor on long runs | $S = N$ |\n| NRZ-I | 1 = invert the level, 0 = keep it | partially (1s only) | better | $S = N$ |\n| RZ | three levels; signal returns to 0 mid-bit | yes | good | $S = 2N$ |\n| Manchester | mid-bit transition always: low→high = 1, high→low = 0 (IEEE convention) | yes | perfect | $S = 2N$ |\n| Differential Manchester | mid-bit transition always (clock); *transition at the start* of the bit means 0, no start transition means 1 | yes | perfect | $S = 2N$ |\n| Bipolar AMI | 0 = zero level, 1 = alternating + and − | on 1s only | perfect | $S = N$ |\n\n**Manchester and differential Manchester are the ones examiners love.** Both spend two signal elements per bit, so the signal rate is twice the bit rate and they need about twice the bandwidth of NRZ — that is the price of guaranteed clock recovery. The difference between them is that Manchester encodes the bit in the *direction* of the mid-bit transition, while differential Manchester encodes it in the *presence or absence* of a transition at the bit boundary. Differential schemes are therefore immune to a swapped pair of wires (polarity inversion), which plain Manchester is not. Manchester was used by 10 Mbps Ethernet, differential Manchester by Token Ring.\n\nLong runs of zeros defeat AMI's clock recovery, so **B8ZS** (North America) replaces eight consecutive zeros with a pattern containing deliberate bipolar violations, and **HDB3** (Europe) replaces every four zeros similarly. Block codes such as **4B/5B** map 4 data bits onto a 5-bit code word chosen so that no code word has more than three consecutive zeros; the cost is 25% extra signalling, which is why 100 Mbps Fast Ethernet clocks at 125 Mbaud. **8B/10B** does the same job with better DC balance for Gigabit Ethernet.\n\n## Digital data to analog signal\n\nTo cross a band-pass channel we modulate a carrier. Changing its amplitude gives **ASK**, its frequency **FSK**, its phase **PSK**. Combining amplitude and phase gives **QAM**. If $M$ is the number of distinct symbols, each symbol carries $\\log_2 M$ bits, so\n\n$$N = S \\times \\log_2 M$$\n\nBPSK carries 1 bit/symbol, QPSK 2, 8-PSK 3, 16-QAM 4, 64-QAM 6, 256-QAM 8. The **constellation diagram** plots each symbol as a point whose distance from the origin is amplitude and whose angle is phase; the number of points is $M$. PSK and QAM are more noise-robust per bit than ASK, and QAM packs the most bits in, which is why modern Wi-Fi and cable systems use 256-QAM and beyond.\n\n## Analog data to digital signal: PCM\n\nThree steps: **sample**, **quantise**, **encode**.\n\nThe **sampling theorem** requires $f_s \\ge 2 f_{\\max}$. Sampling below that rate causes aliasing, where a high frequency masquerades as a low one. With $n$ bits per sample the resulting bit rate is\n\n$$N = f_s \\times n$$\n\nQuantisation introduces an irreversible error; the signal-to-quantisation-noise ratio is approximately $\\mathrm{SQNR_{dB}} \\approx 6.02n + 1.76$, so each extra bit buys about 6 dB. **Delta modulation** sends a single bit per sample saying only whether the signal went up or down, which is cheap but suffers slope overload on fast-changing signals.\n\n## Multiplexing\n\n- **FDM** — analog; each channel gets its own frequency band, with guard bands between them to prevent overlap. Radio and TV broadcasting.\n- **WDM** — FDM done with light on a fibre; a prism or diffraction grating combines and separates wavelengths. DWDM packs dozens of closely spaced wavelengths on one strand.\n- **Synchronous TDM** — digital; time is divided into frames and each input gets a fixed slot in every frame, whether or not it has data. Slots can be bit-interleaved or byte-interleaved. Empty slots are wasted, so the link rate is the sum of the input rates (plus framing overhead).\n- **Statistical (asynchronous) TDM** — slots are allocated on demand to whoever has data, so the output rate can be less than the sum of the inputs. Each slot must now carry an address, adding overhead. This is what packet switching really is.\n- **CDM / CDMA** — every station transmits simultaneously over the whole band but multiplies its data by a unique orthogonal chip code (a Walsh code). The receiver recovers station $i$ by correlating with code $i$: the wanted signal adds up while every other station's contribution cancels to zero.\n- **OFDM** — the band is split into many closely spaced orthogonal subcarriers, each modulated at a low rate. Used in LTE, Wi-Fi and DSL because a narrowband fade kills only a few subcarriers.\n\n**Spread spectrum** deliberately uses more bandwidth than needed, for robustness and secrecy. **FHSS** hops the carrier among frequencies according to a pseudorandom sequence known to both ends; **DSSS** multiplies each bit by a faster chip sequence."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — the T1 carrier, from voice to 1.544 Mbps",
+     "text": "**Problem.** A telephone voice channel is band-limited to $4$ kHz. It is digitised by PCM with $8$ bits per sample, and $24$ such channels are combined by synchronous TDM with one framing bit per frame. What is the line rate?\n\n**Step 1 — sampling rate.** Nyquist sampling requires $f_s \\ge 2 \\times 4000 = 8000$ samples/s.\n\n**Step 2 — per-channel bit rate.**\n$$N = f_s \\times n = 8000 \\times 8 = 64\\,000 \\ \\text{bps} = 64 \\ \\text{kbps}$$\nThat number — 64 kbps for one digital voice channel — is worth memorising.\n\n**Step 3 — frame size.** One frame carries one 8-bit sample from each of the 24 channels plus 1 framing bit:\n$$24 \\times 8 + 1 = 193 \\ \\text{bits per frame}$$\n\n**Step 4 — frame rate.** A frame must carry one sample per channel, so frames occur at the sampling rate: $8000$ frames/s, i.e. one frame every $125$ µs.\n\n**Step 5 — line rate.**\n$$193 \\times 8000 = 1\\,544\\,000 \\ \\text{bps} = 1.544 \\ \\text{Mbps}$$\n\n**Cross-check the overhead.** Useful payload is $24 \\times 64 = 1.536$ Mbps, so the framing overhead is $8$ kbps, which is $1/193 = 0.518\\%$. The European E1 instead uses 32 slots of 8 bits at 8000 frames/s $= 2.048$ Mbps, of which 30 slots carry voice."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — baud rate and bandwidth for three encodings",
+     "text": "**Problem.** A channel carries $2$ Mbps. Give the signal (baud) rate under NRZ-L, Manchester, and 16-QAM, and comment on the bandwidth each needs.\n\n- **NRZ-L**: one signal element per bit, $r = 1$, so $S = N/r = 2$ Mbaud. Minimum bandwidth is about $N/2 = 1$ MHz.\n- **Manchester**: two signal elements per bit, $r = 1/2$, so $S = N/r = 4$ Mbaud. Bandwidth required is about $N = 2$ MHz — double NRZ, which is exactly the cost of self-clocking.\n- **16-QAM**: $\\log_2 16 = 4$ bits per symbol, so $S = 2\\ \\text{Mbps} / 4 = 500$ kbaud. Bandwidth about $500$ kHz — one quarter of NRZ.\n\nThe pattern to carry away: more bits per symbol means fewer symbols per second means less bandwidth, paid for with a tighter noise margin. Manchester goes the other way, spending bandwidth to buy clock recovery."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.2-1",
+     "q": "A signal is sent using differential Manchester encoding at 10 Mbps. What is the minimum number of signal transitions per second?",
+     "opts": [
+      "5 million",
+      "10 million",
+      "20 million",
+      "40 million"
+     ],
+     "ans": 1,
+     "exp": "Differential Manchester guarantees one transition at the middle of every bit, so at 10 Mbps there are at least $10\\times10^6$ transitions per second; bits encoded as 0 add a second transition at the boundary, giving up to 20 million."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.2-2",
+     "q": "An analog signal occupies 300 Hz to 3400 Hz and is digitised with 256 quantisation levels. The minimum bit rate is:",
+     "opts": [
+      "27.2 kbps",
+      "54.4 kbps",
+      "24.8 kbps",
+      "6.8 kbps"
+     ],
+     "ans": 1,
+     "exp": "$f_{max}=3400$ Hz so $f_s = 6800$ samples/s. $256$ levels needs $\\log_2 256 = 8$ bits. $N = 6800\\times8 = 54\\,400$ bps. Note that sampling uses the highest frequency, not the bandwidth."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "r, the bits-per-signal-element ratio, settles every baud question",
+     "body": "Write $S = N/r$. NRZ and AMI have $r=1$; Manchester and differential Manchester and RZ have $r=1/2$; 2B1Q has $r=2$; 4B/5B has $r=4/5$ so 100 Mbps runs at 125 Mbaud; $M$-ary modulation has $r=\\log_2 M$. One formula, seven schemes."
+    },
+    {
+     "title": "Spot differential schemes by what stays the same",
+     "body": "In any scheme whose name contains 'differential' or 'I' for inverted (NRZ-I, differential Manchester), the bit is carried by whether something *changes*, not by an absolute level. That makes them immune to polarity inversion. If a question says 'the receiver's leads were accidentally reversed but decoding still worked', the answer is a differential scheme."
+    },
+    {
+     "title": "64 kbps and 1.544 Mbps are free marks",
+     "body": "Voice PCM = 8000 samples/s x 8 bits = 64 kbps; T1 = 193 bits per 125 us = 1.544 Mbps; E1 = 2.048 Mbps; T1 carries 24 channels, E1 carries 32 slots of which 30 are voice. Memorise these four facts and a whole family of multiplexing numericals collapses to arithmetic."
+    },
+    {
+     "title": "Statistical TDM output rate is not the sum",
+     "body": "For synchronous TDM the output rate equals the sum of input rates plus framing. For statistical TDM it is designed to be less, because slots go only to active inputs. Any question in which the output link is slower than the total of the inputs is describing statistical TDM."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Manchester convention differs between books",
+     "body": "IEEE 802.3 defines low-to-high at mid-bit as 1; G. E. Thomas defines the opposite. UGC NET follows the IEEE convention used by Forouzan and Tanenbaum: a rising mid-bit transition is 1. If a question supplies its own convention in the stem, use that one."
+    },
+    {
+     "title": "Sampling rate uses f_max, not bandwidth",
+     "body": "For a signal from 300 Hz to 3400 Hz the bandwidth is 3100 Hz but the sampling rate must be $2\\times3400 = 6800$ Hz, not $6200$ Hz. Only for a baseband signal starting at 0 Hz do the two coincide."
+    },
+    {
+     "title": "FDM is analog, TDM is digital",
+     "body": "Examiners pair 'guard band' with FDM and 'framing bit' with TDM. Guard bands exist in frequency to stop overlap; framing bits exist in time to keep the demultiplexer synchronised. Mixing the two terms is the standard distractor."
+    }
+   ]
+  },
+  {
+   "id": "9.3",
+   "title": "Transmission Errors: Detection and Correction",
+   "summary": "Parity, checksums, CRC by polynomial long division, Hamming distance, and Hamming single-error-correcting codes.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "Every physical medium corrupts some bits. The data link layer's answer is **redundancy**: the sender computes extra bits from the data by an agreed rule and appends them; the receiver recomputes and compares. If the rule is weak, corrupted frames slip through; if it is strong, it costs bandwidth and computation. The whole topic is about that trade-off.\n\nTwo kinds of damage matter. A **single-bit error** flips exactly one bit — rare in serial transmission, because noise usually lasts longer than one bit time. A **burst error** corrupts a run of bits from the first to the last corrupted bit, where some bits inside the run may be untouched; the burst *length* is measured from the first flipped bit to the last. Higher bit rates mean more bits fall inside a fixed-duration noise spike, so bursts get longer as links get faster.\n\n## Parity\n\nThe simplest scheme. For **even parity**, append one bit chosen so that the total number of 1s in the codeword is even; for **odd parity**, so that it is odd.\n\nParity detects every odd number of bit errors and misses every even number. It cannot locate an error and cannot correct anything. Its Hamming distance is 2.\n\n**Two-dimensional parity (LRC + VRC)** arranges the data as a table of rows, computes a parity bit per row (VRC) and a parity byte across columns (LRC). It detects all 1-, 2- and 3-bit errors and can *correct* a single-bit error, because the failing row and the failing column intersect at exactly one cell. It still misses a pattern of four errors sitting at the corners of a rectangle.\n\n## Checksum\n\nUsed by IP, TCP and UDP. The sender splits the data into $n$-bit words, adds them in **one's complement arithmetic** (any carry out of the top bit is added back at the bottom), then complements the total and sends that as the checksum. The receiver adds everything including the checksum; the result should be all 1s, which complements to all 0s.\n\nThe checksum is cheap and done in software, but it is weaker than CRC: reordering words, or two errors that cancel, go undetected.\n\n## Cyclic redundancy check\n\nCRC treats a bit string as the coefficients of a polynomial over GF(2), where addition and subtraction are both XOR and there are no carries. Given data $D$ of $k$ bits and a **generator polynomial** $G$ of degree $r$ (so $r+1$ bits, with the leading and trailing bits conventionally 1):\n\n1. Append $r$ zeros to the data — this is multiplying by $x^r$.\n2. Divide by $G$ using XOR at each step, bringing bits down exactly as in long division, but subtracting by XOR.\n3. The $r$-bit remainder is the CRC or frame check sequence. Transmit data followed by that remainder.\n4. The receiver divides the whole received frame by $G$. A zero remainder means accept; anything else means the frame is damaged.\n\nThe transmitted codeword is always exactly divisible by $G$, which is why the receiver's test is simply \"remainder = 0\".\n\n**Detection power of a well-chosen generator:**\n- All single-bit errors, provided $G$ has at least two terms.\n- All burst errors of length $\\le r$ (the degree of $G$).\n- Most longer bursts: a burst of exactly $r+1$ bits escapes with probability $(1/2)^{r-1}$, and a burst longer than $r+1$ escapes with probability $(1/2)^r$.\n- All odd numbers of bit errors, provided $(x+1)$ is a factor of $G$.\n- All double errors, if $G$ has a primitive factor of sufficient period.\n\nStandard generators: CRC-8 ($x^8+x^2+x+1$), CRC-10, CRC-16 ($x^{16}+x^{15}+x^2+1$), CRC-32 used by Ethernet ($x^{32}+x^{26}+\\dots+x+1$).\n\n## Hamming distance and the correction bound\n\nThe **Hamming distance** $d(a,b)$ between two equal-length words is the number of positions where they differ — that is, the number of 1s in $a \\oplus b$. The **minimum Hamming distance** $d_{\\min}$ of a code is the smallest distance between any two of its valid codewords, and it alone determines the code's power:\n\n$$\\text{detect up to } s \\text{ errors} \\iff d_{\\min} \\ge s+1$$\n$$\\text{correct up to } t \\text{ errors} \\iff d_{\\min} \\ge 2t+1$$\n\nEquivalently, a code with minimum distance $d$ detects $d-1$ errors and corrects $\\lfloor (d-1)/2 \\rfloor$. Simple parity has $d_{\\min}=2$: detect 1, correct 0. The Hamming (7,4) code has $d_{\\min}=3$: detect 2, correct 1. Adding an overall parity bit to make (8,4) raises $d_{\\min}$ to 4, giving SECDED — single error correction, double error detection.\n\n## Hamming codes\n\nTo correct a single error among $m$ data bits we need $r$ check bits where every error position, plus the no-error case, has a distinct syndrome:\n\n$$2^r \\ge m + r + 1$$\n\nConstruction: number the codeword positions $1, 2, 3, \\dots$ from the left. Positions that are powers of two ($1, 2, 4, 8, \\dots$) hold the parity bits; all others hold data bits in order. Parity bit at position $2^j$ covers every position whose binary representation has bit $j$ set — so $p_1$ covers positions $1,3,5,7,9,11,\\dots$; $p_2$ covers $2,3,6,7,10,11,\\dots$; $p_4$ covers $4,5,6,7,12,13,14,15$; $p_8$ covers $8$–$15$.\n\nAt the receiver, recompute each parity check. Write the failing checks as a binary number with $p_1$ as the least significant bit — that number **is the position of the corrupted bit**. A syndrome of 0 means no single-bit error. This elegance is why the construction uses power-of-two positions."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — CRC by polynomial long division",
+     "text": "**Problem.** Data $= 1101011011$, generator $G = 10011$ (that is, $x^4 + x + 1$). Find the transmitted frame.\n\n$G$ has 5 bits so its degree is $r = 4$; we need a 4-bit CRC.\n\n**Step 1 — append 4 zeros:** dividend $= 1101011011\\,0000$ (14 bits).\n\n**Step 2 — divide by 10011, XOR at every step.** Align the divisor under the leftmost 1 of the current remainder each time.\n\n```\n                 1100001010\n      ------------------------\n10011 ) 11010110110000\n        10011\n        -----\n         10011 1\n         10011\n         -----\n         00000 10110000   (bring down)\n              10011\n              -----\n              01010 0000\n               10011\n               -----\n               00110 000\n                 ...\n```\n\nWorking it through position by position (XOR the divisor whenever the current leading bit is 1, shift otherwise) gives quotient $1100001010$ and **remainder $1110$**.\n\n**Step 3 — transmitted frame** = data followed by CRC:\n$$1101011011\\ \\mathbf{1110}$$\n\n**Step 4 — receiver check.** Dividing $11010110111110$ by $10011$ gives remainder $0000$, so the frame is accepted.\n\n**What if a burst hits it?** Suppose bits 3 and 4 flip, giving $1100011011\\,1110$. The error polynomial is $E = x^{11}+x^{10}$, i.e. $110$ followed by zeros. Since $G$ does not divide $E$, the remainder is non-zero and the error is caught. Because $r = 4$, every burst of length 4 or less is guaranteed to be caught."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — Hamming code for 4 data bits",
+     "text": "**Problem.** Encode the data $1011$ with an even-parity Hamming code, then corrupt one bit and locate it.\n\n**Step 1 — how many check bits?** $m = 4$. Try $r = 3$: $2^3 = 8 \\ge 4 + 3 + 1 = 8$. True, so $r = 3$ and the codeword is 7 bits — the Hamming (7,4) code.\n\n**Step 2 — lay out the positions.** Positions 1, 2, 4 are parity; 3, 5, 6, 7 take the data bits $1, 0, 1, 1$ in order.\n\n| pos | 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n|---|---|---|---|---|---|---|---|\n| role | $p_1$ | $p_2$ | $d_1$ | $p_4$ | $d_2$ | $d_3$ | $d_4$ |\n| value | ? | ? | 1 | ? | 0 | 1 | 1 |\n\n**Step 3 — compute the parity bits (even parity).**\n- $p_1$ covers 1,3,5,7: $p_1 \\oplus 1 \\oplus 0 \\oplus 1 = 0 \\Rightarrow p_1 = 0$\n- $p_2$ covers 2,3,6,7: $p_2 \\oplus 1 \\oplus 1 \\oplus 1 = 0 \\Rightarrow p_2 = 1$\n- $p_4$ covers 4,5,6,7: $p_4 \\oplus 0 \\oplus 1 \\oplus 1 = 0 \\Rightarrow p_4 = 0$\n\n**Codeword: $0\\,1\\,1\\,0\\,0\\,1\\,1$**\n\n**Step 4 — introduce an error.** Flip position 5, so the receiver sees $0110111$ (position 5 is now 1).\n\n**Step 5 — recompute the checks.**\n- $C_1$ (1,3,5,7) $= 0 \\oplus 1 \\oplus 1 \\oplus 1 = 1$ — fails\n- $C_2$ (2,3,6,7) $= 1 \\oplus 1 \\oplus 1 \\oplus 1 = 0$ — passes\n- $C_4$ (4,5,6,7) $= 0 \\oplus 1 \\oplus 1 \\oplus 1 = 1$ — fails\n\n**Step 6 — read the syndrome.** Writing $C_4 C_2 C_1 = 1\\,0\\,1$ in binary gives $5$. Bit 5 is the corrupted one; flip it back to 0 and the original codeword $0110011$ is recovered, yielding data $1011$. The syndrome literally spelled out the error position."
+    },
+    {
+     "t": "lab",
+     "lab": "errdet",
+     "title": "Try it — CRC, checksum and Hamming code",
+     "note": "Enter your own data word and generator and watch the XOR division unfold step by step, then corrupt a bit and see whether the check catches it."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.3-1",
+     "q": "A code has minimum Hamming distance 5. How many errors can it detect and correct respectively?",
+     "opts": [
+      "4 detect, 2 correct",
+      "5 detect, 2 correct",
+      "4 detect, 3 correct",
+      "3 detect, 2 correct"
+     ],
+     "ans": 0,
+     "exp": "Detection needs $d_{min}\\ge s+1$, so $s = 5-1 = 4$. Correction needs $d_{min}\\ge 2t+1$, so $t = \\lfloor(5-1)/2\\rfloor = 2$."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.3-2",
+     "q": "How many check bits does a Hamming SEC code need for 11 data bits?",
+     "opts": [
+      "3",
+      "4",
+      "5",
+      "6"
+     ],
+     "ans": 1,
+     "exp": "Need $2^r \\ge m+r+1$. With $m=11$: $r=4$ gives $16 \\ge 16$, true. $r=3$ gives $8 \\ge 15$, false. So 4 check bits, a (15,11) code."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "CRC length comes from the generator, not the data",
+     "body": "The number of appended zeros and the number of CRC bits both equal the *degree* of the generator, which is one less than the number of bits in the generator string. A 5-bit generator like 10011 gives a 4-bit CRC, always. Questions that ask 'how many redundant bits' are answered without doing any division."
+    },
+    {
+     "title": "Check divisibility instead of dividing twice",
+     "body": "To verify a received CRC frame you do not need a fresh division: the transmitted codeword is data*x^r plus the remainder, which is by construction a multiple of G. So the only question is whether the received string is divisible by G. In a multiple-choice question, eliminate options by testing the last few bits: if the generator's constant term is 1 and the frame ends in a pattern that cannot XOR to zero, discard it."
+    },
+    {
+     "title": "Read the syndrome as a binary number",
+     "body": "In a Hamming code the failing parity checks, written as bits with $p_1$ least significant, give the error position directly in decimal. No searching, no trial and error. A syndrome of 000 means no error was detected."
+    },
+    {
+     "title": "Parity bits sit at powers of two for a reason",
+     "body": "Position $2^j$ is the only position covered by check $j$ and no lower check, so each parity bit is determined independently without simultaneous equations. If a question scrambles the layout and puts parity at the end, the syndrome no longer names the position and you must solve the checks as equations."
+    },
+    {
+     "title": "x+1 as a factor means odd errors are caught",
+     "body": "If the generator polynomial is divisible by $(x+1)$ — equivalently, the generator bit-string has an even number of 1s — then every error pattern with an odd number of flipped bits is detected. CRC-16 and CRC-32 both have this property."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Burst length is measured end to end",
+     "body": "A burst of length 8 does not mean 8 bits were flipped; it means the first and last flipped bits are 8 positions apart, with anything in between. So 'CRC with $r=8$ detects all bursts of length $\\le 8$' is about the span, not the count."
+    },
+    {
+     "title": "Detection and correction counts are not the same bound",
+     "body": "A distance-3 code detects 2 errors *or* corrects 1 — not both at once. A receiver configured to correct will mis-correct a genuine double error into a third, wrong codeword. SECDED (distance 4) is what you use when you need both."
+    },
+    {
+     "title": "Checksum arithmetic is one's complement",
+     "body": "The Internet checksum adds the end-around carry back into the least significant bit, then complements. Using ordinary two's complement addition and forgetting the wrap gives a different answer and is the standard wrong option."
+    }
+   ]
+  },
+  {
+   "id": "9.4",
+   "title": "Network Models: OSI and TCP/IP",
+   "summary": "The seven OSI layers and the TCP/IP stack, which service and PDU belongs to each layer, and how encapsulation works.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "Networking is too complicated to design as one monolith, so it is split into layers. Each layer offers a service to the layer above and uses the service of the layer below, and talks *logically* to its peer layer on the far machine through an agreed protocol. The rule that makes layering pay off is that a layer may be reimplemented — copper swapped for fibre, IPv4 for IPv6 — without disturbing its neighbours, provided the interface does not change.\n\n## The seven OSI layers\n\nWork from the bottom up; the order matters because exam questions constantly ask which layer does what.\n\n**1. Physical.** Moves individual bits over a medium. Concerned with voltage levels, bit duration, data rate, transmission mode (simplex/duplex), physical topology, connectors and pin assignments. It has no idea what a bit means. PDU: **bit**. Devices: repeater, hub, cable, modem.\n\n**2. Data link.** Turns the raw bit pipe into a link that delivers frames between two directly connected nodes. Responsibilities: framing, physical (MAC) addressing, flow control, error control via retransmission, and access control on a shared medium. PDU: **frame**. Devices: switch, bridge, NIC. Sub-layers: LLC and MAC.\n\n**3. Network.** Delivers a packet from the source *host* to the destination *host*, possibly across many networks. Responsibilities: logical (IP) addressing, routing, fragmentation and reassembly, and congestion handling. PDU: **packet** (or datagram). Device: router. Protocols: IP, ICMP, IGMP, ARP, RARP, OSPF, RIP, BGP.\n\n**4. Transport.** Delivers the *entire message* from process to process, which the network layer does not do — it only gets you to the right machine. Responsibilities: service-point (port) addressing, segmentation and reassembly, connection control, end-to-end flow control and error control. PDU: **segment** (TCP) or **datagram** (UDP). Protocols: TCP, UDP, SCTP.\n\n**5. Session.** Establishes, manages and terminates sessions. Provides dialog control (who talks when, half or full duplex) and **synchronisation** — inserting checkpoints into a long transfer so that after a crash only the part after the last checkpoint is resent. Protocols: RPC, NetBIOS, PPTP.\n\n**6. Presentation.** Concerned with the *syntax and semantics* of the information: translation between different machine representations (ASCII/EBCDIC, byte order), **encryption/decryption**, and **compression**. Protocols and formats: SSL in the classical mapping, JPEG, MPEG, ASCII, XDR.\n\n**7. Application.** Provides the interface the user's software actually calls: file transfer and access management, mail services, directory services. Protocols: HTTP, FTP, SMTP, DNS, SNMP, TELNET, DHCP.\n\nLayers 1–3 are the **network support** layers, layers 5–7 the **user support** layers, and the transport layer links the two halves.\n\n## The TCP/IP model\n\nTCP/IP came first as a working system and was described afterwards. It is usually drawn with four layers — Link (or network access), Internet, Transport, Application — or five, splitting Link into Physical and Data Link. The mapping is:\n\n| OSI layer | TCP/IP layer | Main protocols |\n|---|---|---|\n| Application, Presentation, Session | Application | HTTP, FTP, SMTP, DNS, SNMP, TELNET, DHCP |\n| Transport | Transport | TCP, UDP, SCTP |\n| Network | Internet | IP, ICMP, IGMP, ARP, RARP |\n| Data link, Physical | Network access / Link | Ethernet, PPP, HDLC, Wi-Fi, token ring |\n\nKey differences: OSI separates *service*, *interface* and *protocol* cleanly, TCP/IP does not; OSI has seven layers, TCP/IP four; OSI's network layer offers both connectionless and connection-oriented service while TCP/IP's Internet layer is connectionless only; OSI's transport layer is always connection-oriented, whereas TCP/IP offers both TCP and UDP; OSI is a reference model that was never widely implemented, TCP/IP is the deployed Internet. OSI's session and presentation layers have no separate existence in TCP/IP — their jobs are done inside applications.\n\n## Encapsulation\n\nAs data descends the stack each layer prepends its own header (and the data link layer also appends a trailer). The unit handed down is the payload of the layer below.\n\n```\napplication data\n  + TCP header (20 B)   -> segment\n  + IP header (20 B)    -> datagram\n  + Ethernet hdr (14 B) + FCS (4 B) -> frame\n  -> bits on the wire\n```\n\nGoing up, each layer strips its own header and uses a **demultiplexing key** in it to decide who gets the payload: the Ethernet type field (0x0800 = IPv4, 0x0806 = ARP, 0x86DD = IPv6), the IP protocol field (1 = ICMP, 2 = IGMP, 6 = TCP, 17 = UDP, 89 = OSPF), and the TCP/UDP destination port.\n\n## Addresses, one per layer\n\n- Physical/MAC address — 48 bits, local to one link, changes at every hop.\n- Logical/IP address — 32 bits (IPv4), universally unique, stays the same end to end (unless NAT intervenes).\n- Port address — 16 bits, identifies the process within the host.\n- Specific address — an email address or URL, meaningful to the application only.\n\nThe critical consequence: as a packet crosses a router, the source and destination **IP addresses stay the same** but the source and destination **MAC addresses are rewritten** to those of the current hop. This is asked almost every year."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — encapsulation overhead and efficiency",
+     "text": "**Problem.** An application sends 1000 bytes of data over TCP/IPv4 on an Ethernet LAN. Headers: TCP 20 bytes, IP 20 bytes, Ethernet header 14 bytes plus 4-byte FCS. What fraction of the bits on the wire is actual user data?\n\n**Step 1 — build up the sizes.**\n- TCP segment $= 1000 + 20 = 1020$ bytes\n- IP datagram $= 1020 + 20 = 1040$ bytes\n- Ethernet frame $= 1040 + 14 + 4 = 1058$ bytes\n\n**Step 2 — efficiency.**\n$$\\eta = \\frac{1000}{1058} = 0.9452 = 94.5\\%$$\n\n**Step 3 — count the preamble too.** The physical layer prepends a 7-byte preamble and a 1-byte start frame delimiter, and the standard requires a 12-byte interframe gap. Counting those, the wire time corresponds to $1058 + 8 + 12 = 1078$ bytes and the efficiency falls to $1000/1078 = 92.8\\%$.\n\n**Contrast with a small packet.** Send 1 byte of data instead: the frame must still be padded to Ethernet's 64-byte minimum, so efficiency is $1/64 = 1.6\\%$ before the preamble. This is why interactive protocols such as TELNET are so wasteful and why Nagle's algorithm exists."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.4-1",
+     "q": "Insertion of checkpoints into a long file transfer so that recovery after a crash resumes from the last checkpoint is a function of which layer?",
+     "opts": [
+      "Transport",
+      "Session",
+      "Presentation",
+      "Data link"
+     ],
+     "ans": 1,
+     "exp": "Synchronisation, meaning checkpoint insertion and dialog control, is the defining service of the OSI session layer. The transport layer handles end-to-end reliability but not user-visible checkpoints."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.4-2",
+     "q": "As a datagram travels from a host through two routers to a destination, how many times do the source MAC and source IP addresses change?",
+     "opts": [
+      "MAC 0, IP 0",
+      "MAC 3, IP 0",
+      "MAC 0, IP 3",
+      "MAC 3, IP 3"
+     ],
+     "ans": 1,
+     "exp": "IP addresses are end-to-end and unchanged. MAC addresses are link-local and rewritten on each of the three links (host-R1, R1-R2, R2-destination), so the source MAC changes three times."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Mnemonics that actually get used",
+     "body": "Bottom up: 'Please Do Not Throw Sausage Pizza Away' — Physical, Data link, Network, Transport, Session, Presentation, Application. Top down: 'All People Seem To Need Data Processing'. Pair each with its PDU: Bit, Frame, Packet, Segment."
+    },
+    {
+     "title": "Encryption and compression are presentation layer",
+     "body": "In the OSI reference model, translation, encryption and compression are all presentation layer. In real TCP/IP deployments TLS sits between transport and application, but for an OSI-layer question the expected answer is presentation. Read the stem: if it says 'in the OSI model', answer presentation."
+    },
+    {
+     "title": "Which device at which layer",
+     "body": "Repeater and hub are layer 1 (they just regenerate bits); bridge, switch and NIC are layer 2 (they read MAC addresses); router and layer-3 switch are layer 3 (they read IP addresses); a gateway that translates between protocol stacks operates up to layer 7. The rule: a device lives at the highest layer whose header it inspects."
+    },
+    {
+     "title": "Two layers do error control, and they differ",
+     "body": "The data link layer does hop-by-hop error and flow control over one link; the transport layer does end-to-end error and flow control between processes. If a question mentions 'process to process' the answer is transport; 'node to node' or 'hop to hop' means data link."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Host-to-host versus process-to-process",
+     "body": "The network layer delivers host to host; the transport layer delivers process to process. Candidates who read 'end-to-end delivery' and answer network layer lose the mark. The network layer has no concept of which program should receive the data."
+    },
+    {
+     "title": "Session and presentation do not exist in TCP/IP",
+     "body": "A question asking which OSI layers have no counterpart in the TCP/IP model wants session and presentation. Answering 'physical' is wrong: the five-layer version of TCP/IP does include physical, and even the four-layer version subsumes it in the link layer."
+    },
+    {
+     "title": "ARP's layer",
+     "body": "ARP maps an IP address to a MAC address and is carried directly in an Ethernet frame with type 0x0806, not inside IP. Most syllabi and papers classify it as a network layer protocol because it serves IP; some classify it as data link. UGC NET keys have consistently used network layer."
+    }
+   ]
+  },
+  {
+   "id": "9.5",
+   "title": "Data Link Layer: Flow Control, Sliding Window, HDLC",
+   "summary": "Framing, Stop-and-Wait, Go-Back-N and Selective Repeat with their window-size rules and the efficiency formula W/(1+2a).",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "The data link layer takes the bit pipe the physical layer provides and makes it look like a reliable, orderly link between two adjacent nodes. Three jobs: cut the bit stream into **frames**, keep a fast sender from drowning a slow receiver (**flow control**), and make sure a damaged or lost frame is noticed and resent (**error control**). The combination of error control and flow control by retransmission is called **ARQ**, automatic repeat request.\n\n## Framing\n\nThe receiver must know where each frame begins and ends.\n\n- **Character count** — the first field says how many characters follow. One corrupted count destroys synchronisation for the rest of the stream, so it is never used alone.\n- **Byte (character) stuffing** — the frame is delimited by a flag byte. If the flag pattern occurs inside the data, the sender inserts an escape byte (ESC) before it; an ESC in the data is itself escaped. The receiver removes one ESC before each escaped byte.\n- **Bit stuffing** — the flag is the bit pattern `01111110`. Whenever the sender sees **five consecutive 1s** in the data it stuffs a **0** after them, so the flag pattern can never appear inside the payload. The receiver, after five 1s, discards the next bit if it is 0. This is what HDLC and PPP use.\n- **Physical layer coding violations** — use an illegal line-code symbol as the delimiter, costing no payload bits.\n\n## Stop-and-Wait\n\nSend one frame, stop, wait for its acknowledgement, then send the next. Simple and needs only a one-frame buffer. With ARQ added, the sender starts a timer; on timeout it resends. One sequence-number bit ($m = 1$, numbers alternating 0 and 1) is enough to let the receiver detect a duplicate caused by a lost ACK.\n\nThe problem is utilisation. Define\n\n$$T_t = \\frac{L}{R} \\quad(\\text{transmission time}),\\qquad T_p = \\frac{d}{v} \\quad(\\text{propagation time}),\\qquad a = \\frac{T_p}{T_t}$$\n\nOne complete cycle takes $T_t + 2T_p$ (ignoring the ACK's own transmission time and processing), of which only $T_t$ is productive:\n\n$$\\eta_{\\text{S\\&W}} = \\frac{T_t}{T_t + 2T_p} = \\frac{1}{1 + 2a}$$\n\nWhen $a$ is large — a fast link, a long distance, or a small frame — this is catastrophic.\n\n## Sliding window\n\nThe fix is to allow $W$ unacknowledged frames in flight. The sender keeps a window of sequence numbers it may transmit; the window slides forward as acknowledgements arrive. Efficiency becomes\n\n$$\\eta = \\frac{W}{1 + 2a}, \\qquad \\text{capped at } 1$$\n\nSo the window needed for 100% utilisation is $W \\ge 1 + 2a$. Throughput is $\\eta \\times R$.\n\nWith $m$ bits of sequence number there are $2^m$ distinct numbers. The two protocols allocate them differently:\n\n### Go-Back-N\n\nThe receiver has a window of size 1 — it accepts frames only in order and discards anything out of order. It sends **cumulative acknowledgements**: ACK $n$ means \"I have everything up to and including $n-1$, send me $n$\". When a frame is lost or times out, the sender retransmits **that frame and every frame after it**, hence the name.\n\n$$W_{\\text{send}} \\le 2^m - 1, \\qquad W_{\\text{recv}} = 1$$\n\nWhy $2^m - 1$ and not $2^m$? With a full window of $2^m$, a lost ACK would let the receiver confuse a retransmitted old frame with a brand-new one carrying the same number.\n\nGo-Back-N needs only one buffer at the receiver and is simple, but wastes bandwidth after an error: a single loss costs up to $W$ retransmissions. It suits links with low error rates.\n\n### Selective Repeat\n\nThe receiver also has a window of size $W$ and **buffers out-of-order frames**, acknowledging each one individually (or with a NAK naming the missing frame). The sender retransmits only the specific frame that was lost. Because sender and receiver windows can both be open at the same time and must never overlap in sequence-number space:\n\n$$W_{\\text{send}} = W_{\\text{recv}} \\le 2^{m-1}$$\n\nthat is, at most half the sequence-number space. Selective Repeat is far more efficient on lossy links but needs $W$ buffers at the receiver, out-of-order storage, and a more complex sorting logic.\n\n| | Stop-and-Wait | Go-Back-N | Selective Repeat |\n|---|---|---|---|\n| Sender window | 1 | $\\le 2^m-1$ | $\\le 2^{m-1}$ |\n| Receiver window | 1 | 1 | same as sender |\n| ACK type | individual | cumulative | individual/selective |\n| NAK | no | optional | yes |\n| Retransmits on loss | 1 frame | the lost frame and all after | only the lost frame |\n| Receiver buffering | 1 | 1 | $W$ frames |\n| Out-of-order accepted | no | no | yes |\n\n**Piggybacking** carries an acknowledgement inside a data frame going the other way, saving a separate ACK frame on a full-duplex link.\n\n## HDLC\n\nHigh-level Data Link Control is the bit-oriented protocol from which PPP, LAPB, LAPD and Frame Relay descend.\n\nTransfer modes:\n- **NRM** (Normal Response Mode) — unbalanced: one primary station, one or more secondaries that may transmit only when polled.\n- **ABM** (Asynchronous Balanced Mode) — balanced: both stations are combined stations and either may initiate. This is the common mode, and the one PPP inherits.\n\nFrame format: **Flag (01111110) | Address | Control (1 or 2 bytes) | Information | FCS (CRC-16 or CRC-32) | Flag**.\n\nThree frame types, identified by the first bits of the control field:\n- **I-frames** (control starts `0`) carry user data plus a send sequence number $N(S)$, a receive sequence number $N(R)$ for piggybacked ACK, and a poll/final bit.\n- **S-frames** (control starts `10`) carry supervisory control only — RR (receive ready), RNR (receive not ready, a flow-control brake), REJ (go-back-N reject) and SREJ (selective reject).\n- **U-frames** (control starts `11`) manage the link: SABM, UA, DISC, FRMR.\n\n**PPP** is byte-oriented, uses byte stuffing with escape 0x7D, has flag 0x7E, and is connection-oriented with LCP for link setup, an authentication phase (PAP or the challenge-based CHAP), and NCPs such as IPCP for each network-layer protocol. Unlike HDLC, standard PPP does not do error recovery or sliding-window flow control — it just detects errors and discards."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — satellite link, window size, and sequence bits",
+     "text": "**Problem.** A 1 Mbps satellite link has a one-way propagation delay of 270 ms. Frames are 1000 bits. Find (a) the Stop-and-Wait efficiency, (b) the window size needed for 100% utilisation, (c) the minimum number of sequence-number bits under Go-Back-N and under Selective Repeat, and (d) the throughput if Go-Back-N is used with a 7-frame window.\n\n**Step 1 — transmission time.**\n$$T_t = \\frac{1000 \\text{ bits}}{10^6 \\text{ bps}} = 10^{-3}\\ \\text{s} = 1\\ \\text{ms}$$\n\n**Step 2 — the ratio $a$.**\n$$a = \\frac{T_p}{T_t} = \\frac{270\\ \\text{ms}}{1\\ \\text{ms}} = 270$$\n\n**(a) Stop-and-Wait efficiency.**\n$$\\eta = \\frac{1}{1+2a} = \\frac{1}{1+540} = \\frac{1}{541} = 0.001848 = 0.185\\%$$\nThe link is idle 99.8% of the time. Throughput is $0.001848 \\times 10^6 = 1848$ bps on a 1 Mbps link.\n\n**(b) Window for full utilisation.**\n$$W \\ge 1 + 2a = 541 \\ \\text{frames}$$\n\n**(c) Sequence-number bits.**\n- Go-Back-N needs $2^m - 1 \\ge 541$, i.e. $2^m \\ge 542$. $2^9 = 512 < 542$, $2^{10} = 1024 \\ge 542$. So $m = 10$ bits.\n- Selective Repeat needs $2^{m-1} \\ge 541$, i.e. $2^{m-1} \\ge 541$. $2^9 = 512 < 541$, $2^{10} = 1024 \\ge 541$, so $m - 1 = 10$ and $m = 11$ bits.\n\nSelective Repeat costs one extra sequence bit for the same window — that is the price of the receiver window.\n\n**(d) Go-Back-N with $W = 7$.**\n$$\\eta = \\frac{7}{541} = 0.01294 = 1.29\\%, \\qquad \\text{throughput} = 0.01294 \\times 10^6 \\approx 12.9\\ \\text{kbps}$$\nA 7-frame window (3 sequence bits) buys a sevenfold improvement and is still hopeless on a satellite hop. This is exactly why TCP needed the window-scaling option."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — bit stuffing",
+     "text": "**Problem.** The data to be framed by HDLC is `0111111011111110`. What goes on the wire between the flags?\n\nScan left to right, inserting a 0 after every run of five 1s.\n\n- `0` — pass.\n- `11111` — five 1s, so stuff a 0 here: output so far `0 11111 0`.\n- Next input bit is `1`, then `0`: output `0111110` + `10`.\n- Then `1111111` — after the first five 1s stuff a 0: `11111` + `0` + the remaining `11`.\n- Final `0`.\n\nStuffed output: `0 11111 0 1 0 11111 0 11 0` = `011111010111110110`.\n\nOriginal 16 bits have become 18. The receiver, seeing five 1s followed by a 0, deletes that 0; a five-1 run followed by a 1 can only be a flag or an error. Note that the actual flag `01111110` contains six 1s and can therefore never be produced by stuffed data."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.5-1",
+     "q": "A Selective Repeat protocol uses 4 sequence-number bits. The maximum sender window size is:",
+     "opts": [
+      "15",
+      "16",
+      "8",
+      "7"
+     ],
+     "ans": 2,
+     "exp": "Selective Repeat allows at most half the sequence space: $2^{m-1} = 2^3 = 8$. Go-Back-N with the same 4 bits would allow $2^4-1 = 15$."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.5-2",
+     "q": "On a link with $T_t = 2$ ms and $T_p = 8$ ms, what window gives 100% utilisation?",
+     "opts": [
+      "5",
+      "9",
+      "17",
+      "4"
+     ],
+     "ans": 1,
+     "exp": "$a = 8/2 = 4$, so $W \\ge 1+2a = 1+8 = 9$ frames."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Compute a first, always",
+     "body": "Every sliding-window numerical reduces to finding $a = T_p/T_t$. Then efficiency is $W/(1+2a)$ capped at 1, window for full use is $1+2a$, and throughput is efficiency times bandwidth. If the question gives distance and speed, $T_p = d/v$; if it gives RTT, then $2T_p = $ RTT and $1+2a$ becomes $1 + \\text{RTT}/T_t$."
+    },
+    {
+     "title": "Minus one for GBN, half for SR",
+     "body": "Go-Back-N: $2^m - 1$. Selective Repeat: $2^{m-1}$. With 3 bits that is 7 and 4; with 4 bits, 15 and 8; with 5 bits, 31 and 16. Note that for $m \\ge 3$ Go-Back-N always allows the bigger window, so a question asking 'which permits more outstanding frames for the same sequence field' answers Go-Back-N."
+    },
+    {
+     "title": "Count retransmissions without simulating",
+     "body": "If frame $k$ is lost in Go-Back-N with window $W$ and the sender had a full pipe, the sender retransmits frame $k$ plus every frame it sent while waiting, which is at most $W$ frames in total. In Selective Repeat it is always exactly 1. Questions that ask 'how many frames are retransmitted' rarely need a timeline."
+    },
+    {
+     "title": "ACK transmission time is usually ignored — unless it is not",
+     "body": "The standard formula $1+2a$ assumes acknowledgements are instantaneous and processing is free. If a problem supplies an ACK size and the return link rate, the cycle becomes $T_t + 2T_p + T_{ack}$ and the denominator changes accordingly. Read the stem for an ACK size before applying the shortcut."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Utilisation cannot exceed 1",
+     "body": "If $W > 1+2a$ the formula gives a number above 1; the answer is 100%, not 150%. Extra window beyond $1+2a$ buys nothing on an error-free link."
+    },
+    {
+     "title": "Window size versus sequence-number space",
+     "body": "'How many sequence numbers are needed' and 'what is the maximum window' are different questions. For Go-Back-N with window 7 you need 8 sequence numbers, so 3 bits. Candidates who answer 7 have given the window, not the space."
+    },
+    {
+     "title": "Selective Repeat receiver window equals the sender window",
+     "body": "A common error is to give Selective Repeat a receiver window of 1. If the receiver could not buffer out-of-order frames there would be nothing selective about it; the whole point is that both windows are the same size and together they must not exceed the sequence space."
+    }
+   ]
+  },
+  {
+   "id": "9.6",
+   "title": "Multiple Access, LANs and Network Devices",
+   "summary": "ALOHA and CSMA families, the 2 tau argument behind Ethernet's minimum frame size, Ethernet framing, and which device works at which layer.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "When many stations share one medium, something must decide who transmits when. The three families are **random access** (stations try, collide, and back off), **controlled access** (a turn-taking discipline), and **channelization** (the channel is statically divided).\n\n## Random access\n\n**Pure ALOHA.** Transmit whenever you have a frame; if no ACK comes, wait a random back-off and retry. A frame of duration $T_{fr}$ is destroyed if any other transmission starts within $T_{fr}$ before or after it, so the vulnerable period is $2T_{fr}$. With $G$ the average frames attempted per frame time, throughput is\n\n$$S = G e^{-2G}, \\qquad S_{\\max} = \\frac{1}{2e} = 0.184 \\ \\text{at } G = 0.5$$\n\n**Slotted ALOHA.** Stations may transmit only at slot boundaries, halving the vulnerable period to $T_{fr}$:\n\n$$S = G e^{-G}, \\qquad S_{\\max} = \\frac{1}{e} = 0.368 \\ \\text{at } G = 1$$\n\n**CSMA.** Listen before you talk. Collisions still occur because of propagation delay — a station may hear silence while another's signal is still in flight. Persistence strategies:\n- **1-persistent** — if the channel is busy, keep listening and transmit the instant it is free. Maximum utilisation but the worst collision rate, because every waiting station jumps at once. Ethernet uses this.\n- **Non-persistent** — if busy, wait a random time and sense again. Fewer collisions, more idle time, longer delay.\n- **p-persistent** — for slotted channels. If the channel is idle, transmit with probability $p$; with probability $1-p$ wait one slot and repeat. Tunes the trade-off.\n\n**CSMA/CD.** Sense, transmit, and keep listening *while transmitting*. On detecting a collision, abort immediately, send a 32-bit **jam signal** so every station notices, and back off. Aborting early is what saves the bandwidth that would otherwise be wasted finishing a doomed frame. Back-off uses **binary exponential backoff**: after the $n$-th collision, wait $k$ slot times where $k$ is chosen uniformly from $\\{0, 1, \\dots, 2^n - 1\\}$, with $n$ capped at 10 (so at most 1023) and the frame abandoned after 16 attempts.\n\n**CSMA/CA.** Used in wireless, where a station cannot hear a collision while transmitting (its own signal swamps the receiver) and where the hidden-terminal problem exists. Collisions are *avoided* instead: interframe space, a contention window with exponential back-off whose timer freezes when the channel goes busy, and an explicit acknowledgement for every frame. Optional RTS/CTS handshaking reserves the medium using a network allocation vector.\n\n## The minimum frame size argument\n\nFor CSMA/CD to work, a transmitting station must still be transmitting when the last possible colliding signal gets back to it. The worst case is two stations at opposite ends of the network: A starts at $t=0$; its signal reaches B at $t = \\tau$; B, having sensed idle an instant earlier, starts transmitting; the collision fragment reaches A at $t = 2\\tau$. So A must transmit for at least $2\\tau$:\n\n$$T_t \\ge 2\\tau \\implies \\frac{L_{\\min}}{R} \\ge 2\\tau \\implies \\boxed{L_{\\min} = 2 \\times R \\times \\tau}$$\n\nThis is the bandwidth-delay product doubled. It has an immediate consequence: **for a fixed minimum frame size, increasing the data rate shrinks the maximum network diameter proportionally.** Gigabit Ethernet keeps the 64-byte minimum only by adding **carrier extension**, padding the slot time out to 512 bytes, and **frame bursting** to recover the lost efficiency — and in practice by running full-duplex switched, where CSMA/CD is switched off entirely.\n\n## Ethernet\n\nThe IEEE 802.3 frame:\n\n| Field | Bytes |\n|---|---|\n| Preamble | 7 |\n| Start frame delimiter (10101011) | 1 |\n| Destination MAC | 6 |\n| Source MAC | 6 |\n| Length/Type | 2 |\n| Data + pad | 46–1500 |\n| FCS (CRC-32) | 4 |\n\nPreamble and SFD belong to the physical layer and are not counted in the frame, so the frame is **64 to 1518 bytes**: $6+6+2+46+4 = 64$ minimum and $6+6+2+1500+4 = 1518$ maximum. The 46-byte minimum data field exists purely to enforce the 64-byte minimum frame.\n\nMAC addresses are 48 bits written as six hex bytes. The least significant bit of the first byte is the individual/group bit: 0 for unicast, 1 for multicast; all 1s (FF:FF:FF:FF:FF:FF) is broadcast. The next bit is universal/local.\n\nNaming: **10Base5** thick coax 500 m, **10Base2** thin coax 185 m, **10BaseT** twisted pair 100 m star, **10BaseF** fibre; **100BaseTX** Fast Ethernet (4B/5B, 125 Mbaud); **1000BaseT** Gigabit over four pairs.\n\n**Token Ring (802.5)** and **Token Bus (802.4)** are the controlled-access alternatives: a token circulates and only its holder may transmit, which guarantees a bounded access delay and is why they were preferred for industrial use. **802.11** is wireless LAN, **802.15** Bluetooth/WPAN, **802.16** WiMAX, **802.1Q** VLAN tagging.\n\n## Devices\n\n| Device | Layer | What it does |\n|---|---|---|\n| Repeater | Physical | Regenerates and retimes the signal; extends distance. No filtering. |\n| Hub | Physical | A multiport repeater. Every port is in one collision domain and one broadcast domain. |\n| Bridge | Data link | Two-port store-and-forward; learns MAC addresses into a filtering table; separates collision domains. |\n| Switch | Data link | Multiport bridge; each port is its own collision domain; full duplex; supports VLANs. |\n| Router | Network | Forwards on IP address between different networks; separates both collision and broadcast domains; decrements TTL. |\n| Gateway | Application | Translates between dissimilar protocol architectures. |\n\n**Collision domains and broadcast domains** are the classic counting question. A hub joins its ports into one collision domain; a switch gives each port its own collision domain but joins all ports into one broadcast domain; a router breaks the broadcast domain too. So a switch with $n$ ports gives $n$ collision domains and 1 broadcast domain; a router with $n$ interfaces gives $n$ broadcast domains.\n\nBridges avoid loops using the **spanning tree protocol**, which elects a root bridge, computes least-cost paths and blocks the redundant ports. **VLANs** split one physical switch into several broadcast domains by port, MAC address or protocol, with 802.1Q tagging carrying the VLAN ID between switches."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — minimum frame size for classic Ethernet",
+     "text": "**Problem.** A 10 Mbps CSMA/CD LAN has a maximum end-to-end propagation delay of 25.6 µs. What minimum frame size does it require? Then find the maximum cable length if the signal travels at $2\\times10^8$ m/s and repeater delays are ignored.\n\n**Step 1 — apply $L_{\\min} = 2 \\times R \\times \\tau$.**\n$$L_{\\min} = 2 \\times 10\\times10^6 \\times 25.6\\times10^{-6} = 2 \\times 256 = 512 \\ \\text{bits} = 64 \\ \\text{bytes}$$\nThat is exactly Ethernet's 64-byte minimum, and $2\\tau = 51.2$ µs is exactly Ethernet's slot time. The standard was designed around this equation.\n\n**Step 2 — cable length.**\n$$d = v \\times \\tau = 2\\times10^8 \\times 25.6\\times10^{-6} = 5120 \\ \\text{m}$$\nThe real 10Base5 limit is 2500 m, because the budget must also absorb repeater and transceiver delays — roughly half the round trip is spent in electronics rather than cable.\n\n**Step 3 — what happens at 1 Gbps?** Keeping $L_{\\min} = 512$ bits:\n$$\\tau = \\frac{L_{\\min}}{2R} = \\frac{512}{2\\times10^9} = 0.256\\ \\mu\\text{s} \\implies d = 51.2\\ \\text{m}$$\nA 51-metre LAN is useless, which is why Gigabit Ethernet extends the slot time to 512 *bytes* (4096 bits), restoring $\\tau$ to 2.048 µs and a few hundred metres — or, far more commonly, abandons CSMA/CD for full-duplex switching.\n\n**Step 4 — the other direction.** If a question instead gives the frame size and asks for the maximum data rate, rearrange to $R \\le L_{\\min}/(2\\tau)$."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — ALOHA throughput",
+     "text": "**Problem.** 100 stations share a pure ALOHA channel at 200 kbps. Each frame is 1000 bits. What is the maximum total throughput, and how many frames per second can each station send at that point?\n\n**Step 1 — frame time.** $T_{fr} = 1000/200\\,000 = 5$ ms, so the channel carries 200 frame-times per second.\n\n**Step 2 — maximum throughput.** Pure ALOHA peaks at $S = 1/(2e) = 0.184$ frames per frame time, at $G = 0.5$.\n$$\\text{successful frames/s} = 0.184 \\times 200 = 36.8 \\ \\text{frames/s}$$\n$$\\text{throughput} = 36.8 \\times 1000 = 36\\,800 \\ \\text{bps} = 18.4\\% \\ \\text{of } 200 \\ \\text{kbps}$$\n\n**Step 3 — per station.** $36.8/100 = 0.368$ frames per second per station.\n\n**Step 4 — slotted ALOHA for comparison.** $S_{\\max} = 1/e = 0.368$, so $0.368\\times200 = 73.6$ frames/s and $73.6$ kbps — exactly double, for the cost of global slot synchronisation."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.6-1",
+     "q": "A switch has 12 ports and is connected to a router. How many collision domains and broadcast domains exist on the switch side?",
+     "opts": [
+      "1 and 1",
+      "12 and 1",
+      "12 and 12",
+      "1 and 12"
+     ],
+     "ans": 1,
+     "exp": "Each switch port is a separate collision domain, giving 12. All ports belong to one broadcast domain unless VLANs are configured, so 1 broadcast domain."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.6-2",
+     "q": "In binary exponential backoff, after the third collision the back-off is chosen uniformly from how many slot times?",
+     "opts": [
+      "0 to 3",
+      "0 to 7",
+      "0 to 8",
+      "1 to 8"
+     ],
+     "ans": 1,
+     "exp": "After the $n$-th collision $k$ is drawn from $\\{0,1,\\dots,2^n-1\\}$. For $n=3$ that is $\\{0,\\dots,7\\}$, so 8 possible values from 0 to 7."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Slot time is 2 tau, minimum frame is 2 tau times bandwidth",
+     "body": "Learn the chain: slot time $= 2\\tau = $ round-trip propagation; minimum frame $= $ slot time $\\times$ data rate. For 10 Mbps Ethernet: 51.2 us x 10 Mbps = 512 bits = 64 bytes. Every variation of this question is that one line rearranged."
+    },
+    {
+     "title": "Pure ALOHA is half of slotted, and both numbers are memorable",
+     "body": "$1/(2e)=0.184$ and $1/e=0.368$, reached at $G=0.5$ and $G=1$. If a question asks for throughput at a given $G$ other than the optimum, just substitute into $Ge^{-2G}$ or $Ge^{-G}$ — no calculus needed."
+    },
+    {
+     "title": "Ethernet frame bounds by addition",
+     "body": "6+6+2+46+4 = 64 and 6+6+2+1500+4 = 1518. If the question says 'including preamble and SFD', add 8 to get 72 and 1526. If it mentions an 802.1Q VLAN tag, add 4 to get 1522. Knowing which extras a stem includes settles most Ethernet-size questions."
+    },
+    {
+     "title": "Domain counting in one pass",
+     "body": "Walk the topology and cut it: hubs and repeaters do not cut anything; each switch or bridge port cuts a collision domain; each router interface cuts a broadcast domain. Count the resulting pieces rather than trying to memorise device tables."
+    },
+    {
+     "title": "Faster link, shorter cable",
+     "body": "Since $d \\propto L_{\\min}/(2R)$, going from 10 Mbps to 100 Mbps at a fixed frame size divides the maximum span by 10, and to 1 Gbps by 100. Any question that asks 'what happens to the network diameter when speed increases' is testing exactly this inverse proportionality."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Vulnerable period, not frame time",
+     "body": "Pure ALOHA's vulnerable period is $2T_{fr}$, slotted ALOHA's is $T_{fr}$. Using $T_{fr}$ for pure ALOHA gives the slotted formula and the wrong 0.368."
+    },
+    {
+     "title": "CSMA/CD versus CSMA/CA is not a matter of taste",
+     "body": "Collision detection needs a station to listen while transmitting, which a half-duplex radio cannot do, so wireless must avoid rather than detect. If a question mentions hidden terminals, RTS/CTS or a NAV, the answer is CSMA/CA even if the word 'Ethernet' appears in a distractor."
+    },
+    {
+     "title": "The preamble is not part of the frame",
+     "body": "The 64-byte minimum and 1518-byte maximum exclude the 7-byte preamble and 1-byte SFD. Options of 72 and 1526 bytes are deliberately placed to catch candidates who include them without being asked."
+    }
+   ]
+  },
+  {
+   "id": "9.7",
+   "title": "Network Layer: IPv4, IPv6, Addressing and Subnetting",
+   "summary": "IPv4 header and fragmentation, classful and classless addressing, subnetting, VLSM, supernetting, and the IPv6 header.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "The network layer carries a packet from source host to destination host across any number of intervening networks. It is deliberately **connectionless and best-effort** in the Internet: each datagram is routed independently, may be lost, duplicated, delayed or delivered out of order, and nobody apologises. Reliability, if wanted, is bought at the transport layer.\n\n## The IPv4 header\n\n20 bytes without options, up to 60 with them.\n\n| Field | Size | Meaning |\n|---|---|---|\n| Version | 4 bits | 4 |\n| HLEN | 4 bits | header length in **4-byte words**; 5 means 20 bytes, 15 means 60 |\n| Type of service / DSCP | 8 bits | priority and handling hints |\n| Total length | 16 bits | header + data in **bytes**; maximum 65 535 |\n| Identification | 16 bits | same value in every fragment of one datagram |\n| Flags | 3 bits | reserved, DF (don't fragment), MF (more fragments) |\n| Fragment offset | 13 bits | position of this fragment in **8-byte units** |\n| Time to live | 8 bits | hop count; decremented by each router, discarded at 0 |\n| Protocol | 8 bits | 1 ICMP, 2 IGMP, 6 TCP, 17 UDP, 89 OSPF |\n| Header checksum | 16 bits | covers the header only, recomputed at every hop |\n| Source address | 32 bits | |\n| Destination address | 32 bits | |\n| Options | 0–40 bytes | record route, timestamp, source routing |\n\nTwo fields cause most of the arithmetic. **Total length is in bytes**, but **HLEN is in 4-byte words** and **fragment offset is in 8-byte units**. Mixing the units is the single most common error in this topic. The offset being in units of 8 is why every fragment except the last must carry a multiple of 8 bytes of payload.\n\n## Fragmentation\n\nA router that must send a datagram onto a link whose MTU is smaller than the datagram splits it. Each fragment gets a copy of the header with the same identification, its own total length, its own offset, and MF set on all but the last. Reassembly happens only at the **destination host**, never at intermediate routers, because different fragments may take different paths.\n\n## Classful addressing\n\nAn IPv4 address is 32 bits, written as four dotted decimal octets.\n\n| Class | Leading bits | First octet | Default mask | Networks | Hosts per network |\n|---|---|---|---|---|---|\n| A | 0 | 1–126 | /8, 255.0.0.0 | $2^7-2 = 126$ | $2^{24}-2 = 16\\,777\\,214$ |\n| B | 10 | 128–191 | /16, 255.255.0.0 | $2^{14} = 16\\,384$ | $2^{16}-2 = 65\\,534$ |\n| C | 110 | 192–223 | /24, 255.255.255.0 | $2^{21} = 2\\,097\\,152$ | $2^8-2 = 254$ |\n| D | 1110 | 224–239 | — | multicast | — |\n| E | 1111 | 240–255 | — | reserved | — |\n\n127.x.x.x is loopback. Private ranges (RFC 1918) are 10.0.0.0/8, 172.16.0.0/12 and 192.168.0.0/16. 0.0.0.0 means \"this host\" or the default route; 255.255.255.255 is limited broadcast; 169.254.0.0/16 is link-local (APIPA).\n\nClassful addressing was abandoned because the granularity is hopeless: an organisation with 300 hosts needs more than a class C and wastes 65 000 addresses with a class B.\n\n## Classless addressing (CIDR)\n\nAn address is now written $x.y.z.w/n$ where $n$ is the **prefix length** — the number of leading 1s in the mask. Then:\n\n- Block size (total addresses) $= 2^{32-n}$\n- Usable hosts $= 2^{32-n} - 2$ (network address and directed broadcast are excluded)\n- Network address = address AND mask\n- Broadcast address = network address OR (NOT mask)\n- The first address of a block is always divisible by the block size\n\nThe mask has one \"interesting\" octet, the one that is neither 255 nor 0. **Block size in that octet $= 256 - (\\text{interesting octet value})$**, and the subnet boundaries are multiples of that block size. This single rule replaces all the binary arithmetic.\n\n| Prefix | Mask | Block | Usable hosts |\n|---|---|---|---|\n| /24 | 255.255.255.0 | 256 | 254 |\n| /25 | 255.255.255.128 | 128 | 126 |\n| /26 | 255.255.255.192 | 64 | 62 |\n| /27 | 255.255.255.224 | 32 | 30 |\n| /28 | 255.255.255.240 | 16 | 14 |\n| /29 | 255.255.255.248 | 8 | 6 |\n| /30 | 255.255.255.252 | 4 | 2 |\n\n**Subnetting** borrows host bits to make more, smaller networks: borrowing $k$ bits gives $2^k$ subnets each with $2^{32-n-k}-2$ hosts. **Supernetting** does the reverse, combining contiguous blocks by shortening the prefix; four consecutive /24s aggregate to one /22, provided the first block's address is divisible by 4. **VLSM** applies different prefix lengths inside one block so that a 50-host LAN and a 2-host serial link do not consume the same space.\n\n## IPv6\n\n128-bit addresses, written as eight groups of four hex digits, with `::` allowed once to replace the longest run of zero groups. The header is a **fixed 40 bytes** and has only eight fields:\n\n| Field | Size | Note |\n|---|---|---|\n| Version | 4 bits | 6 |\n| Traffic class | 8 bits | priority, like DSCP |\n| Flow label | 20 bits | identifies a stream for special handling |\n| Payload length | 16 bits | data only, **excluding** the 40-byte header |\n| Next header | 8 bits | the next extension header, or the transport protocol |\n| Hop limit | 8 bits | replaces TTL |\n| Source address | 128 bits | |\n| Destination address | 128 bits | |\n\nWhat IPv6 **removed**: the header checksum (the link and transport layers already check), fragmentation fields (routers never fragment; the source does path MTU discovery and uses a fragment extension header), header length (it is fixed), options in the base header (they become a chain of extension headers), and broadcast (replaced by multicast and a new anycast type).\n\nExtension headers in the recommended order: hop-by-hop options, destination options, routing, fragment, authentication, ESP, destination options again, then the upper-layer payload.\n\nTransition mechanisms: **dual stack** (run both), **tunnelling** (encapsulate IPv6 inside IPv4 to cross an IPv4 island), and **header translation** (rewrite when one end is IPv4-only).\n\n## Supporting protocols\n\n- **ARP** maps a known IP address to an unknown MAC address by broadcasting a request; the owner replies unicast, and the result is cached. **RARP**, superseded by BOOTP and DHCP, went the other way.\n- **ICMP** carries error and query messages: destination unreachable, source quench, time exceeded (what traceroute exploits), parameter problem, redirect; echo request/reply is ping.\n- **IGMP** manages multicast group membership.\n- **DHCP** leases addresses; the exchange is DISCOVER, OFFER, REQUEST, ACK, on UDP ports 67 (server) and 68 (client).\n- **NAT** lets a private block share one or a few public addresses by rewriting addresses and, in NAPT, port numbers too."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — subnetting a /24 and finding a host's network",
+     "text": "**Problem (a).** Divide 192.168.10.0/24 into subnets of 62 usable hosts each. List the subnets.\n\n62 usable hosts needs $2^h - 2 \\ge 62 \\Rightarrow 2^h \\ge 64 \\Rightarrow h = 6$ host bits, so the prefix is $32-6 = 26$. Mask = 255.255.255.192, block size $= 256-192 = 64$.\n\nSubnets start at multiples of 64:\n\n| Subnet | Network | First host | Last host | Broadcast |\n|---|---|---|---|---|\n| 1 | 192.168.10.0/26 | .1 | .62 | .63 |\n| 2 | 192.168.10.64/26 | .65 | .126 | .127 |\n| 3 | 192.168.10.128/26 | .129 | .190 | .191 |\n| 4 | 192.168.10.192/26 | .193 | .254 | .255 |\n\nFour subnets, $4\\times62 = 248$ usable addresses out of 256 — eight lost to network and broadcast addresses.\n\n**Problem (b).** A host is 172.16.35.123/20. Find its network address, broadcast address and host range.\n\n$/20$ means mask 255.255.**240**.0. The interesting octet is the third, block size $= 256-240 = 16$. Third-octet boundaries are 0, 16, 32, 48, 64, …\n\n$35$ lies between 32 and 47, so:\n- **Network: 172.16.32.0**\n- **Broadcast: 172.16.47.255**\n- **Hosts: 172.16.32.1 to 172.16.47.254**\n- **Count:** $2^{12}-2 = 4094$ usable addresses.\n\nVerify with the AND: $35 = 00100011$, $240 = 11110000$, AND $= 00100000 = 32$. Correct."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — VLSM allocation",
+     "text": "**Problem.** An ISP gives you 200.15.20.0/24. You must serve four LANs needing 50, 50, 30 and 20 hosts, plus two point-to-point router links needing 2 hosts each. Allocate with VLSM.\n\n**Rule: always allocate the largest requirement first**, otherwise you fragment the block and cannot fit the big subnets later.\n\n**LAN A, 50 hosts.** Need $2^h-2 \\ge 50 \\Rightarrow h=6$, so /26, block 64.\n→ **200.15.20.0/26**, hosts .1–.62, broadcast .63.\n\n**LAN B, 50 hosts.** Another /26.\n→ **200.15.20.64/26**, hosts .65–.126, broadcast .127.\n\n**LAN C, 30 hosts.** $2^5-2 = 30$, exactly enough, so /27, block 32.\n→ **200.15.20.128/27**, hosts .129–.158, broadcast .159.\n\n**LAN D, 20 hosts.** $2^5-2 = 30 \\ge 20$, so /27 again.\n→ **200.15.20.160/27**, hosts .161–.190, broadcast .191.\n\n**Serial link 1, 2 hosts.** $2^2-2 = 2$, so /30, block 4.\n→ **200.15.20.192/30**, hosts .193–.194, broadcast .195.\n\n**Serial link 2.** → **200.15.20.196/30**, hosts .197–.198, broadcast .199.\n\n**Audit.** Used: 64+64+32+32+4+4 = 200 addresses. Remaining free: 200.15.20.200 to 200.15.20.255, which is 56 addresses — allocatable as a /29 at .200, a /29 at .208, a /28 at .208… more usefully as 200.15.20.200/29, 200.15.20.208/28, 200.15.20.224/27. Note each free block still starts at a multiple of its own size, which is the invariant VLSM must never break.\n\n**Contrast with fixed-length subnetting.** If every subnet had to be a /26, the block would give only four subnets and the six requirements would not fit at all. VLSM is what makes the allocation possible."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — fragmentation and supernetting",
+     "text": "**Fragmentation.** A 4000-byte datagram (20-byte header, 3980 bytes of data) must cross a link with MTU 1500.\n\nPayload per fragment $\\le 1500 - 20 = 1480$ bytes, and it must be a multiple of 8. $1480 = 8\\times185$, so 1480 is allowed.\n\n| Fragment | Data bytes | Total length | Offset (8-byte units) | MF |\n|---|---|---|---|---|\n| 1 | 1480 | 1500 | 0 | 1 |\n| 2 | 1480 | 1500 | $1480/8 = 185$ | 1 |\n| 3 | 1020 | 1040 | $2960/8 = 370$ | 0 |\n\nCheck: $1480+1480+1020 = 3980$ bytes of data. Correct. The offsets 0, 185, 370 are the classic expected answer.\n\n**Supernetting.** Aggregate 200.1.0.0/24, 200.1.1.0/24, 200.1.2.0/24 and 200.1.3.0/24.\n\nFour /24 blocks means borrowing $\\log_2 4 = 2$ bits from the network part, giving /22. The third octets are 0, 1, 2, 3 = `00000000, 00000001, 00000010, 00000011`; the first 22 bits are identical, so the aggregate is **200.1.0.0/22** with mask 255.255.252.0, covering 1024 addresses.\n\nThe aggregation is legal only because the first block's third octet, 0, is divisible by 4. Starting instead at 200.1.1.0 you could not form a /22."
+    },
+    {
+     "t": "lab",
+     "lab": "subnet",
+     "title": "Try it — IPv4 subnet calculator",
+     "note": "Type any address and prefix to see the mask in binary, the network and broadcast addresses, the host range and every subnet of the block."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.7-1",
+     "q": "How many /28 subnets can be carved out of 172.20.0.0/22?",
+     "opts": [
+      "16",
+      "32",
+      "64",
+      "128"
+     ],
+     "ans": 2,
+     "exp": "Borrowed bits $= 28-22 = 6$, so $2^6 = 64$ subnets, each with $2^4-2 = 14$ usable hosts."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.7-2",
+     "q": "The IPv6 payload length field gives:",
+     "opts": [
+      "The length of the whole datagram including the 40-byte header",
+      "The length of data after the base header, including extension headers",
+      "The length of data excluding all headers",
+      "The header length in 8-byte units"
+     ],
+     "ans": 1,
+     "exp": "IPv6 payload length counts everything after the fixed 40-byte base header, so extension headers are included in it. IPv4's total length, by contrast, includes its own header."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "256 minus the interesting octet",
+     "body": "Block size = 256 - the non-255, non-0 octet of the mask. /26 gives 64, /27 gives 32, /28 gives 16, /20 gives 16 in the third octet. Subnet boundaries are multiples of that block, so to find a host's network you just round its octet down to the nearest multiple. No binary AND needed."
+    },
+    {
+     "title": "Hosts and prefix without powers of two",
+     "body": "For a /n in the last octet, usable hosts = 2^(32-n) - 2 and the value is on this short ladder: /30 -> 2, /29 -> 6, /28 -> 14, /27 -> 30, /26 -> 62, /25 -> 126, /24 -> 254. Learn the ladder and you can read a requirement straight off: 50 hosts needs /26, 30 hosts needs /27, a serial link needs /30."
+    },
+    {
+     "title": "Largest first in VLSM",
+     "body": "Allocate the biggest subnet first, then the next biggest. Allocating a /30 out of the middle of a /24 before the /26s makes the /26s unplaceable, because every block must start at a multiple of its own size. Examiners set this trap by listing the requirements in ascending order."
+    },
+    {
+     "title": "Fragment offset is in 8-byte units",
+     "body": "Divide the byte position by 8. A fragment starting at byte 1480 has offset 185, not 1480. Equally, every fragment except the last carries a multiple of 8 data bytes, so with MTU 1500 the payload is 1480, not 1481 or 1479."
+    },
+    {
+     "title": "Supernet check by divisibility",
+     "body": "To aggregate $2^k$ consecutive blocks into one prefix, the first block's number must be divisible by $2^k$. 200.1.0.0 to 200.1.3.0 aggregates because 0 mod 4 = 0; 200.1.2.0 to 200.1.5.0 does not, and must be split into a /23 and another /23."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Number of subnets: subtract 2 or not",
+     "body": "Classical textbooks subtract 2 for the all-zeros and all-ones subnets. Modern practice (and CIDR) allows both, so $2^k$ subnets. UGC NET questions almost always expect $2^k$ subnets and $2^h - 2$ hosts. If an option pair differs only by 2 on the subnet count, take the un-subtracted one unless the stem says 'classical subnetting'."
+    },
+    {
+     "title": "HLEN, total length and offset use three different units",
+     "body": "HLEN counts 4-byte words, total length counts bytes, fragment offset counts 8-byte units. A header field value of 5 means 20 bytes; a total length of 1500 means 1500 bytes; an offset of 185 means byte 1480."
+    },
+    {
+     "title": "IPv6 is not just a longer address",
+     "body": "The IPv6 header is smaller in field count than IPv4's despite the longer addresses, and it has no checksum, no fragmentation fields and no options. A question asking which IPv4 field has no IPv6 counterpart is usually after the header checksum or the header length."
+    },
+    {
+     "title": "Routers do not reassemble",
+     "body": "Fragments are reassembled only at the destination host. An intermediate router may fragment further but never puts pieces back together, because it has no guarantee of seeing them all."
+    }
+   ]
+  },
+  {
+   "id": "9.8",
+   "title": "Routing Algorithms",
+   "summary": "Distance vector and Bellman-Ford, count-to-infinity and its fixes, link state and Dijkstra, and BGP path vector.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "A router's job is to decide, for each arriving packet, which of its interfaces to send it out of. That decision comes from a **forwarding table** built by a **routing algorithm**. The algorithm's whole difficulty is that no router can see the entire network, and the network keeps changing.\n\n## Static versus dynamic\n\nStatic routes are configured by hand: predictable, zero protocol overhead, but blind to failures. Dynamic routing protocols exchange information and recompute automatically. Within one administrative domain they are called **interior gateway protocols** (RIP, OSPF, IGRP/EIGRP); between domains, **exterior gateway protocols** (BGP).\n\nA router chooses among candidate routes by **longest prefix match** first, then by administrative distance, then by metric.\n\n## Distance vector routing\n\nEach router keeps a vector of its best-known distance to every destination and periodically sends that whole vector to its **direct neighbours only**. On receiving a neighbour's vector, a router applies the Bellman–Ford update:\n\n$$D_x(y) = \\min_{v \\in N(x)} \\left\\{ c(x,v) + D_v(y) \\right\\}$$\n\n\"My cost to $y$ is the cheapest, over all my neighbours $v$, of the link cost to $v$ plus $v$'s advertised cost to $y$.\"\n\nProperties: simple, small memory, but slow to converge and it converges to bad news very slowly indeed. Complexity of one round is $O(|N| \\times |E|)$ overall.\n\n**RIP** is the canonical distance-vector protocol: metric is hop count, maximum 15 hops (16 means unreachable), updates every 30 s over UDP port 520, route invalid after 180 s, flushed after 240 s. RIPv1 is classful, RIPv2 carries masks and supports CIDR.\n\n### The count-to-infinity problem\n\nGood news travels fast; bad news travels one hop per update round, and can circulate forever. Take a line $A - B - C$, all links cost 1, and consider the route to a network $N$ attached to $A$.\n\nInitially $B$ knows $N$ at cost 1 via $A$, and $C$ knows $N$ at cost 2 via $B$.\n\nNow the link $A - B$ fails.\n\n| Round | B's cost to N | C's cost to N |\n|---|---|---|\n| 0 (link fails) | ∞ | 2 (via B) |\n| 1 | 3 (believes C's 2, +1) | 2 |\n| 2 | 3 | 4 (believes B's 3, +1) |\n| 3 | 5 | 4 |\n| 4 | 5 | 6 |\n| … | … | … |\n\n$B$ hears $C$ claim a cost of 2 to $N$ and concludes it can reach $N$ in 3 through $C$ — not realising that $C$'s route goes *through B itself*. The two routers ratchet each other upward until the metric hits the protocol's \"infinity\", which is why RIP defines infinity as 16: it bounds how long the nonsense can last.\n\n**Fixes:**\n- **Split horizon** — never advertise a route back out of the interface you learned it on. $C$ would not have told $B$ about $N$ at all.\n- **Split horizon with poison reverse** — advertise it back, but with metric infinity, which is more robust because it is an explicit statement rather than silence.\n- **Hold-down timers** — after hearing a route go down, ignore any new claim about it for a while.\n- **Triggered updates** — send an update immediately on a change rather than waiting for the timer.\n\nSplit horizon solves the two-node loop but **not** loops involving three or more routers.\n\n## Link state routing\n\nEvery router discovers its own directly attached links and their costs, floods that information as a **link state advertisement** to every other router in the area, and thereby builds an identical copy of the full topology map. Each router then runs **Dijkstra's shortest path first** on its own copy, with itself as the root, to produce its forwarding table.\n\nBecause every router computes from the same map, link state converges fast and is loop-free once the databases agree. The cost is memory (the whole topology) and CPU (Dijkstra is $O(n^2)$ naively, $O(E \\log V)$ with a heap).\n\n**OSPF** is the standard link-state IGP: cost metric is typically inversely proportional to bandwidth, it runs directly over IP (protocol 89), it divides an autonomous system into **areas** joined by a backbone area 0 to limit flooding, and it defines router types — internal, area border, backbone and AS boundary routers. It supports load balancing over equal-cost paths, authentication, and CIDR.\n\n| | Distance vector | Link state |\n|---|---|---|\n| What is sent | the whole distance table | only local link states |\n| Sent to whom | direct neighbours only | flooded to every router |\n| How often | periodically (e.g. 30 s) | on change, plus refresh |\n| Knowledge of topology | none, just neighbours' claims | complete map |\n| Algorithm | Bellman–Ford | Dijkstra |\n| Convergence | slow; count-to-infinity | fast; loop-free |\n| Memory/CPU | low | higher |\n| Example | RIP | OSPF, IS-IS |\n\n## Path vector and BGP\n\nBetween autonomous systems, the metric is not a number but **policy**. BGP advertises the full **AS path** to each prefix. Loop detection is trivial — a router rejects any path containing its own AS number — and policies can prefer or forbid transit through particular neighbours. BGP runs over **TCP port 179**, exchanges OPEN, UPDATE, KEEPALIVE and NOTIFICATION messages, and distinguishes eBGP (between ASes) from iBGP (inside one).\n\n## Multicast and broadcast\n\n**Reverse path forwarding** is the foundation: a router forwards a broadcast packet only if it arrived on the interface the router itself would use to reach the source; otherwise it drops it. Reverse path broadcasting refines this to avoid duplicate deliveries, and reverse path multicasting prunes branches with no members. **DVMRP** is distance-vector multicast, **MOSPF** extends OSPF with membership LSAs, and **PIM** comes in dense mode (flood and prune, for dense membership) and sparse mode (an explicit join to a rendezvous point, for scattered membership)."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — Dijkstra from node A",
+     "text": "**Problem.** Find the shortest path tree from A in this weighted graph.\n\nEdges: A–B = 4, A–C = 2, B–C = 1, B–D = 5, C–D = 8, C–E = 10, D–E = 2, D–F = 6, E–F = 3.\n\nMaintain a tentative distance for every node and repeatedly finalise the smallest.\n\n**Init:** A = 0; B = ∞, C = ∞, D = ∞, E = ∞, F = ∞.\n\n**Pick A (0).** Relax its edges: B = 0+4 = **4**, C = 0+2 = **2**.\n\n**Pick C (2)**, the smallest tentative. Relax: B via C = 2+1 = 3 < 4, so B = **3** (via C). D via C = 2+8 = 10. E via C = 2+10 = 12.\n\n**Pick B (3).** Relax: D via B = 3+5 = 8 < 10, so D = **8** (via B).\n\n**Pick D (8).** Relax: E via D = 8+2 = 10 < 12, so E = **10** (via D). F via D = 8+6 = 14.\n\n**Pick E (10).** Relax: F via E = 10+3 = 13 < 14, so F = **13** (via E).\n\n**Pick F (13).** Done.\n\n**Final distances from A:** B = 3, C = 2, D = 8, E = 10, F = 13.\n\n**Paths:** A–C–B (3), A–C (2), A–C–B–D (8), A–C–B–D–E (10), A–C–B–D–E–F (13).\n\nNotice that A's direct edge to B (cost 4) is *not* used — the two-hop route through C is cheaper. That is the standard trap in Dijkstra questions: never assume the direct edge wins.\n\n**A's forwarding table** therefore sends everything out of the interface toward C, since every shortest path begins A–C."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — one round of distance vector",
+     "text": "**Problem.** Router X has neighbours Y (link cost 2) and Z (link cost 7). X currently believes: to destination D, cost 8 via Z. It now receives vectors: from Y, \"D at cost 3\"; from Z, \"D at cost 1\".\n\nApply Bellman–Ford:\n- via Y: $c(X,Y) + D_Y(D) = 2 + 3 = 5$\n- via Z: $c(X,Z) + D_Z(D) = 7 + 1 = 8$\n\n$\\min(5, 8) = 5$, so X updates its entry to **cost 5, next hop Y**, replacing the old cost-8 route.\n\n**Now the subtlety.** Suppose Y's cost-3 route to D actually runs through X. Then X's new \"5\" is fiction: it is counting its own path twice. Nothing in the vector Y sent reveals this, because a distance vector carries a number and not a path. That is precisely the count-to-infinity mechanism, and precisely why BGP carries the whole AS path instead of a scalar."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.8-1",
+     "q": "Split horizon with poison reverse prevents:",
+     "opts": [
+      "All routing loops",
+      "Two-node routing loops only",
+      "Loops in link-state protocols",
+      "Flooding of link state advertisements"
+     ],
+     "ans": 1,
+     "exp": "Poison reverse advertises an infinite metric back toward the router a route was learned from, breaking the two-node ratchet. Loops spanning three or more routers can still form, which is why RIP also needs a finite infinity of 16."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.8-2",
+     "q": "Which statement about OSPF is FALSE?",
+     "opts": [
+      "It floods link state advertisements to all routers in an area",
+      "It runs directly over IP with protocol number 89",
+      "It sends its full routing table to neighbours every 30 seconds",
+      "It supports equal-cost multipath load balancing"
+     ],
+     "ans": 2,
+     "exp": "Sending the full table periodically to neighbours is distance vector behaviour, done by RIP. OSPF floods only link state information, and only on change plus a periodic refresh."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Identify the family from what is exchanged",
+     "body": "'Sends its entire routing table to its neighbours' = distance vector. 'Sends information about its own links to every router' = link state. 'Sends the full sequence of autonomous systems' = path vector. The exchange contents, not the metric, define the family."
+    },
+    {
+     "title": "Dijkstra by hand: finalise, then relax",
+     "body": "Keep two columns, a permanent set and tentative distances. At each step pick the smallest tentative value, move it to permanent, and relax only that node's edges. You never revisit a permanent node, so with $n$ nodes there are exactly $n$ steps — a good check that you have not lost track."
+    },
+    {
+     "title": "RIP's numbers",
+     "body": "Metric hop count; 15 maximum usable; 16 = infinity = unreachable; update every 30 s; invalid after 180 s (6 missed updates); flush after 240 s; UDP port 520. A question naming any one of these numbers is a RIP question."
+    },
+    {
+     "title": "Bellman-Ford updates are one line",
+     "body": "For every destination, compute link-cost-to-neighbour + neighbour's advertised cost, for each neighbour, and take the minimum. Tabulate the candidates in a row; the minimum is the new entry and its neighbour is the next hop. Most DV questions are two or three such rows."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Distance vector routers do not know the topology",
+     "body": "A distance vector router knows only its neighbours and the numbers they claim. It cannot tell whether a neighbour's advertised route passes back through itself. Answering that DV routers 'have a map of the network' confuses it with link state."
+    },
+    {
+     "title": "Flooding is not the same as broadcasting the table",
+     "body": "Link state floods small link state advertisements about a router's own links; it never floods a routing table. Distance vector sends a whole table but only one hop. The distractor swaps these two attributes."
+    },
+    {
+     "title": "OSPF cost is not hop count",
+     "body": "OSPF's default metric is derived from interface bandwidth (reference bandwidth divided by interface bandwidth), so a two-hop gigabit path beats a one-hop 64 kbps path. Only RIP counts hops."
+    }
+   ]
+  },
+  {
+   "id": "9.9",
+   "title": "Transport Layer: TCP, UDP, SCTP and Congestion Control",
+   "summary": "Ports and sockets, UDP and TCP headers, the three-way handshake, flow control, and slow start / AIMD / fast recovery traced numerically.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "The network layer gets a datagram to the right *machine*. The transport layer gets it to the right *process*, and can add reliability, ordering and flow control that IP refuses to provide. This is the layer where the Internet's congestion behaviour is actually decided, which is why it carries so many marks.\n\n## Ports and sockets\n\nA **port number** is 16 bits. Ranges: **well-known 0–1023** (assigned by IANA), **registered 1024–49151**, **dynamic/ephemeral 49152–65535**. A **socket address** is the pair (IP address, port number); a TCP connection is identified by the **four-tuple** (source IP, source port, destination IP, destination port), which is why a server on port 80 can serve thousands of clients at once.\n\nPorts worth knowing: 20/21 FTP data/control, 22 SSH, 23 TELNET, 25 SMTP, 53 DNS, 67/68 DHCP, 69 TFTP, 80 HTTP, 110 POP3, 143 IMAP, 161/162 SNMP, 179 BGP, 443 HTTPS, 520 RIP.\n\n## UDP\n\nEight bytes of header, and nothing else:\n\n| Field | Size |\n|---|---|\n| Source port | 16 bits |\n| Destination port | 16 bits |\n| Length | 16 bits |\n| Checksum | 16 bits |\n\n**Length counts the header plus the data**, so its minimum value is 8. The checksum is optional in IPv4 (zero means unused) and mandatory in IPv6, and it is computed over a **pseudo-header** containing the IP source, destination, protocol and UDP length — a layering violation that lets the receiver detect misdelivery.\n\nUDP is connectionless, unreliable, unordered, and has no flow or congestion control. That makes it right for DNS queries, DHCP, SNMP, TFTP, RIP, streaming media and real-time games, where a retransmitted packet would arrive too late to be useful anyway.\n\n## TCP\n\nConnection-oriented, reliable, byte-stream oriented, full duplex, with flow and congestion control. Header 20 bytes minimum, 60 maximum.\n\n| Field | Size | Note |\n|---|---|---|\n| Source port, Destination port | 16 + 16 | |\n| Sequence number | 32 bits | byte number of the first data byte in this segment |\n| Acknowledgement number | 32 bits | the next byte expected, cumulative |\n| HLEN | 4 bits | header length in 4-byte words |\n| Reserved | 6 bits | |\n| Flags | 6 bits | URG, ACK, PSH, RST, SYN, FIN |\n| Window size | 16 bits | receiver's advertised window, max 65 535 |\n| Checksum | 16 bits | mandatory, over a pseudo-header |\n| Urgent pointer | 16 bits | valid only when URG is set |\n| Options | 0–40 bytes | MSS, window scale, SACK permitted, timestamp |\n\n**Sequence numbers count bytes, not segments.** If a segment carries bytes 1001–2000, its sequence number is 1001, and the receiver acknowledges with 2001.\n\n### Three-way handshake\n\n1. Client → server: **SYN**, seq = $x$ (a random initial sequence number), with the MSS option.\n2. Server → client: **SYN + ACK**, seq = $y$, ack = $x+1$.\n3. Client → server: **ACK**, seq = $x+1$, ack = $y+1$. Data may ride along.\n\nSYN and FIN each **consume one sequence number** even though they carry no data; that is why the acknowledgement is $x+1$. Three messages are needed, not two, so that both sides confirm the other's initial sequence number and stale duplicates from an old connection are rejected.\n\nThe handshake is also the vector for the **SYN flood**: an attacker sends SYNs from spoofed addresses, filling the server's half-open connection queue. SYN cookies defeat it by encoding the state into the server's own sequence number.\n\n### Connection termination\n\nBecause TCP is full duplex, each direction closes separately — a **four-way** exchange: FIN from A, ACK from B, FIN from B, ACK from A. If B still has data to send it may delay its FIN, which is **half-close**. The side that sends the first FIN enters **TIME_WAIT** for $2 \\times$ MSL (maximum segment lifetime), so that a delayed duplicate cannot be mistaken for part of a new connection with the same four-tuple.\n\n### Flow control\n\nThe receiver advertises a **window size** = free buffer space. The sender may have at most that many unacknowledged bytes outstanding. A window of 0 stops the sender, which then probes periodically so that a lost window update does not deadlock the connection.\n\n**Silly window syndrome** is the pathology of exchanging tiny segments. The sender side is fixed by **Nagle's algorithm**: send the first small chunk immediately, then buffer further small data until either an ACK arrives or a full MSS has accumulated. The receiver side is fixed by **Clark's solution** (advertise zero until either half the buffer or one MSS is free) or by delayed acknowledgements.\n\n## Congestion control\n\nFlow control protects the *receiver*; congestion control protects the *network*. TCP maintains a **congestion window** cwnd, and sends\n\n$$\\text{outstanding} \\le \\min(\\text{cwnd},\\ \\text{rwnd})$$\n\n**Slow start.** cwnd begins at 1 MSS. Every acknowledged segment increases cwnd by 1 MSS, which **doubles cwnd every RTT** — exponential growth, despite the name. It continues until cwnd reaches the **slow start threshold** ssthresh, or a loss occurs.\n\n**Congestion avoidance (additive increase).** Above ssthresh, cwnd grows by 1 MSS per RTT — linear. Combined with the multiplicative decrease below, this is **AIMD**, and its sawtooth is the signature shape of TCP.\n\n**Loss handling.**\n- **Timeout** — treated as severe congestion. Set ssthresh = cwnd/2, set cwnd = 1 MSS, re-enter slow start.\n- **Three duplicate ACKs** — treated as mild congestion, because packets are clearly still getting through. TCP **Tahoe** still drops to 1. TCP **Reno** performs **fast retransmit** (resend the missing segment at once without waiting for the timer) and **fast recovery**: set ssthresh = cwnd/2, set cwnd = ssthresh, and continue in congestion avoidance rather than restarting.\n\nThe essential difference: Tahoe restarts slow start after any loss; Reno restarts slow start only after a timeout and merely halves the window after triple duplicate ACKs.\n\n**Retransmission timer.** RTO is derived from a smoothed RTT estimate:\n$$\\text{SRTT} = (1-\\alpha)\\text{SRTT} + \\alpha \\cdot \\text{RTT}_{\\text{sample}}, \\quad \\alpha = 1/8$$\n$$\\text{RTTVAR} = (1-\\beta)\\text{RTTVAR} + \\beta|\\text{SRTT} - \\text{RTT}_{\\text{sample}}|, \\quad \\beta = 1/4$$\n$$\\text{RTO} = \\text{SRTT} + 4\\times\\text{RTTVAR}$$\n**Karn's algorithm** says never take an RTT sample from a retransmitted segment (you cannot tell which copy was acknowledged) and double the RTO on each retransmission instead.\n\n**Throughput** over a connection is roughly $\\text{window}/\\text{RTT}$; this is the transport-layer version of the bandwidth-delay product argument from topic 9.5.\n\n## SCTP\n\nStream Control Transmission Protocol takes TCP's reliability and adds two things TCP lacks.\n\n- **Multihoming** — an association can bind several IP addresses at each endpoint, so a path failure does not kill the connection.\n- **Multistreaming** — one association carries several independent streams, so a lost packet in stream 1 does not block delivery of stream 2. This eliminates TCP's head-of-line blocking.\n\nSCTP is **message oriented** (it preserves message boundaries like UDP) rather than byte oriented. A packet is a common header plus a sequence of **chunks**, control and data mixed. Sequencing uses a **TSN** for reliable delivery across the association, plus a **stream identifier** and **stream sequence number** for ordering within a stream. Association setup is a **four-way handshake with a cookie**, which makes SCTP immune to SYN flooding. There is no half-close."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — tracing the congestion window",
+     "text": "**Problem.** A TCP Reno connection has MSS = 1 KB. At some instant cwnd = 32 KB when a **timeout** occurs. Trace cwnd and say how many RTTs pass before cwnd returns to 32 KB.\n\n**On the timeout:**\n- ssthresh = cwnd/2 = **16 KB**\n- cwnd = **1 KB**, slow start restarts.\n\n**Slow start (double each RTT) until cwnd reaches ssthresh = 16:**\n\n| After RTT | 0 | 1 | 2 | 3 | 4 |\n|---|---|---|---|---|---|\n| cwnd (KB) | 1 | 2 | 4 | 8 | 16 |\n\nFour RTTs bring cwnd to 16 KB, which equals ssthresh, so TCP switches to congestion avoidance.\n\n**Congestion avoidance (add 1 MSS per RTT):** from 16 to 32 is 16 increments, so 16 more RTTs.\n\n| After RTT | 5 | 6 | … | 19 | 20 |\n|---|---|---|---|---|---|\n| cwnd (KB) | 17 | 18 | … | 31 | 32 |\n\n**Total: $4 + 16 = 20$ RTTs.**\n\n**Variation — three duplicate ACKs instead of a timeout.** Reno's fast recovery sets ssthresh = 16 and cwnd = 16, then continues additively. Returning to 32 KB takes only 16 RTTs, and no slow start phase at all. Tahoe, by contrast, would behave exactly as in the timeout case and take 20.\n\n**Variation — what is cwnd 7 RTTs after the timeout?** From the table: RTTs 1–4 give 2, 4, 8, 16; then 17, 18, 19. So cwnd = **19 KB**. Counting 'after $n$ RTTs' rather than 'at RTT $n$' is where marks are lost; write the table."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — handshake sequence numbers and throughput",
+     "text": "**Problem (a).** A client opens a TCP connection with initial sequence number 5000; the server replies with initial sequence number 17000. Give the three segments' seq and ack values, and the seq of the first data segment carrying 500 bytes from the client.\n\n1. Client → Server: SYN, **seq = 5000**, no ACK. SYN consumes sequence number 5000.\n2. Server → Client: SYN+ACK, **seq = 17000**, **ack = 5001** (the next byte the server expects from the client).\n3. Client → Server: ACK, **seq = 5001**, **ack = 17001**.\n4. Client's first data segment: **seq = 5001**, carrying bytes 5001–5500. The server will acknowledge with **ack = 5501**.\n\n**Problem (b).** The RTT is 50 ms and the receiver advertises a 64 KB window. What is the maximum throughput, ignoring losses?\n\n$$\\text{throughput} = \\frac{\\text{window}}{\\text{RTT}} = \\frac{64 \\times 1024 \\times 8 \\ \\text{bits}}{0.05 \\ \\text{s}} = \\frac{524\\,288}{0.05} = 10.49 \\ \\text{Mbps}$$\n\nEven on a 1 Gbps link, a single classic TCP connection across a 50 ms path cannot exceed about 10.5 Mbps — the 16-bit window field is the bottleneck. This is exactly why the **window scale option** exists, allowing the advertised window to be left-shifted by up to 14 bits.\n\n**Problem (c).** What window would saturate a 1 Gbps link at 50 ms RTT?\n$$W = 10^9 \\times 0.05 = 5\\times10^7 \\ \\text{bits} = 6.25 \\ \\text{MB}$$\nA window scale factor of 7 ($2^7 \\times 65535 \\approx 8.4$ MB) would suffice."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.9-1",
+     "q": "A TCP segment carries bytes 4001 to 5000. What acknowledgement number does the receiver return, assuming everything before 4001 was received?",
+     "opts": [
+      "5000",
+      "5001",
+      "4001",
+      "1000"
+     ],
+     "ans": 1,
+     "exp": "TCP acknowledgements name the next byte expected, not the last byte received. Having got through byte 5000, the receiver asks for 5001."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.9-2",
+     "q": "TCP Reno's cwnd is 24 MSS when three duplicate ACKs arrive. What are ssthresh and cwnd immediately afterwards?",
+     "opts": [
+      "ssthresh 12, cwnd 1",
+      "ssthresh 12, cwnd 12",
+      "ssthresh 24, cwnd 12",
+      "ssthresh 12, cwnd 24"
+     ],
+     "ans": 1,
+     "exp": "Fast recovery halves the window: ssthresh becomes 24/2 = 12 and cwnd is set to ssthresh = 12, continuing in congestion avoidance. Dropping cwnd to 1 would be Tahoe's response, or Reno's response to a timeout."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Timeout means one, duplicate ACKs mean half",
+     "body": "Every congestion-control numerical is decided by this: timeout -> ssthresh = cwnd/2, cwnd = 1, slow start. Triple duplicate ACK in Reno -> ssthresh = cwnd/2, cwnd = ssthresh, congestion avoidance. Read the stem for which event occurred before touching the arithmetic."
+    },
+    {
+     "title": "Slow start is powers of two, then straight lines",
+     "body": "From cwnd = 1, after $k$ RTTs cwnd = $2^k$ while below ssthresh. So the RTTs to reach ssthresh $S$ is $\\log_2 S$, and the RTTs from $S$ up to target $T$ is $T - S$. Total $= \\log_2 S + (T-S)$. For $S=16$, $T=32$: $4 + 16 = 20$, with no table needed."
+    },
+    {
+     "title": "Window over RTT, in bits",
+     "body": "Maximum TCP throughput = window / RTT. Convert the window to bits first (a 64 KB window is 524 288 bits, not 65 536). Forgetting the factor of 8 is the most common arithmetic slip in this topic."
+    },
+    {
+     "title": "SYN and FIN each eat a sequence number",
+     "body": "That is why the first ACK is ISN+1 and why a connection carrying $n$ data bytes advances the sequence number by $n+2$ across its lifetime. Any handshake question with an off-by-one option is testing this."
+    },
+    {
+     "title": "UDP length includes its own header",
+     "body": "If a UDP datagram contains 100 bytes of data, the length field reads 108, and the IP total length reads 128 with a 20-byte IP header. Chaining the three length fields (IP total, UDP length, data) is a standard question shape."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Slow start is exponential",
+     "body": "The name says slow, the growth is doubling. It is called slow only relative to the original TCP, which began by dumping a full receiver window into the network. A question asking which phase grows exponentially wants slow start, not congestion avoidance."
+    },
+    {
+     "title": "Connection release is four-way, not three-way",
+     "body": "Setup is three segments because the server's SYN and ACK are combined; release is four because each direction closes independently and the receiving side may still have data to send. Options offering a 'three-way termination' are wrong."
+    },
+    {
+     "title": "cwnd versus rwnd",
+     "body": "The sender is limited by the minimum of the congestion window and the advertised receiver window. A question giving both and asking how much data may be outstanding wants the smaller, not the sum and not cwnd alone."
+    },
+    {
+     "title": "SCTP is not just TCP with more addresses",
+     "body": "SCTP preserves message boundaries, so it is message oriented, not byte oriented. Saying 'SCTP is a byte-stream protocol like TCP' is the standard false statement in match-the-list items."
+    }
+   ]
+  },
+  {
+   "id": "9.10",
+   "title": "Application Layer and the World Wide Web",
+   "summary": "DNS resolution and record types, SMTP/POP3/IMAP, FTP's two connections, HTTP request-response and persistence, and the web document model.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "The application layer is where protocols stop being about moving bits and start being about what the bits mean. Almost all of them follow the **client–server** model, in which a permanently running server waits on a well-known port and a transient client initiates; the alternative is **peer-to-peer**, where each host is both, as in BitTorrent.\n\n## DNS\n\nThe Domain Name System maps human-readable names to IP addresses using a distributed, hierarchical database — distributed because no single machine could hold or serve the whole mapping, and hierarchical because that is what allows delegation.\n\nThe name space is an inverted tree: a root labelled with the empty string, then **top-level domains** (generic: com, org, edu, net, int; country: in, uk, jp; and infrastructure: arpa), then second-level domains, and so on. A **fully qualified domain name** ends with a dot representing the root.\n\nThe tree is divided into **zones**, each the responsibility of an **authoritative server**, with a **primary** server holding the master file and **secondary** servers pulling copies by **zone transfer**.\n\nResolution can be:\n- **Recursive** — the client asks its local resolver for the final answer, and the resolver does all the chasing and returns only the result. This is what a host does.\n- **Iterative** — the queried server returns a referral (\"ask this other server\") rather than the answer. This is what resolvers do when walking down from the root.\n\nCaching with a per-record **TTL** is what makes the whole system survivable; without it the root servers would collapse.\n\nCommon **resource records**:\n\n| Type | Meaning |\n|---|---|\n| A | name to 32-bit IPv4 address |\n| AAAA | name to 128-bit IPv6 address |\n| NS | authoritative name server for a zone |\n| CNAME | canonical name, i.e. an alias |\n| MX | mail exchanger, with a preference value |\n| PTR | address to name, used for reverse lookup via in-addr.arpa |\n| SOA | start of authority: zone parameters, serial, refresh, TTL |\n\nDNS uses **UDP port 53** for ordinary queries, falling back to **TCP port 53** for responses larger than 512 bytes and always for zone transfers.\n\n## Electronic mail\n\nThree protocols with distinct jobs.\n\n- **SMTP (TCP 25)** is a **push** protocol and moves mail from the sender's user agent to its mail server, and between mail servers. Commands are text: HELO/EHLO, MAIL FROM, RCPT TO, DATA, QUIT. Original SMTP carries only 7-bit ASCII, so **MIME** extends it: Content-Type, Content-Transfer-Encoding (base64 or quoted-printable), and multipart bodies let it carry binary attachments.\n- **POP3 (TCP 110)** is a **pull** protocol for the final hop. It is simple: the client connects, authorises, downloads, and typically deletes from the server. Mail effectively lives on one machine.\n- **IMAP4 (TCP 143)** is also pull but keeps mail on the server, supports folders, partial fetches (headers only, or one attachment), server-side search, and flags shared across devices. It is what multi-device mail needs.\n\n## FTP and friends\n\n**FTP** is unusual in using **two TCP connections**: a **control connection on port 21** that stays open for the whole session and carries commands in NVT ASCII, and a **data connection on port 20** opened afresh for each file transfer and closed when it ends. In **active mode** the server opens the data connection back to the client, which firewalls dislike; in **passive mode** the client opens both, which is why passive mode is now the default.\n\n**TFTP** (UDP 69) is the stripped-down version used for booting diskless devices. **TELNET** (TCP 23) gives a remote character-oriented terminal using the **network virtual terminal** character set, and sends passwords in clear text; **SSH** (TCP 22) replaced it with encryption, authentication and port forwarding.\n\n## HTTP and the web\n\nA **URL** has the form `scheme://host:port/path?query#fragment`. The web's documents come in three flavours: **static** (a fixed file), **dynamic** (generated at the server per request, by CGI or a server-side language), and **active** (a program sent to and executed by the browser, such as JavaScript).\n\nHTTP is a stateless request–response protocol over TCP port 80 (443 with TLS). A request is a request line (method, URL, version), headers, a blank line and an optional body.\n\n**Methods:** GET (retrieve), HEAD (retrieve headers only), POST (submit data in the body), PUT (store), DELETE, OPTIONS, TRACE, CONNECT.\n\n**Status code classes:** 1xx informational, 2xx success (200 OK, 201 Created, 204 No Content), 3xx redirection (301 Moved Permanently, 304 Not Modified), 4xx client error (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found), 5xx server error (500 Internal Server Error, 503 Service Unavailable).\n\n**Non-persistent HTTP (HTTP/1.0)** opens a new TCP connection per object, so each object costs one RTT for the handshake plus one RTT for request and response — **2 RTT per object**. **Persistent HTTP (HTTP/1.1 default)** reuses one connection: one handshake, then one RTT per object, and with **pipelining** all requests go out back to back for a single extra RTT overall.\n\nHTTP is stateless, so state is bolted on with **cookies**: the server sends Set-Cookie, the browser returns Cookie on subsequent requests to that domain. **Proxy servers** cache responses on behalf of many clients; a **conditional GET** with If-Modified-Since lets a cache revalidate cheaply and receive 304 Not Modified instead of the whole body.\n\n**HTTP/2** adds binary framing, header compression (HPACK), multiplexed streams over one connection (killing head-of-line blocking at the HTTP level) and server push. **HTTP/3** moves onto QUIC over UDP.\n\n## Network management and configuration\n\n**SNMP** manages devices using a manager–agent model over UDP 161 (requests) and 162 (traps). It rests on two companions: **SMI**, which defines the rules and syntax for naming and typing objects, and the **MIB**, which is the actual named collection of objects on a device. Operations are GetRequest, GetNextRequest, SetRequest, Response and Trap.\n\n**DHCP** (UDP 67 server, 68 client) leases configuration: the four-message exchange is DISCOVER (broadcast), OFFER, REQUEST, ACK, supplying address, mask, default gateway, DNS servers and a lease time."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — how long does a web page take to load?",
+     "text": "**Problem.** A page consists of a base HTML file plus 8 small embedded objects. RTT is 100 ms and all transmission times are negligible. Find the total time under (a) non-persistent HTTP with serial connections, (b) non-persistent HTTP with 4 parallel connections, (c) persistent HTTP with pipelining.\n\n**(a) Non-persistent, serial.**\nEach object costs 2 RTT: one for the TCP three-way handshake (the client's ACK carries the GET, so the handshake costs one RTT before the request is effectively delivered) and one for the request and response.\n\nObjects: 1 base + 8 embedded = 9.\n$$9 \\times 2\\ \\text{RTT} = 18\\ \\text{RTT} = 18 \\times 100 = 1800\\ \\text{ms} = 1.8\\ \\text{s}$$\n\n**(b) Non-persistent, 4 parallel connections.**\nThe base file must arrive first, because only then does the browser know what to fetch: 2 RTT.\nThe 8 objects are fetched 4 at a time, so two batches, each costing 2 RTT: $2 \\times 2 = 4$ RTT.\n$$2 + 4 = 6\\ \\text{RTT} = 600\\ \\text{ms}$$\n\n**(c) Persistent with pipelining.**\nOne handshake: 1 RTT. Base file request and response: 1 RTT. All 8 objects requested back to back on the same connection and returned together: 1 RTT.\n$$1 + 1 + 1 = 3\\ \\text{RTT} = 300\\ \\text{ms}$$\n\n**(d) Persistent without pipelining** would cost $1 + 1 + 8 = 10$ RTT = 1 s, because each object waits for the previous response.\n\nThe ordering 1.8 s > 1.0 s > 0.6 s > 0.3 s is exactly why HTTP/1.1 made persistence the default and why HTTP/2 multiplexes."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — following a DNS lookup",
+     "text": "**Problem.** A host in India, with an empty cache everywhere, looks up `www.dept.example.edu`. Trace the queries and count the messages.\n\n1. The host sends a **recursive** query to its configured **local resolver**: \"give me A for www.dept.example.edu\".\n2. The resolver, with an empty cache, queries a **root server** iteratively. The root does not know the answer; it returns the **NS records for `edu`** — a referral.\n3. The resolver queries an **`edu` TLD server**. It returns the **NS records for `example.edu`**.\n4. The resolver queries the **`example.edu` authoritative server**. That zone has delegated `dept.example.edu`, so it returns the **NS records for `dept.example.edu`**.\n5. The resolver queries the **`dept.example.edu` server**, which is authoritative and returns the **A record**.\n6. The resolver returns the address to the host and caches every record it learned, each for its own TTL.\n\n**Message count:** 1 recursive query + 4 iterative query/response pairs + 1 final reply $= 2 + 8 = 10$ messages, or 5 query–response exchanges.\n\n**Second lookup of a sibling name, say `mail.dept.example.edu`:** the resolver already has the NS records for `dept.example.edu` cached, so it goes straight to step 5 — one exchange with the host and one with the authoritative server. That reduction from 5 exchanges to 2 is the entire value of caching."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.10-1",
+     "q": "Which protocol allows a user to keep mail on the server, organise it in folders and read headers before downloading bodies?",
+     "opts": [
+      "SMTP",
+      "POP3",
+      "IMAP4",
+      "MIME"
+     ],
+     "ans": 2,
+     "exp": "IMAP4 is the server-side mailbox protocol supporting folders, partial fetch and server-side search. POP3 downloads and usually deletes; SMTP only pushes mail; MIME is an encoding extension, not a retrieval protocol."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.10-2",
+     "q": "An HTTP cache holds a copy of a page and revalidates it. The server replies 304. This means:",
+     "opts": [
+      "The page has moved permanently",
+      "The cached copy is still valid and no body is sent",
+      "The request was malformed",
+      "Authentication is required"
+     ],
+     "ans": 1,
+     "exp": "304 Not Modified answers a conditional GET (If-Modified-Since or If-None-Match) by confirming the cached copy is current; no entity body is returned, which is the whole bandwidth saving."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "2 RTT per object, and then subtract",
+     "body": "Non-persistent = 2 RTT per object. Persistent without pipelining = 1 RTT for setup + 1 RTT per object. Persistent with pipelining = 1 RTT setup + 1 RTT for the base + 1 RTT for all the rest. With $n$ embedded objects those give $2(n+1)$, $n+2$ and $3$ RTT respectively."
+    },
+    {
+     "title": "Push versus pull settles the mail question",
+     "body": "SMTP pushes (sender to server, server to server). POP3 and IMAP pull (server to recipient). Any question about the *last* hop of mail delivery is POP3 or IMAP; any question about transfer *between* mail servers is SMTP."
+    },
+    {
+     "title": "FTP has two connections, and that is the answer",
+     "body": "Control on 21 for the whole session, data on 20 per transfer. If a question asks which application protocol uses two TCP connections, or why FTP is awkward through NAT, the two-connection design is the point."
+    },
+    {
+     "title": "Port numbers in pairs",
+     "body": "Learn them as pairs rather than a list: 20/21 FTP, 22/23 SSH and TELNET, 25 SMTP with 110 POP3 and 143 IMAP, 53 DNS, 67/68 DHCP, 80/443 HTTP and HTTPS, 161/162 SNMP. Two or three marks a paper come from this list alone."
+    },
+    {
+     "title": "Record type from the question's noun",
+     "body": "'Alias' = CNAME. 'Mail server for a domain' = MX. 'Which server is authoritative' = NS. 'Reverse lookup' = PTR. 'Zone parameters and serial number' = SOA. The noun in the stem names the record."
+    }
+   ],
+   "traps": [
+    {
+     "title": "DNS is not TCP-only or UDP-only",
+     "body": "Ordinary queries go over UDP 53; zone transfers and responses over 512 bytes use TCP 53. An option claiming DNS uses only UDP is wrong, and so is one claiming only TCP."
+    },
+    {
+     "title": "HTTP is stateless but not sessionless",
+     "body": "HTTP itself keeps no state between requests; cookies add state at the application level. Candidates who reason 'cookies exist, so HTTP is stateful' answer the wrong way round."
+    },
+    {
+     "title": "Persistent does not mean pipelined",
+     "body": "A persistent connection reuses one TCP connection but may still send one request at a time, waiting for each response. Pipelining is the extra step of sending requests back to back. Questions distinguish these by RTT counts, so read carefully."
+    }
+   ]
+  },
+  {
+   "id": "9.11",
+   "title": "Network Security and Cryptography",
+   "summary": "Security goals and attacks, symmetric and asymmetric ciphers, RSA worked with small numbers, hashes, digital signatures, TLS/IPSec and firewalls.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "Security is not a protocol you add at the end; it is a set of properties you design for. Five goals matter:\n\n- **Confidentiality** — only the intended recipient can read the message.\n- **Integrity** — the message has not been altered in transit.\n- **Authentication** — the sender is who they claim to be.\n- **Non-repudiation** — the sender cannot later deny having sent it.\n- **Availability** — the service remains usable.\n\n**Passive attacks** only observe: snooping (reading traffic) and traffic analysis (learning who talks to whom and how much, even if the content is encrypted). They threaten confidentiality and are hard to detect but easy to prevent with encryption. **Active attacks** modify the system: **modification** of message contents, **masquerading** as another party, **replay** of a captured message, and **denial of service**. They are easier to detect but harder to prevent.\n\n## Symmetric key cryptography\n\nOne shared secret key encrypts and decrypts. Fast, so it is what actually protects bulk data, but key distribution is the problem: $n$ parties who all want to talk privately in pairs need\n\n$$\\frac{n(n-1)}{2} \\ \\text{keys}$$\n\n**Classical ciphers.** **Substitution** replaces symbols: the **Caesar cipher** shifts by a fixed $k$ (monoalphabetic, 25 possible keys, trivially broken); a general monoalphabetic cipher permutes the alphabet ($26!$ keys but falls instantly to frequency analysis); the **Vigenère** cipher is polyalphabetic, using a keyword to vary the shift, which flattens the frequency distribution. **Transposition** ciphers keep the symbols and permute their positions — a rail fence or a columnar transposition by keyword.\n\n**DES.** Block size **64 bits**, key **56 bits** (quoted as 64 with 8 parity bits), **16 rounds** of a Feistel network with an initial and final permutation. Each round splits the block in half, applies a round function with a 48-bit subkey to one half, XORs with the other, and swaps. The Feistel structure means encryption and decryption use the same circuit with the subkeys reversed. A 56-bit key is now brute-forceable, so **3DES** applies DES three times (EDE with two or three keys) for an effective 112 or 168 bits.\n\n**AES.** Block size **128 bits** always; key **128, 192 or 256 bits** with **10, 12 or 14 rounds** respectively. It is a substitution–permutation network, not a Feistel network, with four per-round operations: SubBytes (an S-box), ShiftRows, MixColumns and AddRoundKey. The final round omits MixColumns.\n\n**Modes of operation.** **ECB** encrypts each block independently — identical plaintext blocks give identical ciphertext blocks, which leaks structure, so it is unsafe for real data. **CBC** XORs each plaintext block with the previous ciphertext block before encrypting, using an IV for the first, which hides repetition but serialises encryption. **CFB** and **OFB** turn a block cipher into a stream cipher; OFB's keystream is independent of the data, so a bit error does not propagate. **CTR** encrypts an incrementing counter, which is parallelisable and now the preferred mode.\n\n## Asymmetric key cryptography\n\nEach party has a **public key** (published) and a **private key** (kept secret). Anything encrypted with one is decrypted with the other. $n$ parties need only $2n$ keys. It is orders of magnitude slower than symmetric, so it is used for key exchange and signatures, not bulk data — hence **hybrid** systems, where RSA transports an AES session key.\n\n### RSA\n\n1. Choose two large primes $p$ and $q$.\n2. Compute $n = pq$ and $\\phi(n) = (p-1)(q-1)$.\n3. Choose $e$ with $1 < e < \\phi(n)$ and $\\gcd(e, \\phi(n)) = 1$.\n4. Compute $d = e^{-1} \\bmod \\phi(n)$, so $ed \\equiv 1 \\pmod{\\phi(n)}$.\n5. Public key $(e, n)$; private key $(d, n)$.\n\nEncryption: $C = M^e \\bmod n$. Decryption: $M = C^d \\bmod n$. The security rests on the difficulty of factoring $n$ — knowing $n$ and $e$ alone gives no way to $d$ without $\\phi(n)$, and $\\phi(n)$ requires the factors.\n\n**Diffie–Hellman** solves a different problem: two parties who have never met agree on a shared secret over a public channel. With public $p$ and $g$, Alice picks secret $a$ and sends $g^a \\bmod p$, Bob picks $b$ and sends $g^b \\bmod p$; each raises what it received to its own secret, and both obtain $g^{ab} \\bmod p$. It provides no authentication, so plain Diffie–Hellman is vulnerable to a **man-in-the-middle**.\n\n**ECC** achieves comparable security with far shorter keys (a 256-bit ECC key is roughly a 3072-bit RSA key), which matters on constrained devices.\n\n## Hashes and message integrity\n\nA cryptographic hash maps arbitrary input to a fixed-length digest and must be **preimage resistant**, **second preimage resistant** and **collision resistant**. **MD5** gives 128 bits and is broken; **SHA-1** gives 160 bits and is deprecated; **SHA-256** and the SHA-3 family are current. Because of the **birthday paradox**, finding a collision in an $n$-bit hash takes about $2^{n/2}$ work, not $2^n$ — so 128 bits of digest gives only 64 bits of collision resistance.\n\nA hash alone gives integrity but not authentication, since an attacker can recompute it. A **MAC** — typically **HMAC**, which mixes a shared key into the hash — gives both integrity and authentication, but not non-repudiation, because both parties hold the same key.\n\n## Digital signatures\n\nThe sender signs with their **own private key**; anyone verifies with the sender's **public key**. That is the exact reverse of encryption for confidentiality, where you encrypt with the *recipient's public* key.\n\nIn practice one signs the **digest**, not the message: compute $h = H(M)$, then $S = h^d \\bmod n$. The verifier computes $H(M)$ independently, decrypts $S$ with the public key, and compares. Signing the digest is faster, keeps the signature a fixed size, and avoids the multiplicative structure that makes raw RSA signing forgeable.\n\nA signature gives integrity, authentication and non-repudiation — but not confidentiality, since anyone with the public key can read it. Encrypt as well if secrecy is needed.\n\n**Certificates and PKI.** A public key is only trustworthy if you know whose it is. A **certification authority** signs an **X.509 certificate** binding a name to a public key; it contains the version, serial number, signature algorithm, issuer, validity period, subject, subject public key and the CA's signature. Revocation is handled by CRLs or OCSP.\n\n**Kerberos** is a symmetric-key authentication service using a trusted third party: the Authentication Server issues a ticket-granting ticket, and the Ticket-Granting Server issues per-service tickets, so the user's password crosses the network only once and tickets are time-stamped against replay.\n\n## Security protocols by layer\n\n- **PGP and S/MIME** — application layer, for email; both combine a symmetric session key with public-key transport and a signature.\n- **SSL/TLS** — between application and transport, over TCP. Handshake protocol negotiates cipher suite and establishes keys; record protocol then fragments, compresses, MACs and encrypts. HTTPS is HTTP over TLS on port 443.\n- **IPSec** — network layer, so it protects everything above it transparently. Two protocols: **AH** gives integrity and authentication only; **ESP** gives confidentiality as well. Two modes: **transport mode** protects the payload and keeps the original IP header (host to host); **tunnel mode** encapsulates the whole original datagram inside a new one (gateway to gateway, which is how site-to-site VPNs work). **IKE** does key management, and a **security association** holds the parameters for one direction.\n\n## Firewalls\n\nA firewall enforces a policy about what traffic may cross a boundary.\n\n- **Packet-filter firewall** — stateless; decides per packet from the IP header and transport ports (source/destination address, port, protocol, direction). Fast, but cannot tell a reply from an unsolicited packet.\n- **Stateful inspection firewall** — tracks connections, so it can permit return traffic for a connection the inside started while blocking unsolicited inbound.\n- **Application gateway / proxy firewall** — terminates the connection and reinspects at layer 7, so it can filter on URLs or commands. Most secure, slowest, and needs one proxy per application.\n\nA **DMZ** is a subnet between two firewalls holding the public-facing servers, so a compromise there does not reach the internal network. An **IDS** detects intrusions by signature or anomaly and alerts; an **IPS** additionally blocks. A **VPN** builds an encrypted tunnel over the public Internet, typically with IPSec in tunnel mode."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — RSA with small numbers",
+     "text": "**Problem.** Take $p = 7$, $q = 11$, $e = 13$. Find $d$, then encrypt $M = 5$ and decrypt to verify.\n\n**Step 1 — modulus and totient.**\n$$n = 7 \\times 11 = 77, \\qquad \\phi(n) = (7-1)(11-1) = 6 \\times 10 = 60$$\n\n**Step 2 — check $e$.** $\\gcd(13, 60) = 1$, since 13 is prime and does not divide 60. Valid.\n\n**Step 3 — find $d$ with $13d \\equiv 1 \\pmod{60}$.**\nTry multiples: $13 \\times 37 = 481 = 8\\times60 + 1 = 480 + 1$. So $d = \\mathbf{37}$.\n(By the extended Euclidean algorithm: $60 = 4\\times13 + 8$; $13 = 1\\times8 + 5$; $8 = 1\\times5 + 3$; $5 = 1\\times3 + 2$; $3 = 1\\times2 + 1$. Back-substituting gives $1 = 37\\times13 - 8\\times60$.)\n\nPublic key $(13, 77)$, private key $(37, 77)$.\n\n**Step 4 — encrypt $M = 5$: $C = 5^{13} \\bmod 77$.**\nUse repeated squaring, reducing at every step:\n- $5^1 = 5$\n- $5^2 = 25$\n- $5^4 = 25^2 = 625 = 8\\times77 + 9 = 616 + 9 \\Rightarrow 9$\n- $5^8 = 9^2 = 81 = 77 + 4 \\Rightarrow 4$\n\n$13 = 8 + 4 + 1$, so\n$$5^{13} = 5^8 \\cdot 5^4 \\cdot 5^1 = 4 \\times 9 \\times 5 = 180 = 2\\times77 + 26 \\Rightarrow \\mathbf{C = 26}$$\n\n**Step 5 — decrypt: $M = 26^{37} \\bmod 77$.**\n- $26^2 = 676 = 8\\times77 + 60 = 616+60 \\Rightarrow 60$\n- $26^4 = 60^2 = 3600 = 46\\times77 + 58 = 3542 + 58 \\Rightarrow 58$\n- $26^8 = 58^2 = 3364 = 43\\times77 + 53 = 3311 + 53 \\Rightarrow 53$\n- $26^{16} = 53^2 = 2809 = 36\\times77 + 37 = 2772 + 37 \\Rightarrow 37$\n- $26^{32} = 37^2 = 1369 = 17\\times77 + 60 = 1309 + 60 \\Rightarrow 60$\n\n$37 = 32 + 4 + 1$, so\n$$26^{37} = 60 \\times 58 \\times 26 \\bmod 77$$\n$60 \\times 58 = 3480 = 45\\times77 + 15 = 3465 + 15 \\Rightarrow 15$.\n$15 \\times 26 = 390 = 5\\times77 + 5 = 385 + 5 \\Rightarrow \\mathbf{5}$\n\nThe original message is recovered. Note $M$ must be less than $n$; a message of 80 could not be encrypted under $n=77$."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — how many keys?",
+     "text": "**Problem.** An organisation of 200 employees wants every pair to be able to communicate privately. Compare the key count under symmetric and asymmetric schemes.\n\n**Symmetric.** Every unordered pair needs its own shared secret:\n$$\\frac{n(n-1)}{2} = \\frac{200 \\times 199}{2} = 19\\,900 \\ \\text{keys}$$\nand each employee must store and protect 199 of them.\n\n**Asymmetric.** Each employee has one public and one private key:\n$$2n = 400 \\ \\text{keys}$$\nand each employee protects exactly one secret, the rest being published.\n\n**Growth.** Symmetric key count grows as $O(n^2)$; asymmetric as $O(n)$. At $n = 1000$ the figures are 499 500 versus 2000. This scaling, not raw speed, is the real argument for public-key cryptography — and in practice the two are combined, with RSA or Diffie–Hellman transporting a short-lived AES key."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.11-1",
+     "q": "To send a confidential message to Bob that also proves it came from Alice, Alice should:",
+     "opts": [
+      "Encrypt with Bob's public key, then sign with Bob's private key",
+      "Sign with her private key, then encrypt with Bob's public key",
+      "Encrypt with her public key, then sign with Bob's public key",
+      "Sign with Bob's public key, then encrypt with her private key"
+     ],
+     "ans": 1,
+     "exp": "Signing uses the sender's private key so that anyone can verify with her public key; confidentiality uses the recipient's public key so that only Bob's private key can open it. Only option 2 uses each key for the party who holds the matching secret."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.11-2",
+     "q": "IPSec tunnel mode differs from transport mode in that it:",
+     "opts": [
+      "Uses AH instead of ESP",
+      "Encrypts only the transport header",
+      "Encapsulates the entire original IP datagram inside a new one",
+      "Works only for IPv6"
+     ],
+     "ans": 2,
+     "exp": "Tunnel mode wraps the whole original datagram, header included, in a new IP packet, hiding the internal addressing; transport mode keeps the original header and protects only the payload. Both modes can use AH or ESP."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Which key for which purpose",
+     "body": "Confidentiality: encrypt with the *receiver's public* key. Signature: encrypt (sign) with the *sender's private* key. Say it as 'public key locks, private key unlocks' for secrecy, and the reverse for signing. Every key-selection MCQ falls to this one sentence."
+    },
+    {
+     "title": "RSA exponentiation by squaring",
+     "body": "Never compute $5^{13}$ as a full number. Write the exponent in binary (13 = 1101), square and reduce mod n repeatedly, then multiply the needed powers. Each intermediate stays smaller than $n^2$, so the arithmetic is mental even for a 3-digit modulus."
+    },
+    {
+     "title": "Finding d fast for small numbers",
+     "body": "Solve $ed \\equiv 1 \\pmod{\\phi}$ by scanning $k = 1, 2, 3, \\dots$ for $(k\\phi + 1)/e$ being an integer. With $e=13$, $\\phi=60$: $61/13$ no, $121/13$ no, ..., $481/13 = 37$ yes. Usually the answer appears within four or five trials in an exam."
+    },
+    {
+     "title": "Key counts distinguish the schemes",
+     "body": "$n(n-1)/2$ for symmetric, $2n$ for asymmetric, and $n$ for a Kerberos-style trusted-server scheme where each party shares one key with the server. If a question gives a key count, the formula tells you which architecture is meant."
+    },
+    {
+     "title": "Block and key sizes are a short list",
+     "body": "DES: 64-bit block, 56-bit key, 16 rounds. 3DES: 64-bit block, 112 or 168-bit key. AES: 128-bit block always; 128/192/256-bit key with 10/12/14 rounds. MD5: 128-bit digest. SHA-1: 160. SHA-256: 256. That list answers a question a year."
+    }
+   ],
+   "traps": [
+    {
+     "title": "AES block size never changes",
+     "body": "Only the AES key length varies (128/192/256); the block is always 128 bits. Options offering a 192-bit block are deliberately wrong. DES is the one with a 64-bit block."
+    },
+    {
+     "title": "A MAC is not a digital signature",
+     "body": "Both give integrity and authentication, but a MAC uses a *shared* key, so either party could have produced it and there is no non-repudiation. Only a signature with an asymmetric private key gives non-repudiation."
+    },
+    {
+     "title": "Diffie-Hellman is key exchange, not encryption",
+     "body": "It produces a shared secret; it does not encrypt messages and it does not authenticate. Calling it a public-key encryption algorithm, or claiming it resists man-in-the-middle unaided, are the two standard false statements."
+    },
+    {
+     "title": "Birthday bound halves the digest",
+     "body": "An $n$-bit hash resists collisions only to about $2^{n/2}$ operations. So MD5's 128 bits give 64-bit collision resistance, not 128. Options that quote the full digest length as the security level are wrong."
+    }
+   ]
+  },
+  {
+   "id": "9.12",
+   "title": "Mobile Technology",
+   "summary": "Cellular reuse and handoff, GSM architecture and channels, CDMA spreading, LTE, Mobile IP with care-of addresses, and 802.11 and Bluetooth.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "Mobile networking has to solve two problems fixed networking does not: a shared, unreliable radio channel, and an endpoint whose location keeps changing.\n\n## The cellular idea\n\nRather than one huge transmitter, divide the area into **cells**, each with a low-power base station, and **reuse** the same frequencies in cells far enough apart that interference is tolerable. Capacity then grows by adding cells rather than spectrum.\n\nCells are drawn as hexagons because hexagons tile the plane with the least wasted area for a given coverage radius. Cells are grouped into **clusters** of $N$ cells that together use the whole spectrum, and $N$ must satisfy\n\n$$N = i^2 + ij + j^2 \\qquad i, j \\ge 0$$\n\ngiving the allowed values 1, 3, 4, 7, 9, 12, 13, 19. A smaller $N$ reuses frequencies more often, raising capacity but also **co-channel interference**; the co-channel reuse ratio is $Q = D/R = \\sqrt{3N}$, where $D$ is the distance between co-channel cell centres and $R$ the cell radius.\n\n**Handoff (handover)** transfers a call from one cell to the next as the subscriber moves. **Hard handoff** breaks the old link before making the new one (break-before-make), used in GSM; **soft handoff** holds both links briefly (make-before-break), possible in CDMA because neighbouring cells use the same frequency.\n\n**Generations:** 1G analog voice (AMPS, FDMA); 2G digital voice and SMS (GSM with TDMA, IS-95 with CDMA); 2.5G packet data (GPRS, then EDGE); 3G (UMTS/WCDMA, HSPA), targeting 2 Mbps; 4G LTE, all-IP, OFDMA downlink and SC-FDMA uplink, targeting 100 Mbps mobile and 1 Gbps stationary; 5G NR, with millimetre wave, massive MIMO, network slicing and sub-millisecond latency ambitions for URLLC.\n\n## GSM\n\n**Architecture**, in three subsystems:\n\n- **Mobile station** — the handset plus the **SIM**, which holds the IMSI and the subscriber's authentication key. The handset has its own IMEI.\n- **Base station subsystem** — the **BTS** (the radio transceiver serving a cell) and the **BSC** (controls several BTSs, allocates channels, manages handovers within its area).\n- **Network and switching subsystem** — the **MSC** (switching and call setup, the interface to the PSTN) with its databases: the **HLR** (permanent record of every subscriber of this network), the **VLR** (temporary record of subscribers currently roaming in this MSC's area), the **AuC** (authentication keys), and the **EIR** (equipment identity, used to bar stolen handsets).\n\n**Air interface.** GSM-900 uses 890–915 MHz uplink and 935–960 MHz downlink, so it is FDD with a 45 MHz duplex spacing. Each carrier is **200 kHz** wide and is divided by TDMA into **8 time slots**, so one carrier supports 8 full-rate calls. The gross bit rate per carrier is **270.833 kbps**; a full-rate speech codec runs at **13 kbps**. GSM-1800 adds more carriers in the 1.8 GHz band.\n\n**Channels** divide into traffic channels (TCH, full and half rate) and control channels: broadcast (BCCH, FCCH, SCH), common (PCH for paging, RACH for random access, AGCH for granting), and dedicated (SDCCH, SACCH, FACCH).\n\n## CDMA\n\nEvery station transmits over the whole band at the same time, separated not by frequency or time but by **code**. Each station is given an orthogonal **chip sequence** (a Walsh code) of length $n$. To send bit 1 it transmits its code; to send 0, the code's inverse; to send nothing, all zeros. The channel carries the arithmetic sum of everyone's signals.\n\nTo recover station $i$'s bit, the receiver takes the inner product of the received composite with code $i$ and divides by $n$. Because the codes are orthogonal, every other station's contribution sums to zero and only station $i$'s bit survives.\n\nConsequences worth knowing: the **frequency reuse factor is 1** (every cell uses the whole band), **soft handoff** becomes possible, and capacity is soft — it degrades gracefully with load rather than hitting a hard slot limit. The costs are the **near–far problem**, where a nearby transmitter swamps a distant one, requiring fast and precise **power control**, and the need for tight synchronisation. IS-95 is the 2G CDMA standard; WCDMA underlies 3G UMTS.\n\n## Mobile IP\n\nIP addresses encode location, so a host that moves breaks routing. Mobile IP fixes this without changing IP.\n\nDefinitions:\n- **Home address** — the mobile node's permanent address on its home network. Correspondents always use this.\n- **Home agent** — a router on the home network that intercepts traffic for an absent mobile node.\n- **Foreign agent** — a router on the visited network that assists the mobile node.\n- **Care-of address** — the mobile node's current location address. Either a **foreign agent care-of address**, shared by many visitors and belonging to the FA, or a **co-located care-of address**, obtained by the mobile node itself via DHCP.\n\nThree phases:\n1. **Agent discovery** — agents broadcast advertisements (an extension of ICMP router advertisement); a mobile node may solicit one. This is how it learns it has moved.\n2. **Registration** — the mobile node registers its care-of address with the home agent, through the foreign agent, with a lifetime and authentication.\n3. **Tunnelling (data transfer)** — a correspondent sends to the home address; the home agent intercepts it (using proxy ARP), encapsulates it in a new IP datagram addressed to the care-of address, and the foreign agent decapsulates and delivers locally.\n\nTwo problems follow. **Triangular routing**: packets to the mobile node detour via the home agent even if the correspondent is next door, while packets from the mobile node go direct — an inefficient triangle, mitigated by route optimisation that tells the correspondent the care-of address directly. **Ingress filtering**: a mobile node sending with its home address as source from a foreign network looks like a spoofed packet and is dropped by routers that filter on source prefix; **reverse tunnelling**, sending outbound traffic back through the home agent, is the fix.\n\n## Wireless LAN and PAN\n\n**IEEE 802.11.** A **BSS** is a set of stations, either with an **access point** (infrastructure) or without (ad hoc, an IBSS); several BSSs joined by a distribution system form an **ESS**. The MAC uses **DCF** with CSMA/CA as the normal mode and the rarely implemented **PCF** with polling for contention-free service.\n\nCSMA/CA in outline: sense the channel; if idle for a DIFS, start a random backoff counter that counts down only while the channel is idle; transmit; wait for an explicit ACK after a SIFS. Because SIFS is shorter than DIFS, acknowledgements always win the channel over new transmissions.\n\nThe **hidden terminal problem**: A and C can both reach B but not each other, so neither detects the other's transmission and they collide at B. The **exposed terminal problem** is the converse waste: B hears A transmitting and needlessly refrains from sending to C, which would not have been disturbed. **RTS/CTS** addresses the hidden terminal case — the CTS from B is heard by all of B's neighbours, and each sets its **network allocation vector** to defer for the stated duration.\n\nStandards: 802.11b 11 Mbps at 2.4 GHz; 802.11a 54 Mbps at 5 GHz with OFDM; 802.11g 54 Mbps at 2.4 GHz; 802.11n MIMO up to 600 Mbps; 802.11ac at 5 GHz with wider channels; 802.11ax (Wi-Fi 6) with OFDMA. Security went WEP (broken, RC4 with a 24-bit IV), WPA (TKIP), WPA2 (AES-CCMP), WPA3 (SAE).\n\n**Bluetooth (802.15.1).** A **piconet** has one master and up to **seven active slaves** (plus up to 255 parked), all hopping in step under the master's clock. Overlapping piconets sharing a node form a **scatternet**. The radio uses **FHSS** over 79 channels of 1 MHz in the 2.4 GHz ISM band, hopping **1600 times per second**. Layers: radio, baseband, L2CAP, then profiles. **BLE** is the low-energy variant used by IoT sensors.\n\n**WiMAX (802.16)** is broadband wireless metropolitan access; **Zigbee (802.15.4)** is low-rate, low-power mesh networking; a **MANET** is an infrastructure-less multi-hop mobile network using protocols such as AODV and DSR, and a **VANET** is its vehicular form."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — cellular capacity and reuse",
+     "text": "**Problem.** A GSM operator has 25 MHz of uplink spectrum, carriers of 200 kHz, 8 TDMA slots per carrier, and uses a cluster size $N = 7$. Find the number of channels per cell, and the co-channel reuse ratio.\n\n**Step 1 — total carriers.**\n$$\\frac{25 \\times 10^6}{200 \\times 10^3} = 125 \\ \\text{carriers}$$\n\n**Step 2 — total voice channels.** Each carrier holds 8 slots:\n$$125 \\times 8 = 1000 \\ \\text{channels}$$\n\n**Step 3 — channels per cell.** The cluster of 7 cells shares the whole spectrum:\n$$\\frac{1000}{7} \\approx 142 \\ \\text{channels per cell}$$\nIn practice one carrier per cell is reserved for control, leaving about 135 for traffic.\n\n**Step 4 — co-channel reuse ratio.**\n$$Q = \\frac{D}{R} = \\sqrt{3N} = \\sqrt{21} = 4.58$$\nSo co-channel cells sit about 4.6 cell radii apart.\n\n**Step 5 — the trade-off.** With $N = 4$ instead: $1000/4 = 250$ channels per cell — a 76% capacity gain — but $Q = \\sqrt{12} = 3.46$, so co-channel cells are much closer and interference rises. Choosing $N$ is exactly this capacity-versus-quality trade."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — CDMA decoding",
+     "text": "**Problem.** Four stations use the length-4 Walsh codes\n$C_1 = (+1,+1,+1,+1)$, $C_2 = (+1,-1,+1,-1)$, $C_3 = (+1,+1,-1,-1)$, $C_4 = (+1,-1,-1,+1)$.\nStation 1 sends bit 1, station 2 is silent, station 3 sends bit 0, station 4 sends bit 1. What does the channel carry, and how does the receiver recover station 3's bit?\n\n**Step 1 — each station's contribution.** Bit 1 sends the code, bit 0 sends its negation, silence sends zeros.\n- S1: $+C_1 = (+1,+1,+1,+1)$\n- S2: $(0,0,0,0)$\n- S3: $-C_3 = (-1,-1,+1,+1)$\n- S4: $+C_4 = (+1,-1,-1,+1)$\n\n**Step 2 — the composite signal is the sum, component by component.**\n$$(1+0-1+1,\\ 1+0-1-1,\\ 1+0+1-1,\\ 1+0+1+1) = (\\mathbf{1,\\ -1,\\ 1,\\ 3})$$\n\n**Step 3 — decode station 3.** Take the inner product with $C_3 = (+1,+1,-1,-1)$ and divide by the code length 4:\n$$\\frac{(1)(1) + (-1)(1) + (1)(-1) + (3)(-1)}{4} = \\frac{1 - 1 - 1 - 3}{4} = \\frac{-4}{4} = -1$$\nA result of $-1$ means **bit 0** — correct.\n\n**Step 4 — check station 1.** Inner product with $C_1 = (+1,+1,+1,+1)$:\n$$\\frac{1 - 1 + 1 + 3}{4} = \\frac{4}{4} = +1 \\Rightarrow \\text{bit } 1$$ — correct.\n\n**Step 5 — check the silent station 2.** Inner product with $C_2 = (+1,-1,+1,-1)$:\n$$\\frac{1 + 1 + 1 - 3}{4} = \\frac{0}{4} = 0 \\Rightarrow \\text{silent}$$ — correct.\n\nOrthogonality does all the work: every unwanted code contributes exactly zero to the sum."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.12-1",
+     "q": "Which cluster size is NOT valid for cellular frequency reuse?",
+     "opts": [
+      "7",
+      "12",
+      "13",
+      "15"
+     ],
+     "ans": 3,
+     "exp": "Valid cluster sizes satisfy $N = i^2+ij+j^2$: 1, 3, 4, 7, 9, 12, 13, 19, 21. There are no non-negative integers $i,j$ giving 15."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.12-2",
+     "q": "In Mobile IP, packets from a correspondent to a mobile node are:",
+     "opts": [
+      "Sent directly to the care-of address",
+      "Intercepted by the home agent and tunnelled to the care-of address",
+      "Broadcast on every foreign network",
+      "Routed through the foreign agent of the correspondent"
+     ],
+     "ans": 1,
+     "exp": "The correspondent addresses the permanent home address. The home agent intercepts and encapsulates the datagram toward the care-of address, where the foreign agent (or the node itself) decapsulates it. This detour is exactly what makes routing triangular."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "GSM numbers in one line",
+     "body": "200 kHz per carrier, 8 slots per carrier, 270.833 kbps gross per carrier, 13 kbps full-rate speech, 890-915/935-960 MHz for GSM-900 with 45 MHz duplex spacing. Total channels = (spectrum / 200 kHz) x 8, then divide by the cluster size for channels per cell."
+    },
+    {
+     "title": "Cluster sizes are a short memorised list",
+     "body": "1, 3, 4, 7, 9, 12, 13, 19, 21. Any other value in an option list is the wrong answer to a 'which is not a valid cluster size' question, and $Q = \\sqrt{3N}$ gives the reuse distance without further work."
+    },
+    {
+     "title": "CDMA decoding is a dot product over n",
+     "body": "Multiply the composite vector component-wise by the wanted code, sum, divide by the code length. Result $+1$ means bit 1, $-1$ means bit 0, $0$ means that station was silent. Never try to unmix the sum algebraically."
+    },
+    {
+     "title": "Home agent tunnels in, mobile node sends out",
+     "body": "In basic Mobile IP the inbound path is correspondent to home agent to care-of address; the outbound path is direct. That asymmetry is the triangle, and remembering the direction answers most Mobile IP questions without recalling message formats."
+    },
+    {
+     "title": "Hidden versus exposed by who is harmed",
+     "body": "Hidden terminal causes a *collision* at the receiver because the two senders cannot hear each other. Exposed terminal causes *wasted capacity* because a sender defers when it need not. If the outcome in the stem is a collision, it is hidden; if it is unnecessary silence, it is exposed."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Soft handoff belongs to CDMA, not GSM",
+     "body": "Because all CDMA cells share one frequency, a mobile can be connected to two base stations at once. GSM cells on different frequencies must break before making, so GSM handoff is hard. Options pairing GSM with soft handoff are wrong."
+    },
+    {
+     "title": "Seven active slaves, not eight devices of equal rank",
+     "body": "A Bluetooth piconet has one master and up to seven *active* slaves, so eight active devices in total. An option saying 'eight slaves' or 'eight masters' is the standard distractor."
+    },
+    {
+     "title": "The care-of address is not the home address",
+     "body": "Correspondents always use the home address; the care-of address appears only as the tunnel endpoint. Answering that the correspondent sends to the care-of address skips the home agent and misses the whole mechanism."
+    },
+    {
+     "title": "RTS/CTS does not solve the exposed terminal problem",
+     "body": "RTS/CTS addresses hidden terminals by making the receiver announce the reservation. The exposed terminal problem is caused by over-deferral and is, if anything, made slightly worse by extra control traffic."
+    }
+   ]
+  },
+  {
+   "id": "9.13",
+   "title": "Cloud Computing and IoT",
+   "summary": "NIST cloud characteristics, IaaS/PaaS/SaaS and deployment models, virtualization, IoT architecture and its protocols MQTT and CoAP.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "Cloud computing and the Internet of Things are the two application areas the syllabus adds on top of classical networking, and both are examined largely on definitions, models and a small set of protocols.\n\n## What makes a cloud a cloud\n\nNIST defines five **essential characteristics**; a service missing any of them is just hosting.\n\n1. **On-demand self-service** — a consumer provisions capacity unilaterally, without human interaction with the provider.\n2. **Broad network access** — capabilities are available over the network through standard mechanisms, usable from thin and thick clients alike.\n3. **Resource pooling** — the provider's resources serve multiple consumers using a **multi-tenant** model, with physical and virtual resources assigned dynamically; the consumer generally has no control or knowledge of the exact location.\n4. **Rapid elasticity** — capacity can be provisioned and released quickly, appearing unlimited to the consumer.\n5. **Measured service** — usage is metered, monitored and reported, which is what makes pay-per-use possible.\n\n## Service models\n\n| | IaaS | PaaS | SaaS |\n|---|---|---|---|\n| What you rent | virtual machines, storage, networks | a managed runtime and development platform | a finished application |\n| You manage | OS, middleware, runtime, data, applications | data and applications only | nothing but your data and settings |\n| Provider manages | virtualization, servers, storage, networking | everything below your code, including OS and runtime | everything |\n| Typical user | system administrator | developer | end user |\n| Examples | Amazon EC2, Google Compute Engine, OpenStack | Google App Engine, Heroku, Azure App Service | Gmail, Salesforce, Google Docs |\n\nThe layering is cumulative: SaaS runs on PaaS which runs on IaaS. Control decreases and convenience increases as you climb. **FaaS / serverless** sits above PaaS: you supply only a function, and the provider allocates and bills per invocation, scaling to zero when idle.\n\n## Deployment models\n\n- **Public cloud** — infrastructure open to the general public, owned by the provider. Cheapest, least control.\n- **Private cloud** — provisioned for a single organisation, on or off premises, possibly operated by a third party. Most control, highest cost.\n- **Community cloud** — shared by several organisations with common concerns, such as a group of hospitals with the same compliance regime.\n- **Hybrid cloud** — two or more distinct clouds bound together by standardised technology enabling data and application portability, for example keeping regulated data private while bursting compute to public capacity.\n\n## Virtualization\n\nVirtualization is what makes resource pooling economic. A **hypervisor** presents virtual hardware to guest operating systems.\n\n- **Type 1 (bare metal)** — runs directly on the hardware; better performance and isolation. Xen, VMware ESXi, Hyper-V, KVM.\n- **Type 2 (hosted)** — runs as an application on a host operating system; easier to use, more overhead. VirtualBox, VMware Workstation.\n\n**Containers** virtualise at the operating-system level instead: all containers share the host kernel and isolate only the user space, so they start in milliseconds and are far lighter than virtual machines, at the price of weaker isolation and a shared kernel. Docker packages them; Kubernetes orchestrates them.\n\n**Live migration** moves a running virtual machine between hosts by copying memory pages iteratively while it runs, then pausing briefly for the last dirty pages. It is what allows maintenance without downtime, and load balancing across a data centre.\n\n**Concerns:** data security and privacy in a multi-tenant environment, vendor lock-in through proprietary APIs, availability and the enforceability of **SLAs**, data residency and legal jurisdiction, and the loss of direct forensic access after an incident.\n\n## The Internet of Things\n\nIoT extends connectivity to physical objects that sense and act. The distinguishing constraints are severe: devices have kilobytes of memory, run for years on a coin cell, connect over lossy low-bandwidth radio, and exist in enormous numbers.\n\nA common layered view:\n\n1. **Perception / sensing layer** — sensors, actuators, RFID tags, cameras. Acquires physical data.\n2. **Network / transport layer** — moves data using Zigbee, BLE, LoRaWAN, NB-IoT, Wi-Fi or cellular, typically through a gateway.\n3. **Middleware / processing layer** — device management, data storage, filtering and analytics; often cloud-hosted.\n4. **Application layer** — the domain service: smart metering, precision agriculture, health monitoring, industrial control.\n5. **Business layer** — models, dashboards and decisions built on the application's output.\n\n**Enabling technologies.** **RFID** identifies a tag over radio without line of sight; passive tags draw power from the reader's field, active tags carry a battery. **Wireless sensor networks** self-organise into multi-hop meshes with duty cycling to conserve energy. **IPv6** matters because the address space is what makes per-object addressing feasible, and **6LoWPAN** adapts IPv6 to IEEE 802.15.4 by compressing headers and fragmenting the 1280-byte IPv6 minimum MTU down to the 127-byte 802.15.4 frame.\n\n**Application protocols.**\n\n- **MQTT** — publish/subscribe over **TCP**, ports 1883 (plain) and 8883 (TLS). Clients publish to a **topic** and a central **broker** distributes to subscribers, so publishers and subscribers are decoupled in time and space. Three quality-of-service levels: **0** at most once (fire and forget), **1** at least once (acknowledged, may duplicate), **2** exactly once (four-way handshake). Header overhead can be as small as two bytes. There is also a **retained message** and a **last will and testament** published if a client dies.\n- **CoAP** — a RESTful protocol over **UDP** port 5683, deliberately shaped like HTTP (GET, POST, PUT, DELETE, response codes) so that it maps to it through a proxy, but with a compact 4-byte binary header, optional confirmable messages providing reliability on top of UDP, observe for server push, and multicast support that UDP allows and TCP does not.\n- **AMQP** — message-queue oriented with exchanges and queues, heavier, used in enterprise integration. **XMPP** — XML-based, originally instant messaging. **HTTP/REST** — used where devices are capable enough.\n\n**Edge and fog computing** push processing toward the devices: an edge gateway filters, aggregates and reacts locally instead of shipping every reading to a distant cloud. This cuts latency, bandwidth and cost, and allows continued operation when the uplink fails — which is why industrial IoT depends on it.\n\n**Security** is the chronic weakness: default credentials, no firmware update path, and constrained devices that cannot afford strong cryptography. Compromised IoT devices assembled into botnets have produced some of the largest denial-of-service attacks recorded."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — choosing a service model and sizing the bill",
+     "text": "**Problem.** A team must deploy a Python web application. Compare the three models for what they must manage, then compute a monthly IaaS bill for 3 instances at Rs 4.50 per hour running 24x7, plus 500 GB of storage at Rs 2 per GB-month and 2 TB of egress at Rs 6 per GB.\n\n**Which model.**\n- **IaaS** — they rent virtual machines and must install and patch the OS, the Python runtime, the web server and the database, and must configure autoscaling themselves. Maximum control, maximum operational work.\n- **PaaS** — they push code; the provider supplies the runtime, scaling and patching. They still own the application and its data. This is the natural fit for a team whose value is the application, not the infrastructure.\n- **SaaS** — irrelevant here: SaaS means consuming someone else's finished application, and they are building one.\n\n**The bill.**\n- Compute: $3 \\times 24 \\times 30 = 2160$ instance-hours. $2160 \\times 4.50 = \\text{Rs } 9720$.\n- Storage: $500 \\times 2 = \\text{Rs } 1000$.\n- Egress: $2\\,\\text{TB} = 2048$ GB, $2048 \\times 6 = \\text{Rs } 12\\,288$.\n- **Total = Rs 23 008 per month**, of which more than half is data transfer.\n\n**The lesson the arithmetic teaches.** Egress dominates, which is both the classic surprise in a cloud bill and a mechanism of vendor lock-in: moving 50 TB of accumulated data to a competitor would cost about Rs 307 000 in transfer charges alone. Elasticity also only pays if the load is variable — three instances running continuously would be cheaper on owned hardware over three years."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — why MQTT rather than HTTP for a sensor fleet",
+     "text": "**Problem.** 10 000 temperature sensors each report a 20-byte reading every 30 seconds. Compare the daily overhead of HTTP POST against MQTT publish, taking HTTP request plus response headers as roughly 500 bytes and an MQTT publish header as 4 bytes on an already-open connection.\n\n**Messages per day.** $\\frac{86\\,400}{30} = 2880$ per sensor, $\\times 10\\,000 = 28.8$ million messages.\n\n**HTTP.** Overhead $500$ bytes per message (and that ignores the TCP handshake and TLS negotiation a non-persistent client would repeat):\n$$28.8\\times10^6 \\times 500 = 1.44\\times10^{10} \\ \\text{bytes} = 14.4 \\ \\text{GB/day of pure header}$$\nagainst $28.8\\times10^6 \\times 20 = 576$ MB of actual data. Overhead is 25 times the payload.\n\n**MQTT.** Overhead 4 bytes per publish on a persistent connection:\n$$28.8\\times10^6 \\times 4 = 115 \\ \\text{MB/day}$$\nOverhead is about one fifth of the payload — a reduction of roughly 125 times.\n\n**Beyond bytes.** MQTT also gives publish/subscribe decoupling, so adding a second consumer of the data needs no change at the sensors; a last-will message that announces a dead device automatically; and QoS 1 for guaranteed delivery without the sensor implementing retry logic itself. On a battery-powered NB-IoT device, the radio time saved by sending 24 bytes instead of 520 is the difference between a two-year and a multi-year battery life."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.13-1",
+     "q": "A developer deploys code and the provider manages the OS, runtime and scaling. This is:",
+     "opts": [
+      "IaaS",
+      "PaaS",
+      "SaaS",
+      "FaaS"
+     ],
+     "ans": 1,
+     "exp": "PaaS delivers a managed platform: the consumer controls only the deployed application and its data. IaaS would leave the OS to the consumer; SaaS would leave no code to deploy; FaaS would take individual functions rather than a whole application."
+    },
+    {
+     "t": "check",
+     "id": "chk-9.13-2",
+     "q": "CoAP runs over UDP while MQTT runs over TCP. A direct consequence is that:",
+     "opts": [
+      "MQTT cannot guarantee delivery",
+      "CoAP can use multicast to address a group of devices",
+      "CoAP cannot offer any reliability",
+      "MQTT has a smaller header"
+     ],
+     "ans": 1,
+     "exp": "UDP supports multicast, so CoAP can address a group of constrained devices in one message; TCP is strictly point to point, so MQTT cannot. CoAP regains reliability with confirmable messages, and MQTT's QoS levels 1 and 2 do guarantee delivery."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Identify the service model by what the consumer manages",
+     "body": "IaaS: consumer manages the operating system upward. PaaS: consumer manages applications and data only. SaaS: consumer manages nothing but settings. Read the stem for the highest layer the *provider* controls, and the model follows immediately."
+    },
+    {
+     "title": "Five characteristics, four deployments, three services",
+     "body": "5-4-3 is the shape of every NIST definition question: five essential characteristics, four deployment models (public, private, community, hybrid), three service models (IaaS, PaaS, SaaS). If an option list has five deployment models, one of them is invented."
+    },
+    {
+     "title": "Protocol from the transport",
+     "body": "MQTT = TCP = broker = publish/subscribe = topics = QoS 0/1/2. CoAP = UDP = RESTful = HTTP-like methods = multicast-capable = confirmable messages. Naming the transport layer usually names the protocol the question wants."
+    },
+    {
+     "title": "Containers share the kernel, VMs do not",
+     "body": "Every comparison question resolves to this one sentence: a virtual machine carries a full guest OS on a hypervisor; a container shares the host kernel and isolates only user space. Hence containers boot in milliseconds, pack more densely and isolate less strongly."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Elasticity is not the same as scalability",
+     "body": "Scalability is the ability to grow to handle more load; elasticity is the ability to grow *and shrink automatically and quickly* with demand, releasing resources when they are not needed. Only elasticity is in the NIST list of essential characteristics."
+    },
+    {
+     "title": "Hybrid is not the same as multi-cloud",
+     "body": "A hybrid cloud binds a private and a public cloud into one portable environment. Simply using two public providers is multi-cloud, not hybrid, and community cloud means shared by organisations with a common concern, not a mixture of models."
+    },
+    {
+     "title": "MQTT's broker is mandatory",
+     "body": "MQTT is broker-based publish/subscribe, not peer to peer: clients never exchange messages directly. An option describing MQTT as a direct device-to-device request/response protocol is describing CoAP instead."
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,20 @@
+import { chromium } from 'playwright-core';
+const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const p = await b.newPage();
+const go = async (r) => { await p.goto('http://localhost:8099/#/lab/' + r, { waitUntil: 'networkidle' }); await p.waitForTimeout(350); };
+const txt = async () => (await p.$eval('#main', n => n.innerText.replace(/\s+/g,' '))).toLowerCase();
+const ck = (n,c,g)=>console.log((c?'PASS ':'FAIL ')+n+(c?'':'  → '+g));
+await go('banker');    let t=await txt(); ck('banker safe state', /safe state/.test(t), t.slice(300,480));
+await go('firstfollow'); t=await txt(); ck('LL(1) verdict', /grammar is ll\(1\)/.test(t), t.slice(t.indexOf('ll(1) parsing'),t.indexOf('ll(1) parsing')+300));
+await go('dfa');       t=await txt(); ck('dfa verdict', /string (accepted|rejected)/.test(t), t.slice(t.indexOf('step read'),t.indexOf('step read')+300));
+await go('kmap');      t=await txt(); ck('kmap SOP', /minimal sum of products/.test(t), t.slice(0,300));
+await go('fdtool');    t=await txt(); ck('fdtool keys', /candidate keys/.test(t), t.slice(t.indexOf('attribute set'),t.indexOf('attribute set')+400));
+ck('fdtool NF', /highest normal form/.test(t), '');
+// read the actual computed values for manual inspection
+await go('kmap'); console.log('KMAP:', (await p.$eval('#main', n=>n.innerText)).match(/F =[^\n]*/)?.[0]);
+await go('fdtool'); const fd = await p.$eval('#main', n=>n.innerText);
+console.log('FD keys:', fd.slice(fd.indexOf('CANDIDATE KEYS'), fd.indexOf('CANDIDATE KEYS')+200).replace(/\n/g,' | '));
+console.log('FD  NF :', fd.slice(fd.indexOf('HIGHEST'), fd.indexOf('HIGHEST')+220).replace(/\n/g,' | '));
+await go('dfa'); const d = await p.$eval('#main', n=>n.innerText);
+console.log('DFA:', d.slice(d.indexOf('STRING'), d.indexOf('STRING')+180).replace(/\n/g,' | '));
+await b.close();

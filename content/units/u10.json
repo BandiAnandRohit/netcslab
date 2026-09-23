@@ -1,0 +1,1077 @@
+{
+ "unit": 10,
+ "summary": "Artificial intelligence as examined in Paper 2: search and game playing, logic and knowledge representation, planning, language, agents, and the three soft-computing pillars of fuzzy logic, genetic algorithms and neural networks — a unit whose marks come mostly from traceable procedures (A*, alpha-beta, resolution, defuzzification, backpropagation) rather than from definitions.",
+ "topics": [
+  {
+   "id": "10.1",
+   "title": "Approaches to AI and Heuristic Search",
+   "summary": "The Turing test and rational-agent views, agent types, state space formulation, and the complete uninformed/informed search comparison with A*.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## What the subject is trying to be\n\nArtificial intelligence has never had one agreed definition, and the UGC NET syllabus reflects that by asking about the competing **approaches**. The standard framing, due to Russell and Norvig, arranges the definitions on two axes — *thinking* versus *acting*, and *human-like* versus *rational* — giving four quadrants:\n\n| | Human-centred | Rationality-centred |\n|---|---|---|\n| **Thinking** | Thinking humanly — cognitive modelling, match the program's reasoning steps to human introspection and psychological experiment | Thinking rationally — the *laws of thought* tradition; encode correct inference (syllogisms, logic) and let it run |\n| **Acting** | Acting humanly — the **Turing test** approach; behave indistinguishably from a person | Acting rationally — the **rational agent** approach; do the thing that maximises expected performance |\n\nThe first two are about internal process, the last two about external behaviour. Modern AI, and almost every exam question, takes the fourth: an agent is rational if, for each possible percept sequence, it selects an action expected to maximise its performance measure given the evidence in the percepts and whatever built-in knowledge it has. Note what rationality is **not**: it is not omniscience (you judge by expected outcome, not actual outcome), not perfection, and not clairvoyance."
+    },
+    {
+     "t": "md",
+     "text": "## The Turing test\n\nProposed by Alan Turing in 1950 in *Computing Machinery and Intelligence* as the **imitation game**. A human interrogator holds a teletype conversation with two hidden parties, one human and one machine, and must decide which is which. If the interrogator cannot do better than chance, the machine passes. The point of the design is that it deliberately avoids physical contact — intelligence is assessed purely through language.\n\nTo pass, a machine would need **natural language processing** to communicate, **knowledge representation** to store what it knows, **automated reasoning** to answer and draw conclusions, and **machine learning** to adapt and generalise. The **total Turing test** adds a video channel and a hatch for passing objects, so the machine also needs **computer vision** and **robotics**. Those six capabilities are the standard exam list.\n\nThe famous objection is Searle's **Chinese Room** (1980): a person who does not know Chinese, following a rule book to manipulate Chinese symbols, could pass the test without understanding anything. Searle uses it to distinguish **strong AI** (the machine genuinely has a mind) from **weak AI** (it merely simulates one). Other named objections in Turing's own paper include the mathematical objection (from Gödel's incompleteness), the argument from consciousness, and Lady Lovelace's objection that a machine can only do what it is told."
+    },
+    {
+     "t": "md",
+     "text": "## Agents, environments and PEAS\n\nAn **agent** perceives its environment through **sensors** and acts on it through **actuators**. Its **agent function** maps percept sequences to actions; the **agent program** is the concrete implementation of that function. A task environment is specified by **PEAS** — Performance measure, Environment, Actuators, Sensors.\n\nEnvironments are classified along axes that examiners love to test:\n\n- **Fully observable / partially observable** — do the sensors give the complete state? Chess yes, poker no.\n- **Deterministic / stochastic** — is the next state fixed by the current state and action? If it is determined except for the actions of other agents, the environment is called **strategic**.\n- **Episodic / sequential** — does the current decision affect future ones? Defect classification on a conveyor is episodic; chess is sequential.\n- **Static / dynamic** — can the world change while the agent deliberates? **Semi-dynamic** means the world is static but the agent's score changes with time (chess with a clock).\n- **Discrete / continuous** — of states, time, percepts and actions.\n- **Single-agent / multi-agent**, and within multi-agent, competitive or cooperative.\n- **Known / unknown** — whether the agent knows the outcome laws. This is about the agent's knowledge, not about observability, and the two are independent."
+    },
+    {
+     "t": "md",
+     "text": "## The five agent types\n\nIn increasing order of sophistication:\n\n1. **Simple reflex agent.** Condition-action rules on the *current percept only*: `if car-in-front-is-braking then initiate-braking`. No internal state, so it fails badly in partially observable worlds and can get stuck in infinite loops (randomisation can help).\n2. **Model-based reflex agent.** Keeps internal state, updated with a **transition model** (how the world evolves) and a **sensor model** (how percepts relate to the world). This is how partial observability is handled.\n3. **Goal-based agent.** Adds an explicit **goal**; chooses actions by considering the future — this is where **search** and **planning** enter. Slower but far more flexible, because changing the goal changes the behaviour without rewriting rules.\n4. **Utility-based agent.** A **utility function** replaces the binary goal test, allowing trade-offs between conflicting goals and weighting by likelihood of success. A rational utility-based agent maximises **expected utility**.\n5. **Learning agent.** Four components: the **performance element** (the agent proper), the **critic** (judges behaviour against a fixed performance standard), the **learning element** (makes improvements from the critic's feedback), and the **problem generator** (suggests exploratory actions). Any of the first four agent types can be made into a learning agent."
+    },
+    {
+     "t": "md",
+     "text": "## State space representation and problem formulation\n\nA search problem is defined by five components:\n\n- the **initial state**;\n- a set of **actions** applicable in each state, `ACTIONS(s)`;\n- a **transition model** `RESULT(s, a)` giving the successor — together these define the **state space**, a directed graph whose nodes are states and whose edges are actions;\n- a **goal test**;\n- a **path cost** function, additive over **step costs** $c(s, a, s')$.\n\nA **solution** is an action sequence from the initial state to a goal; an **optimal solution** is one of least cost. Two habits pay for themselves in the exam. First, distinguish the **state space** (how many distinct configurations exist) from the **search tree** (how many paths the algorithm will walk). The 8-puzzle has $9!/2 = 181\\,440$ reachable states but an unbounded search tree if repeated states are not detected. Second, get the **abstraction** right: a state should record exactly what affects the solution and nothing more.\n\nSearch algorithms are described by four measures:\n\n- **Completeness** — is a solution found whenever one exists?\n- **Optimality** — is the solution found guaranteed least-cost?\n- **Time complexity** — nodes generated.\n- **Space complexity** — maximum nodes in memory.\n\nThese are expressed with $b$ the branching factor, $d$ the depth of the *shallowest* goal, and $m$ the maximum depth of the state space (possibly infinite)."
+    },
+    {
+     "t": "md",
+     "text": "## Uninformed search — the comparison table\n\nUninformed (blind) strategies use only the problem definition, no estimate of distance to goal.\n\n| Strategy | Complete? | Optimal? | Time | Space |\n|---|---|---|---|---|\n| Breadth-first (BFS) | Yes (if $b$ finite) | Yes, **only if step costs are equal** | $O(b^d)$ | $O(b^d)$ |\n| Uniform-cost (UCS) | Yes (if every step cost $\\ge \\varepsilon > 0$) | **Yes**, always | $O(b^{1+\\lfloor C^*/\\varepsilon\\rfloor})$ | same |\n| Depth-first (DFS) | No (infinite depth or loops) | No | $O(b^m)$ | $O(bm)$ |\n| Depth-limited (DLS, limit $\\ell$) | No (fails if $\\ell < d$) | No | $O(b^{\\ell})$ | $O(b\\ell)$ |\n| Iterative deepening (IDS) | Yes | Yes, if step costs are equal | $O(b^d)$ | $O(bd)$ |\n| Bidirectional | Yes (with BFS both ways) | Yes, if step costs are equal | $O(b^{d/2})$ | $O(b^{d/2})$ |\n\n**BFS** expands the shallowest unexpanded node using a FIFO queue; it is optimal for unit costs because the shallowest goal is then also the cheapest. Its killer is memory — $O(b^d)$ nodes stored, which at $b = 10$ and $d = 12$ is astronomically beyond any machine long before the time becomes the problem.\n\n**UCS** expands the node of lowest **path cost $g(n)$** using a priority queue. Two details are examined repeatedly: the goal test is applied when a node is *selected for expansion*, not when it is generated (otherwise a cheap-to-reach but expensive goal would be returned), and a better path to a frontier node replaces the worse one. UCS is BFS when all step costs are equal.\n\n**DFS** expands the deepest node using LIFO (a stack, or recursion). Its virtue is the linear $O(bm)$ space; its vices are non-termination on infinite branches and loss of optimality. **Backtracking search** is a refinement that stores only one successor at a time, giving $O(m)$ space.\n\n**DLS** is DFS with a depth cutoff $\\ell$, which restores termination but is incomplete if $\\ell$ is set below $d$. Good values of $\\ell$ can sometimes be read off the problem — the **diameter** of the state space.\n\n**IDS** runs DLS with $\\ell = 0, 1, 2, \\dots$ until success. It is the standard answer to 'best uninformed strategy when the depth is unknown': BFS's completeness and optimality with DFS's linear memory. The apparent waste of re-expanding shallow levels is small, because almost all nodes of a tree live in its bottom level.\n\n**Bidirectional search** runs two simultaneous searches, forward from the start and backward from the goal, stopping when the frontiers meet. $b^{d/2} + b^{d/2}$ is vastly less than $b^d$. Its preconditions are strict: the goal state must be explicitly known (not just a goal *test*), the operators must be invertible to search backwards, and one frontier must be kept in memory for the intersection check — which is where the $O(b^{d/2})$ space comes from."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — why iterative deepening costs almost nothing extra",
+     "text": "Take $b = 10$ and a goal at depth $d = 5$.\n\n**BFS** generates every node down to depth 5:\n$$1 + 10 + 100 + 1000 + 10\\,000 + 100\\,000 = 111\\,111$$\n\n**IDS** regenerates the top levels once per iteration. A node at depth $i$ is generated in every iteration from $\\ell = i$ up to $\\ell = d$, i.e. $d - i + 1$ times:\n$$N_{\\text{IDS}} = (d+1)b^0 + d\\,b^1 + (d-1)b^2 + \\cdots + 1\\cdot b^d$$\n$$= 6(1) + 5(10) + 4(100) + 3(1000) + 2(10\\,000) + 1(100\\,000)$$\n$$= 6 + 50 + 400 + 3000 + 20\\,000 + 100\\,000 = 123\\,456$$\n\nThe overhead is $123\\,456 / 111\\,111 = 1.111$, i.e. **11%** more nodes — for a reduction in memory from $10^5$ nodes to $bd = 50$. That trade is why IDS is the default uninformed method.\n\nFor contrast, **bidirectional** BFS on the same problem meets at depth $2.5$ from each end, generating roughly $2 \\times 10^{2.5} \\approx 632$ nodes — three orders of magnitude fewer than BFS, when it is applicable at all."
+    },
+    {
+     "t": "md",
+     "text": "## Informed search: heuristics, greedy best-first and A*\n\nA **heuristic function** $h(n)$ estimates the cheapest cost from $n$ to a goal, with $h(\\text{goal}) = 0$. **Best-first search** is the general scheme of expanding the node with the lowest value of an evaluation function $f(n)$; the two named instances differ only in $f$.\n\n**Greedy best-first search** takes $f(n) = h(n)$ — go to whatever *looks* closest. It is often fast, but it is **not optimal** and **not complete** in the graph-search-free form (it can loop). It ignores the cost already paid.\n\n**A\\*** takes\n$$f(n) = g(n) + h(n)$$\nwhere $g(n)$ is the cost of the path found so far to $n$. So $f(n)$ estimates the cost of the cheapest solution *through* $n$, and A* expands the node with the smallest such estimate.\n\nTwo properties of $h$ decide what A* guarantees. State them exactly:\n\n- $h$ is **admissible** if $h(n) \\le h^*(n)$ for every node $n$, where $h^*(n)$ is the true cheapest cost from $n$ to a goal. Admissible means *never overestimates* — an optimistic heuristic.\n- $h$ is **consistent** (or *monotonic*) if for every node $n$ and every successor $n'$ generated by action $a$,\n$$h(n) \\le c(n, a, n') + h(n')$$\nwith $h(g) = 0$ at any goal. This is a triangle inequality.\n\nThe consequences:\n\n- **Tree-search A\\* is optimal if $h$ is admissible.**\n- **Graph-search A\\* is optimal if $h$ is consistent.** With mere admissibility, graph search can discard a node on first encounter and miss a cheaper later path, unless it re-opens closed nodes.\n- **Consistency implies admissibility** (prove it by induction along the path), but not conversely.\n- Under consistency, $f$ is **non-decreasing along any path**, so A* expands nodes in non-decreasing order of $f$, and the first goal it selects is optimal.\n- A* is **optimally efficient**: no other optimal algorithm using the same heuristic expands fewer nodes (up to tie-breaking). It expands every node with $f(n) < C^*$ and some with $f(n) = C^*$.\n\nIf $h_2(n) \\ge h_1(n)$ for all $n$ and both are admissible, $h_2$ **dominates** $h_1$ and never expands more nodes — so prefer the larger admissible heuristic. Given several admissible heuristics, $h(n) = \\max\\{h_1(n), \\dots, h_k(n)\\}$ is admissible and dominates all of them. Admissible heuristics come from **relaxed problems**: removing the constraint that a tile can only slide into the blank gives misplaced-tile count $h_1$; removing only the adjacency constraint gives Manhattan distance $h_2$, and $h_2$ dominates $h_1$.\n\n**Memory-bounded variants.** IDA* is iterative deepening on the $f$-cost contour instead of depth; RBFS is a linear-space recursive best-first search that keeps a backed-up $f$ limit; SMA* uses all available memory and drops the worst leaf when full."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — A* traced on a small graph",
+     "text": "Edges (cost) and heuristics:\n\n```\nS -> A (1)    S -> B (4)\nA -> B (2)    A -> C (5)\nB -> C (2)    B -> D (5)\nC -> G (3)    D -> G (2)\n```\n\n| node | S | A | B | C | D | G |\n|---|---|---|---|---|---|---|\n| $h$ | 7 | 6 | 4 | 2 | 2 | 0 |\n\n**Check the heuristic first.** True costs to $G$ are $h^*(S)=8$, $h^*(A)=7$, $h^*(B)=5$, $h^*(C)=3$, $h^*(D)=2$, $h^*(G)=0$. Every $h \\le h^*$, so $h$ is **admissible**. Consistency, edge by edge: $S\\!\\to\\!A$: $7 \\le 1+6 = 7$ ✓ (tight); $S\\!\\to\\!B$: $7 \\le 4+4 = 8$ ✓; $A\\!\\to\\!B$: $6 \\le 2+4 = 6$ ✓; $A\\!\\to\\!C$: $6 \\le 5+2 = 7$ ✓; $B\\!\\to\\!C$: $4 \\le 2+2 = 4$ ✓; $B\\!\\to\\!D$: $4 \\le 5+2 = 7$ ✓; $C\\!\\to\\!G$: $2 \\le 3+0 = 3$ ✓; $D\\!\\to\\!G$: $2 \\le 2+0 = 2$ ✓. **Consistent**, so graph-search A* will be optimal.\n\n**The trace.** Frontier entries are written $n(g, f)$.\n\n1. Frontier $\\{S(0, 7)\\}$. Expand **S**. Generate $A(1, 1{+}6{=}7)$ and $B(4, 4{+}4{=}8)$.\n2. Frontier $\\{A(1,7),\\ B(4,8)\\}$. Lowest $f$ is $A$. Expand **A**. Via $A$, $B$ costs $1+2 = 3$, better than 4, so update to $B(3, 3{+}4 = 7)$. Also generate $C(1{+}5 = 6,\\ 6{+}2 = 8)$.\n3. Frontier $\\{B(3,7),\\ C(6,8)\\}$. Expand **B**. Via $B$, $C$ costs $3+2 = 5 < 6$, update to $C(5, 5{+}2 = 7)$. Generate $D(3{+}5 = 8,\\ 8{+}2 = 10)$.\n4. Frontier $\\{C(5,7),\\ D(8,10)\\}$. Expand **C**. Generate $G(5{+}3 = 8,\\ 8{+}0 = 8)$.\n5. Frontier $\\{G(8,8),\\ D(8,10)\\}$. Select **G** — goal.\n\n**Answer: path $S \\to A \\to B \\to C \\to G$, cost $1+2+2+3 = 8$**, which equals $h^*(S) = 8$, confirming optimality. Note that $f$ stayed at 7 for the first four expansions and then rose to 8 — exactly the non-decreasing behaviour consistency guarantees. $D$ was never expanded because its $f = 10 > C^* = 8$.\n\n**Greedy best-first on the same graph.** From $S$ it compares $h(A) = 6$ against $h(B) = 4$ and jumps to $B$; from $B$ it takes $C$ ($h = 2$); from $C$ it takes $G$. Path $S \\to B \\to C \\to G$, cost $4 + 2 + 3 = \\mathbf{9}$ — it found a goal in three expansions instead of five, but the answer is **one unit worse than optimal**. That contrast is the whole point of the $g(n)$ term."
+    },
+    {
+     "t": "md",
+     "text": "## Local search and other refinements\n\nWhen the path is irrelevant and only the final state matters — $n$-queens, VLSI layout, scheduling — **local search** keeps a single current state and moves to neighbours, using $O(1)$ memory.\n\n**Hill climbing** (steepest ascent) always moves to the best neighbour and stops when no neighbour is better. It gets stuck on **local maxima**, **ridges** (where every single-step move goes downhill although a diagonal one goes up) and **plateaux** (flat regions, where a *shoulder* can be escaped by allowing sideways moves but a true flat local maximum cannot). Remedies: random restarts, stochastic and first-choice hill climbing.\n\n**Simulated annealing** accepts a worsening move of size $\\Delta E$ with probability $e^{-\\Delta E / T}$, lowering the temperature $T$ over time; with a slow enough cooling schedule it finds the global optimum with probability approaching 1. **Local beam search** keeps $k$ states and chooses the best $k$ successors of all of them collectively — note this is *not* $k$ independent restarts. **Genetic algorithms** (topic 10.8) are stochastic beam search with recombination.\n\n**AO\\*** searches AND-OR graphs, used where a problem decomposes into subproblems all of which must be solved; unlike A* it must propagate cost revisions back up the graph and cannot simply treat the graph as a tree of alternatives. **Constraint satisfaction problems** are searched with backtracking plus **forward checking**, **arc consistency (AC-3)**, and the MRV / degree / least-constraining-value heuristics."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.1-1",
+     "q": "For the graph and heuristic in the worked example above, which statement is correct?",
+     "opts": [
+      "The heuristic is admissible but not consistent, so graph-search A* may return a suboptimal path",
+      "The heuristic is consistent, and A* expands S, A, B, C, G in that order for a total cost of 8",
+      "Greedy best-first search finds the same path as A* because the heuristic is admissible",
+      "A* expands D before C because D has the smaller h value"
+     ],
+     "ans": 1,
+     "exp": "Every edge satisfies $h(n) \\le c(n,n') + h(n')$, so $h$ is consistent (and therefore admissible). A* expands in non-decreasing $f$ order: S, A, B, C all at $f = 7$, then G at $f = 8$, for the optimal path $S\\to A\\to B\\to C\\to G$ of cost 8. D is never expanded since $f(D) = 10 > 8$. Greedy takes $S\\to B\\to C\\to G$ at cost 9 — admissibility says nothing about greedy search, which ignores $g$."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.1-2",
+     "q": "Which uninformed strategy is complete, optimal for unit step costs, and uses only $O(bd)$ space?",
+     "opts": [
+      "Breadth-first search",
+      "Uniform-cost search",
+      "Iterative deepening search",
+      "Bidirectional search"
+     ],
+     "ans": 2,
+     "exp": "IDS runs depth-limited DFS with increasing limits: the DFS stack gives $O(bd)$ space, while finding the shallowest goal first gives BFS's completeness and (for equal step costs) optimality. BFS and bidirectional search both need exponential space ($O(b^d)$ and $O(b^{d/2})$), and uniform-cost search stores its whole frontier."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.1-3",
+     "q": "An agent uses a performance measure to weigh partially satisfied and conflicting goals against each other, and picks the action of highest expected value. This is a",
+     "opts": [
+      "simple reflex agent",
+      "model-based reflex agent",
+      "goal-based agent",
+      "utility-based agent"
+     ],
+     "ans": 3,
+     "exp": "A goal-based agent has a binary goal test — a state either satisfies the goal or does not — so it cannot trade off 'quicker but riskier' against 'slower but safer'. A utility function maps states to real numbers, allowing exactly those trade-offs, and combined with probabilities gives maximum expected utility."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Read the four-column table off two facts, not from memory",
+     "body": "Every uninformed row follows from *what the frontier orders by* and *how much of the tree is stored*. Ordering by depth (BFS) or cost (UCS) forces the whole frontier into memory → exponential space; ordering by recency (DFS, DLS, IDS) keeps one root-to-leaf path → linear space. Optimality follows from whether the ordering key is the same as the cost being minimised: it is for UCS always, for BFS only when all steps cost the same."
+    },
+    {
+     "title": "$f$ never decreases means you can stop early",
+     "body": "Under a consistent heuristic, if you have already popped a node with $f = k$, no node of smaller $f$ will ever appear. So in a trace question, once $f$ has risen you can ignore every frontier entry with a larger $f$ than the first goal found — those nodes will never be expanded. In the worked graph, $D(f = 10)$ can be crossed off the moment $G(f = 8)$ appears."
+    },
+    {
+     "title": "Test consistency edge by edge, never node by node",
+     "body": "Consistency is a property of *edges*. Tabulate $h(n)$, $c(n,n')$, $h(n')$ for each edge and check $h(n) - h(n') \\le c(n,n')$. One violating edge is enough to answer 'inconsistent'; you do not need to compute any $h^*$. Admissibility, by contrast, needs the true costs $h^*$."
+    },
+    {
+     "title": "UCS = BFS = Dijkstra under the right conditions",
+     "body": "Uniform-cost search with all step costs equal to 1 expands exactly as BFS does; uniform-cost search from a single source over a whole graph is Dijkstra's algorithm; and A* with $h \\equiv 0$ is uniform-cost search. Three 'which algorithm is a special case of which' questions collapse into this one chain."
+    },
+    {
+     "title": "Dominance beats cleverness",
+     "body": "Given two admissible heuristics, the larger one always wins — it expands a subset of the nodes. So for any 'which heuristic is better' question, just check admissibility of both, then compare values pointwise. Manhattan distance dominates misplaced tiles because every misplaced tile contributes at least 1 to the Manhattan sum."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Admissible is not consistent",
+     "body": "Admissibility bounds $h$ against the true distance to the goal; consistency bounds the *change* in $h$ across one edge. Consistency implies admissibility, never the reverse. The exam sentence to remember: tree-search A* needs admissibility, graph-search A* needs consistency."
+    },
+    {
+     "title": "BFS is optimal only for equal step costs",
+     "body": "'BFS is optimal' is a half-truth that costs marks. It finds the shallowest goal, which is the cheapest only when every step costs the same. With varying costs you need uniform-cost search, which orders by $g(n)$ rather than by depth."
+    },
+    {
+     "title": "Bidirectional search needs an explicit goal state",
+     "body": "It is not enough to have a goal *test*. To search backwards you must know the goal configuration and be able to compute predecessors, which rules it out for problems like 'find a state satisfying these constraints' or 8-queens. Candidates quote the $O(b^{d/2})$ figure without noticing the precondition."
+    },
+    {
+     "title": "Depth in complexity formulas: $d$, $m$ and $\\ell$ are three different things",
+     "body": "$d$ is the depth of the shallowest goal, $m$ the maximum depth of the space, $\\ell$ the imposed cutoff. DFS is $O(b^m)$, not $O(b^d)$, and that difference is exactly why DFS is not optimal. Substituting the wrong symbol turns a correct method into a wrong answer."
+    }
+   ]
+  },
+  {
+   "id": "10.2",
+   "title": "Game Playing: Minimax and Alpha-Beta Pruning",
+   "summary": "Adversarial search, the minimax algorithm, alpha-beta pruning with a full worked trace, the b^(d/2) result, evaluation functions and the horizon effect.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## Why games need a different kind of search\n\nIn the search problems of topic 10.1 the world is passive: the agent chooses an action and the world does what the transition model says. In a game there is an **opponent** who chooses among the successors and who wants the opposite of what you want. You cannot plan a sequence of moves and expect to execute it; you must plan a **strategy** — a move for every reply the opponent might make.\n\nThe standard setting is a **two-player, zero-sum, deterministic, turn-taking game of perfect information**. Zero-sum means one player's gain is exactly the other's loss, so a single number suffices: the payoff to MAX, which MIN tries to minimise. Perfect information means fully observable — chess, checkers, go, tic-tac-toe qualify; poker and bridge do not (they need expectiminimax over chance nodes or belief states).\n\nA game is formalised as: an **initial state**, a **PLAYER(s)** function saying whose turn it is, **ACTIONS(s)**, **RESULT(s, a)**, a **terminal test**, and a **utility function** $\\text{UTILITY}(s, p)$ giving the final numeric payoff. The resulting **game tree** alternates MAX levels and MIN levels. One move by one player is a **ply**; a full round of both players is often loosely called a move, and the difference matters when a question says 'search to depth 4'."
+    },
+    {
+     "t": "md",
+     "text": "## The minimax algorithm\n\nThe **minimax value** of a node is the utility of the terminal state reached if both players play optimally from there:\n\n$$\\text{MINIMAX}(n) = \\begin{cases}\\text{UTILITY}(n) & n \\text{ terminal}\\\\ \\max_{a \\in \\text{ACTIONS}(n)} \\text{MINIMAX}(\\text{RESULT}(n,a)) & \\text{PLAYER}(n) = \\text{MAX}\\\\ \\min_{a \\in \\text{ACTIONS}(n)} \\text{MINIMAX}(\\text{RESULT}(n,a)) & \\text{PLAYER}(n) = \\text{MIN}\\end{cases}$$\n\nThe algorithm is a complete depth-first exploration of the game tree, with values **backed up** from the leaves. MAX nodes take the maximum of their children, MIN nodes the minimum, and the root's value is the best MAX can force regardless of how MIN plays. The move to play is the child achieving the root value — that child, not the value, is what you report.\n\nProperties, with $b$ the branching factor and $m$ the maximum depth:\n\n| | minimax |\n|---|---|\n| Complete | Yes, if the tree is finite |\n| Optimal | Yes, against an optimal opponent |\n| Time | $O(b^m)$ |\n| Space | $O(bm)$ (depth-first) — $O(m)$ if actions are generated one at a time |\n\nOptimality is against an **optimal** opponent. Against a fallible opponent minimax may be beatable by a less cautious strategy, because minimax assumes the worst reply and will never take a risk that pays off against a weak player. For more than two players the single backed-up number is replaced by a **vector of utilities**, one per player, and each node maximises its own component.\n\nBecause $b \\approx 35$ and a chess game runs about 50 moves per side, $b^m \\approx 35^{100}$ — utterly infeasible. So practical programs cut the search off at a depth limit and apply a **heuristic evaluation function** to the non-terminal leaves."
+    },
+    {
+     "t": "md",
+     "text": "## Alpha-beta pruning\n\nAlpha-beta computes **exactly the same root value as minimax** while skipping branches that cannot influence it. Two bounds are threaded down the recursion:\n\n- $\\alpha$ = the value of the best (highest) choice found so far anywhere along the path for **MAX**; it only ever increases.\n- $\\beta$ = the value of the best (lowest) choice found so far along the path for **MIN**; it only ever decreases.\n\nAt any node the search is abandoned as soon as $\\alpha \\ge \\beta$. Concretely:\n\n- At a **MIN** node, after a child returns a value the node's current value $v$ can only fall. Set $\\beta \\leftarrow \\min(\\beta, v)$; if $v \\le \\alpha$, stop examining further children — a **beta cut-off**. MAX already has an option worth $\\alpha$ elsewhere and will never enter a node worth at most that.\n- At a **MAX** node, $v$ can only rise. Set $\\alpha \\leftarrow \\max(\\alpha, v)$; if $v \\ge \\beta$, stop — an **alpha cut-off**.\n\nThe root is called with $\\alpha = -\\infty$, $\\beta = +\\infty$. Notice the cross-naming that catches people out: an *alpha cut-off* happens at a MAX node using the inherited $\\beta$, and a *beta cut-off* happens at a MIN node using the inherited $\\alpha$. The names refer to the value that *caused* the cut, not to the node type.\n\nA pruned subtree is never evaluated, but a node whose value is already partly determined still returns a value — possibly one that is only a bound rather than the true minimax value. That is harmless, because a bound is enough to know the parent will not choose it."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — alpha-beta on an 8-leaf tree",
+     "text": "A three-ply tree: root is MAX, its two children $B$ and $C$ are MIN, their children $D, E, F, G$ are MAX, and the eight leaves left to right are\n\n$$3,\\ 5\\ \\ |\\ \\ 6,\\ 9\\ \\ |\\ \\ 1,\\ 2\\ \\ |\\ \\ 0,\\ -1$$\n\nso $D = \\{3,5\\}$, $E = \\{6,9\\}$ under $B$, and $F = \\{1,2\\}$, $G = \\{0,-1\\}$ under $C$.\n\n**Plain minimax first**, for the answer we must reproduce: $D = \\max(3,5) = 5$, $E = \\max(6,9) = 9$, so $B = \\min(5, 9) = 5$. $F = \\max(1,2) = 2$, $G = \\max(0,-1) = 0$, so $C = \\min(2, 0) = 0$. Root $= \\max(5, 0) = \\mathbf{5}$.\n\n**Now alpha-beta, left to right.**\n\n1. Root (MAX): $\\alpha = -\\infty$, $\\beta = +\\infty$. Descend to $B$.\n2. $B$ (MIN): inherits $\\alpha = -\\infty$, $\\beta = +\\infty$. Descend to $D$.\n3. $D$ (MAX): $\\alpha = -\\infty$, $\\beta = +\\infty$. Leaf **3** → $v = 3$, $\\alpha = 3$. Leaf **5** → $v = 5$, $\\alpha = 5$. No cut ($5 < \\infty$). $D$ returns **5**.\n4. $B$: $v = 5$, so $\\beta = \\min(+\\infty, 5) = 5$. $5 > \\alpha = -\\infty$, no cut. Descend to $E$ with $\\alpha = -\\infty$, $\\beta = 5$.\n5. $E$ (MAX): leaf **6** → $v = 6$, $\\alpha = \\max(-\\infty, 6) = 6$. Test: $\\alpha = 6 \\ge \\beta = 5$ → **cut off**. Leaf **9 is never evaluated**. $E$ returns 6 (a lower bound, which is all that is needed).\n6. $B$: $v = \\min(5, 6) = 5$. $B$ returns **5**.\n7. Root: $v = 5$, $\\alpha = \\max(-\\infty, 5) = 5$. Descend to $C$ with $\\alpha = 5$, $\\beta = +\\infty$.\n8. $C$ (MIN): descend to $F$ with $\\alpha = 5$, $\\beta = +\\infty$.\n9. $F$ (MAX): leaf **1** → $v = 1$, $\\alpha$ stays 5. Leaf **2** → $v = 2$, $\\alpha$ stays 5. No cut is possible at $F$ because $\\beta = \\infty$. $F$ returns **2**.\n10. $C$: $v = 2$, $\\beta = \\min(+\\infty, 2) = 2$. Test: $\\alpha = 5 \\ge \\beta = 2$ → **cut off**. The whole subtree $G$, i.e. leaves **0** and **−1**, is never generated. $C$ returns 2 (an upper bound; its true value 0 is never computed and does not matter).\n11. Root: $v = \\max(5, 2) = \\mathbf{5}$, achieved by moving to $B$.\n\n**Result.** Root value 5 — identical to minimax. Leaves evaluated: $3, 5, 6, 1, 2$ — five of eight. **Pruned: leaf 9, and the entire subtree $G$ (leaves 0 and −1)** — three leaves and one internal node.\n\n**Order matters.** If the leaves of $E$ came in the order $9, 6$, the first one already gives $\\alpha = 9 \\ge \\beta = 5$ and the cut happens just as early. But if the *branches under $C$* were swapped so that $G$ came first, $G$ would return 0, giving $\\beta = 0 \\le \\alpha = 5$ and cutting $F$ instead — the same number of prunings here, but in general the ordering can change the count a great deal."
+    },
+    {
+     "t": "lab",
+     "lab": "alphabeta",
+     "title": "Try it — alpha-beta pruning",
+     "note": "Edit the leaf values, step through the traversal, and watch alpha, beta and each cut-off as it happens."
+    },
+    {
+     "t": "md",
+     "text": "## How much does pruning buy? The $b^{d/2}$ result\n\nThe effectiveness of alpha-beta depends entirely on **move ordering**.\n\n- **Perfect ordering** — at every node the best move is examined first. Then alpha-beta examines $O(b^{d/2})$ leaf nodes instead of $O(b^d)$. Precisely, the number of leaves examined is $b^{\\lceil d/2 \\rceil} + b^{\\lfloor d/2 \\rfloor} - 1$.\n- **Random ordering** — roughly $O(b^{3d/4})$ for moderate $b$.\n- **Worst ordering** — worst move first at every node — no pruning at all, $O(b^d)$, exactly minimax.\n\nThe headline consequence: since $b^{d/2} = (\\sqrt{b})^{d}$, the **effective branching factor becomes $\\sqrt{b}$**, and in the same amount of time alpha-beta can search **twice as deep** as minimax. For chess, $b \\approx 35$ drops to an effective $\\sqrt{35} \\approx 6$, which is the difference between a program that plays badly and one that plays well.\n\nOrdering is improved in practice by trying **captures before non-captures**, by the **killer move** heuristic (a move that caused a cut-off at the same depth elsewhere is tried first), by **transposition tables** (a hash table of already-evaluated positions, which also collapses the game *tree* into a *graph* — different move orders reaching the same position), and by **iterative deepening**, whose depth-$k$ results provide the ordering for depth $k+1$."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — counting leaves saved",
+     "text": "A game tree has branching factor $b = 4$ and is searched to depth $d = 6$ plies.\n\n**Minimax** must evaluate every leaf: $b^d = 4^6 = 4096$.\n\n**Alpha-beta with perfect ordering** evaluates\n$$b^{\\lceil d/2\\rceil} + b^{\\lfloor d/2 \\rfloor} - 1 = 4^3 + 4^3 - 1 = 64 + 64 - 1 = 127$$\nleaves. The commonly quoted approximation $b^{d/2} = 4^3 = 64$ is the order-of-magnitude figure; 127 is the exact count. Either way the saving is about **97%**.\n\n**How deep can alpha-beta go in the time minimax takes for depth 6?** Solve $b^{d'/2} = b^{6}$, giving $d' = 12$ — **twice the depth**.\n\n**With random ordering** the estimate is $b^{3d/4} = 4^{4.5} = 512$ leaves, still an eightfold saving over 4096 but four times worse than perfect ordering. This is why move-ordering heuristics are worth as much engineering effort as the evaluation function."
+    },
+    {
+     "t": "md",
+     "text": "## Evaluation functions, cut-offs and their pathologies\n\nA depth-limited search replaces `UTILITY` at the frontier with an **evaluation function** $\\text{EVAL}(s)$ that estimates the position's value. A good one must (i) order terminal states exactly as the true utility does, (ii) be cheap to compute, and (iii) for non-terminal states correlate strongly with the actual chance of winning. The usual form is a **weighted linear function of features**\n\n$$\\text{EVAL}(s) = w_1 f_1(s) + w_2 f_2(s) + \\cdots + w_n f_n(s)$$\n\nwith features such as material counts (pawn 1, knight/bishop 3, rook 5, queen 9), pawn structure, king safety and mobility. Linearity assumes the features are independent, which they are not — a bishop is worth more in the endgame — so strong programs use non-linear combinations or separate weight sets per game phase.\n\nTwo pathologies of depth-limited search are named in the syllabus:\n\n- **The horizon effect.** A program facing an unavoidable loss will play pointless delaying moves that push the bad event just past its search depth, so the evaluation at the frontier looks acceptable while the position is in fact lost. **Singular extensions** — following clearly-best moves beyond the nominal depth — mitigate it.\n- **Non-quiescence.** Evaluating in the middle of an exchange gives a wildly wrong value. The fix is **quiescent search**: at the frontier, keep searching capture sequences only, until the position is *quiet*, and evaluate there.\n\nA **cut-off test** should therefore depend on more than depth: stop only at quiescent positions, and extend forced lines. **Forward pruning** (beam search over moves, ProbCut) discards moves outright and, unlike alpha-beta, can change the value returned.\n\nFor **stochastic games** such as backgammon, the tree gains **chance nodes** and minimax becomes **expectiminimax**, in which a chance node takes the probability-weighted average of its children, $\\sum_r P(r)\\,\\text{EXPECTIMINIMAX}(\\text{RESULT}(s,r))$. Because an average is not a max or min, evaluation functions for such games must be a **positive linear transformation** of the probability of winning, not merely order-preserving."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.2-1",
+     "q": "In the worked 8-leaf tree with leaves 3, 5, 6, 9, 1, 2, 0, −1 (left to right, root MAX), how many leaves does alpha-beta evaluate?",
+     "opts": [
+      "4",
+      "5",
+      "6",
+      "8"
+     ],
+     "ans": 1,
+     "exp": "It evaluates 3 and 5 (giving $D = 5$, so $\\beta = 5$ at $B$), then 6 at $E$ which makes $\\alpha = 6 \\ge \\beta = 5$ and prunes 9. Back at the root $\\alpha = 5$; under $C$ the node $F$ needs both 1 and 2, returning 2, which sets $\\beta = 2 \\le \\alpha = 5$ and prunes the whole subtree $G$. Evaluated: 3, 5, 6, 1, 2 — five leaves, root value still 5."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.2-2",
+     "q": "With optimal move ordering, a game tree of branching factor $b$ searched to depth $d$ requires alpha-beta to examine approximately how many leaf nodes?",
+     "opts": [
+      "$b^{d}$",
+      "$b^{d/2}$",
+      "$b^{3d/4}$",
+      "$b \\cdot d$"
+     ],
+     "ans": 1,
+     "exp": "Perfect ordering halves the exponent, giving $O(b^{d/2})$ — exactly $b^{\\lceil d/2\\rceil} + b^{\\lfloor d/2\\rfloor} - 1$. Equivalently the effective branching factor becomes $\\sqrt{b}$, so the same time budget buys twice the depth. $b^{3d/4}$ is the random-ordering estimate and $b^d$ is plain minimax (worst ordering)."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.2-3",
+     "q": "Which statement about alpha-beta pruning is FALSE?",
+     "opts": [
+      "It returns the same value at the root as minimax",
+      "It may return a value that is only a bound at some internal nodes",
+      "Its effectiveness depends on the order in which moves are examined",
+      "It can prune a branch that contains the optimal move for the root"
+     ],
+     "ans": 3,
+     "exp": "Alpha-beta is exact at the root: a branch is cut only when it has been proved that it cannot affect the root value, so the optimal root move is never pruned. The other three are all true — internal nodes may return bounds rather than exact minimax values, and ordering is what separates $O(b^{d/2})$ from $O(b^d)$."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Propagate alpha and beta downwards, values upwards",
+     "body": "Before touching any child, write the inherited $(\\alpha, \\beta)$ beside the node. Then after each child returns, update $\\alpha$ at MAX nodes or $\\beta$ at MIN nodes, and test $\\alpha \\ge \\beta$. Doing it in this fixed rhythm — inherit, evaluate, update, test — removes almost all errors in trace questions."
+    },
+    {
+     "title": "A MIN node cuts when its value drops to or below alpha",
+     "body": "Stated as a single sentence per node type: 'MIN stops when it finds something MAX would refuse ($v \\le \\alpha$); MAX stops when it finds something MIN would refuse ($v \\ge \\beta$).' You do not need to remember which cut is named alpha and which beta to answer a counting question."
+    },
+    {
+     "title": "Leftmost path is never pruned",
+     "body": "The first root-to-leaf path is always fully evaluated, because both bounds are still infinite on the way down. So in any 'how many leaves are evaluated' question the answer is at least $d+1$ deep along the left spine, and the leftmost leaf of every first-visited subtree is always evaluated. This is a fast sanity check on your count."
+    },
+    {
+     "title": "Read ply counts carefully",
+     "body": "'Depth 4' in a game question usually means 4 plies = 4 levels of nodes below the root, which is 2 moves for each player. Complexity formulas use plies. If a question says '2 moves ahead' for both players, set $d = 4$ before applying $b^{d/2}$."
+    },
+    {
+     "title": "Best and worst case in one line",
+     "body": "Best case (perfect ordering) $b^{d/2}$, worst case (worst ordering) $b^d$, i.e. no pruning at all. If a question asks for the *maximum* number of leaves alpha-beta might evaluate, the answer is always the full $b^d$ — pruning is never guaranteed."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Pruning does not change the answer",
+     "body": "Candidates sometimes claim alpha-beta trades accuracy for speed. It does not: the root value and the chosen move are identical to minimax's. Only *forward pruning* (beam search, ProbCut) sacrifices exactness, and it is a different technique."
+    },
+    {
+     "title": "The number pruned depends on the order given",
+     "body": "There is no single 'correct' pruning count for a set of leaf values — it depends on the left-to-right order in which they appear. Always trace the tree exactly as drawn, left to right, and never reorder branches to 'optimise' unless the question explicitly asks for the best case."
+    },
+    {
+     "title": "Alpha never decreases, beta never increases",
+     "body": "If your trace shows $\\alpha$ falling or $\\beta$ rising you have made an error. The bounds tighten monotonically along a path, and each node's copies are local — updating $\\beta$ inside a subtree does not change the parent's $\\beta$."
+    },
+    {
+     "title": "An internal node's reported value may not be its minimax value",
+     "body": "In the worked example $C$ returns 2, although its true minimax value is 0. This is correct behaviour: 2 is an upper bound, and since $2 < 5$ the root is unaffected. A question asking for 'the minimax value of node C' after a pruned search is testing whether you know the difference between a bound and a value."
+    }
+   ]
+  },
+  {
+   "id": "10.3",
+   "title": "Knowledge Representation and Expert Systems",
+   "summary": "Logic-based and structured representations, resolution with unification worked end to end, semantic nets, frames, scripts, expert system architecture and the three uncertainty formalisms.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## What a representation has to do\n\nA knowledge representation scheme is judged on four properties that recur in exam questions:\n\n- **Representational adequacy** — can it express everything the domain requires?\n- **Inferential adequacy** — can new knowledge be derived from what is stored?\n- **Inferential efficiency** — can the inference be directed so it finishes in reasonable time?\n- **Acquisitional efficiency** — can new knowledge be added easily, ideally by the machine itself?\n\nNo scheme scores well on all four, which is why several coexist. The broad families are **logical** (propositional and first-order logic), **structured/slot-and-filler** (semantic networks, frames, scripts, conceptual dependency), **procedural** (production rules), and **probabilistic** (Bayesian networks). The logical family is the most examined because its inference rules are mechanical and gradeable."
+    },
+    {
+     "t": "md",
+     "text": "## Propositional logic\n\nSyntax: propositional symbols combined with $\\neg, \\land, \\lor, \\Rightarrow, \\Leftrightarrow$. Semantics is given by truth tables. The key relations:\n\n- **Validity (tautology)**: true in every model. $\\alpha$ is valid iff $\\neg \\alpha$ is unsatisfiable.\n- **Satisfiability**: true in at least one model. SAT is the original NP-complete problem.\n- **Entailment**: $KB \\models \\alpha$ iff every model of $KB$ is a model of $\\alpha$. The **deduction theorem** links the two: $KB \\models \\alpha$ iff $(KB \\Rightarrow \\alpha)$ is valid iff $KB \\land \\neg\\alpha$ is **unsatisfiable**. That last form is what resolution exploits — **proof by refutation**.\n\nAn inference procedure is **sound** if everything it derives is entailed, and **complete** if it derives everything that is entailed. Resolution is both, for propositional logic and (in refutation form) for first-order logic.\n\nStandard equivalences needed to reach CNF: $\\alpha \\Rightarrow \\beta \\equiv \\neg \\alpha \\lor \\beta$; $\\alpha \\Leftrightarrow \\beta \\equiv (\\alpha \\Rightarrow \\beta) \\land (\\beta \\Rightarrow \\alpha)$; De Morgan; distribution of $\\lor$ over $\\land$. A **Horn clause** is a disjunction with at most one positive literal; entailment over Horn clauses is decidable in linear time by **forward chaining** or **backward chaining**, which is why production systems use rule form."
+    },
+    {
+     "t": "md",
+     "text": "## First-order logic\n\nPropositional logic cannot say 'all humans are mortal' without one sentence per human. FOL adds **objects**, **relations (predicates)**, **functions**, **variables** and the quantifiers $\\forall$ and $\\exists$.\n\nThe two quantifier idioms that examiners test:\n\n- $\\forall x\\ (P(x) \\Rightarrow Q(x))$ — universal quantification pairs with **implication**. Writing $\\forall x\\ (P(x) \\land Q(x))$ instead asserts that *everything* is a $P$ and a $Q$.\n- $\\exists x\\ (P(x) \\land Q(x))$ — existential quantification pairs with **conjunction**. Writing $\\exists x\\ (P(x) \\Rightarrow Q(x))$ is almost vacuously true, satisfied by any object that is not a $P$.\n\nQuantifier duality: $\\forall x\\, P(x) \\equiv \\neg \\exists x\\, \\neg P(x)$ and $\\exists x\\, P(x) \\equiv \\neg \\forall x\\, \\neg P(x)$. Order matters: $\\forall x \\exists y\\ \\text{Loves}(x,y)$ ('everyone loves someone') is weaker than $\\exists y \\forall x\\ \\text{Loves}(x,y)$ ('someone is loved by everyone').\n\nInference rules: **Universal Instantiation** replaces $\\forall x\\, \\alpha$ by $\\alpha\\{x/g\\}$ for any ground term $g$; **Existential Instantiation** replaces $\\exists x\\, \\alpha$ by $\\alpha\\{x/k\\}$ for a **new** constant $k$, a *Skolem constant*. UI can be applied repeatedly, EI exactly once per existential."
+    },
+    {
+     "t": "md",
+     "text": "## Unification\n\nA **substitution** $\\theta$ maps variables to terms. $\\text{UNIFY}(p, q)$ returns a substitution $\\theta$ with $p\\theta = q\\theta$, or failure. The **most general unifier (MGU)** is unique up to renaming and imposes the fewest commitments.\n\n| $p$ | $q$ | MGU |\n|---|---|---|\n| $\\text{Knows}(\\text{John}, x)$ | $\\text{Knows}(\\text{John}, \\text{Jane})$ | $\\{x/\\text{Jane}\\}$ |\n| $\\text{Knows}(\\text{John}, x)$ | $\\text{Knows}(y, \\text{Bill})$ | $\\{x/\\text{Bill},\\ y/\\text{John}\\}$ |\n| $\\text{Knows}(\\text{John}, x)$ | $\\text{Knows}(y, \\text{Mother}(y))$ | $\\{y/\\text{John},\\ x/\\text{Mother}(\\text{John})\\}$ |\n| $\\text{Knows}(\\text{John}, x)$ | $\\text{Knows}(x, \\text{Elizabeth})$ | **fail** — until $x$ is renamed |\n| $x$ | $f(x)$ | **fail** — occurs check |\n\nTwo rules govern the failures. **Standardising apart** renames variables so that no two clauses share one; after renaming the fourth row unifies with $\\{x/\\text{Elizabeth},\\ x_1/\\text{John}\\}$. The **occurs check** forbids binding a variable to a term containing it, which would create an infinite term; omitting it (as Prolog does by default) makes the algorithm unsound but linear-time instead of quadratic.\n\nOther failure conditions: two distinct constants never unify, and predicates or functions of different name or arity never unify."
+    },
+    {
+     "t": "md",
+     "text": "## Conversion to clause form and resolution\n\nResolution works on **clauses** — disjunctions of literals. The conversion of an arbitrary FOL sentence proceeds in a fixed order, and getting the order wrong is a classic mistake:\n\n1. Eliminate $\\Leftrightarrow$ and then $\\Rightarrow$.\n2. Move $\\neg$ inwards (De Morgan and quantifier duality) until it applies only to atoms.\n3. **Standardise apart** — rename variables so each quantifier uses a unique one.\n4. **Skolemise** — replace each existentially quantified variable by a **Skolem constant** if it lies outside every universal, or by a **Skolem function** of the enclosing universally quantified variables if it lies inside them. $\\forall x \\exists y\\ P(x,y)$ becomes $\\forall x\\ P(x, f(x))$.\n5. Drop the remaining universal quantifiers (they are now implicit).\n6. Distribute $\\lor$ over $\\land$ to reach CNF.\n7. Split the conjunction into separate clauses and rename variables again so clauses share none.\n\nThe **resolution rule** for FOL: from $\\ell_1 \\lor \\cdots \\lor \\ell_k$ and $m_1 \\lor \\cdots \\lor m_n$, where $\\text{UNIFY}(\\ell_i, \\neg m_j) = \\theta$, infer\n$$(\\ell_1 \\lor \\cdots \\lor \\ell_{i-1} \\lor \\ell_{i+1} \\lor \\cdots \\lor m_1 \\lor \\cdots \\lor m_{j-1} \\lor m_{j+1} \\lor \\cdots)\\theta$$\nTo prove $KB \\models \\alpha$, add $\\neg \\alpha$ to the clause set and derive the **empty clause** $\\square$, which is unsatisfiable. Resolution is **refutation-complete**: if the set is unsatisfiable, resolution will eventually derive $\\square$. It is not complete in the sense of generating every entailed sentence.\n\nSearch strategies over the clause set include **unit preference** (prefer resolving with a one-literal clause), **set of support** (every resolution must involve a clause descended from the negated goal), **input resolution**, and **subsumption** (delete clauses subsumed by more general ones)."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — resolution with unification, step by step",
+     "text": "**Knowledge base.** 'Anyone who sells weapons to a hostile nation is a criminal. Nono owns a missile, which it bought from West. Missiles are weapons. Enemies of America are hostile. West is American. Nono is an enemy of America.' Prove: *West is a criminal.*\n\n**Clause form** (already skolemised and standardised apart; each clause's variables are its own):\n\n| # | Clause |\n|---|---|\n| C1 | $\\neg\\text{American}(x) \\lor \\neg\\text{Weapon}(y) \\lor \\neg\\text{Sells}(x,y,z) \\lor \\neg\\text{Hostile}(z) \\lor \\text{Criminal}(x)$ |\n| C2 | $\\text{Owns}(\\text{Nono}, M_1)$ |\n| C3 | $\\text{Missile}(M_1)$ |\n| C4 | $\\neg\\text{Missile}(u) \\lor \\neg\\text{Owns}(\\text{Nono}, u) \\lor \\text{Sells}(\\text{West}, u, \\text{Nono})$ |\n| C5 | $\\neg\\text{Missile}(v) \\lor \\text{Weapon}(v)$ |\n| C6 | $\\neg\\text{Enemy}(w, \\text{America}) \\lor \\text{Hostile}(w)$ |\n| C7 | $\\text{American}(\\text{West})$ |\n| C8 | $\\text{Enemy}(\\text{Nono}, \\text{America})$ |\n\n**Negated goal.** C9: $\\neg\\text{Criminal}(\\text{West})$.\n\n**Derivation** (set-of-support: every step uses the current goal descendant).\n\n1. **C9 with C1.** Unify $\\text{Criminal}(\\text{West})$ with $\\text{Criminal}(x)$: $\\theta_1 = \\{x/\\text{West}\\}$.\n  $\\Rightarrow$ R1: $\\neg\\text{American}(\\text{West}) \\lor \\neg\\text{Weapon}(y) \\lor \\neg\\text{Sells}(\\text{West},y,z) \\lor \\neg\\text{Hostile}(z)$\n2. **R1 with C7.** $\\text{American}(\\text{West})$ matches exactly, $\\theta_2 = \\{\\}$.\n  $\\Rightarrow$ R2: $\\neg\\text{Weapon}(y) \\lor \\neg\\text{Sells}(\\text{West},y,z) \\lor \\neg\\text{Hostile}(z)$\n3. **R2 with C5.** Unify $\\text{Weapon}(y)$ with $\\text{Weapon}(v)$: $\\theta_3 = \\{v/y\\}$.\n  $\\Rightarrow$ R3: $\\neg\\text{Missile}(y) \\lor \\neg\\text{Sells}(\\text{West},y,z) \\lor \\neg\\text{Hostile}(z)$\n4. **R3 with C3.** Unify $\\text{Missile}(y)$ with $\\text{Missile}(M_1)$: $\\theta_4 = \\{y/M_1\\}$.\n  $\\Rightarrow$ R4: $\\neg\\text{Sells}(\\text{West},M_1,z) \\lor \\neg\\text{Hostile}(z)$\n5. **R4 with C4.** Unify $\\text{Sells}(\\text{West},M_1,z)$ with $\\text{Sells}(\\text{West},u,\\text{Nono})$: $\\theta_5 = \\{u/M_1,\\ z/\\text{Nono}\\}$.\n  $\\Rightarrow$ R5: $\\neg\\text{Missile}(M_1) \\lor \\neg\\text{Owns}(\\text{Nono},M_1) \\lor \\neg\\text{Hostile}(\\text{Nono})$\n6. **R5 with C3.** $\\Rightarrow$ R6: $\\neg\\text{Owns}(\\text{Nono},M_1) \\lor \\neg\\text{Hostile}(\\text{Nono})$\n7. **R6 with C2.** $\\Rightarrow$ R7: $\\neg\\text{Hostile}(\\text{Nono})$\n8. **R7 with C6.** Unify $\\text{Hostile}(\\text{Nono})$ with $\\text{Hostile}(w)$: $\\theta_8 = \\{w/\\text{Nono}\\}$.\n  $\\Rightarrow$ R8: $\\neg\\text{Enemy}(\\text{Nono},\\text{America})$\n9. **R8 with C8.** Complementary ground literals, nothing left.\n  $\\Rightarrow$ **$\\square$ (empty clause)**\n\nThe empty clause means $KB \\land \\neg\\text{Criminal}(\\text{West})$ is unsatisfiable, therefore $KB \\models \\text{Criminal}(\\text{West})$. The composed substitution $\\{x/\\text{West},\\ y/M_1,\\ z/\\text{Nono}\\}$ is the **answer extraction** — it tells you *which* weapon and *which* nation made West a criminal.\n\n**A propositional warm-up in the same shape.** From $\\{P \\lor Q,\\ \\neg P \\lor R,\\ \\neg Q \\lor R,\\ \\neg R\\}$: resolve 1 and 2 on $P$ to get $Q \\lor R$; resolve that with 3 on $Q$ to get $R \\lor R = R$ (**factoring** collapses the duplicate); resolve $R$ with $\\neg R$ to get $\\square$. The set is unsatisfiable, so $\\{P\\lor Q,\\ P \\Rightarrow R,\\ Q \\Rightarrow R\\} \\models R$."
+    },
+    {
+     "t": "md",
+     "text": "## Structured representations\n\n**Semantic networks** are labelled directed graphs: nodes are concepts or instances, arcs are binary relations. The two structural arcs are **IS-A** (subclass, e.g. *Dog IS-A Mammal*) and **INSTANCE-OF** (membership, e.g. *Rex INSTANCE-OF Dog*). Their value is **inheritance**: a property stated once at *Mammal* is available to every descendant, which is both compact and the source of trouble. **Default reasoning** with exceptions (*birds fly, but penguins do not*) makes the logic **non-monotonic** — adding a fact can retract a conclusion. **Multiple inheritance** creates ambiguity (the Nixon diamond: a Quaker-and-Republican is both pacifist and non-pacifist); resolution rules such as *most specific first* are needed. **Partitioned semantic nets** (Hendrix) add spaces so that quantification and negation can be expressed, which plain nets cannot do.\n\n**Frames** (Minsky) group everything known about a concept into one record of **slots** with **fillers**. Slots carry **facets**: `value`, `default`, `range`, `if-needed` and `if-added` **procedural attachments** (demons) that compute a value on demand or fire when one is written. Frames therefore mix declarative and procedural knowledge. A frame system is essentially an object-oriented representation with inheritance; the exam contrast is that a **semantic net emphasises relations between concepts, a frame emphasises the internal structure of one concept**.\n\n**Scripts** (Schank and Abelson) represent stereotyped event sequences — the restaurant script is the standard example. Components: **entry conditions**, **roles** (customer, waiter, cook), **props** (table, menu, food, money), **results**, **tracks** (variants such as fast-food versus fine-dining), and **scenes** (entering, ordering, eating, exiting). Scripts let a system answer questions about events never explicitly stated: after 'John ate at a restaurant and left', the system can answer 'did John pay?'.\n\n**Conceptual dependency (CD)** (Schank) represents the *meaning* of a sentence independently of the words used, so that paraphrases get identical structures. Everything reduces to a small set of **primitive acts**: ATRANS (transfer of abstract relationship, e.g. give), PTRANS (physical transfer, e.g. go), PROPEL, MOVE, GRASP, INGEST, EXPEL, MTRANS (transfer of mental information, e.g. tell), MBUILD (build new information, e.g. decide), SPEAK, ATTEND. Conceptual roles are ACTOR, ACTION, OBJECT, DIRECTION (source and destination) and STATE. The strength is canonical form — 'John gave Mary a book' and 'Mary received a book from John' produce the same ATRANS structure; the weakness is that decomposing every verb into primitives is laborious and lossy.\n\n**Ontologies** are formal, explicit specifications of a shared conceptualisation: a vocabulary of classes, properties, individuals, and axioms constraining them. An **upper ontology** covers general categories (objects, events, time, measures, substances) usable across domains. Description logics such as those underlying **OWL** give ontologies a decidable subset of FOL with efficient subsumption reasoning. Ontologies are what make knowledge *sharable* between systems, which is the bridge to the semantic web in topic 10.6."
+    },
+    {
+     "t": "md",
+     "text": "## Expert systems\n\nAn **expert system** applies encoded domain expertise to problems that would otherwise need a human specialist. The standard architecture:\n\n- **Knowledge base** — domain knowledge, usually as production rules `IF conditions THEN conclusions`, separated deliberately from the control logic.\n- **Working memory (fact base)** — the facts about the case at hand, asserted by the user or derived.\n- **Inference engine** — the control loop. In a production system this is **match** (find rules whose antecedents are satisfied), **conflict resolution** (choose one from the matched set, by specificity, recency, rule order or refractoriness), and **act** (fire it). Chaining direction: **forward chaining** is data-driven, good when there are many possible goals and few facts (monitoring, configuration); **backward chaining** is goal-driven, good when a specific hypothesis is being tested (diagnosis). Backward chaining is what makes an expert system able to ask the user only the questions it needs.\n- **Explanation facility** — answers 'why are you asking this?' (the rule currently being pursued) and 'how did you conclude that?' (the proof tree).\n- **Knowledge acquisition subsystem** — tools for the knowledge engineer to add and check rules; the **knowledge acquisition bottleneck** is the standard named difficulty of the field.\n- **User interface**, often natural-language-like.\n\nClassic systems worth naming: **DENDRAL** (molecular structure from mass spectrometry, the first), **MYCIN** (bacterial infection diagnosis, introduced certainty factors and backward chaining), **PROSPECTOR** (mineral exploration, used Bayesian updating), **XCON/R1** (VAX configuration, forward chaining, the first large commercial success), **CASNET** and **INTERNIST** (medicine). An **expert system shell** is such a system with the knowledge base emptied out — EMYCIN is MYCIN's shell.\n\nAdvantages: permanence, consistency, availability, and the ability to explain. Limitations: brittleness at the edges of the knowledge base, no common sense, inability to learn from experience, and difficulty with problems requiring deep causal models rather than surface associations."
+    },
+    {
+     "t": "md",
+     "text": "## Reasoning under uncertainty\n\nProduction rules are all-or-nothing, but real diagnosis is not. Three formalisms appear in the syllabus.\n\n### Certainty factors (MYCIN)\n\nEach fact and each rule carries a number in $[-1, +1]$: $+1$ definitely true, $-1$ definitely false, $0$ no evidence. $CF = MB - MD$, the measure of belief minus the measure of disbelief. Propagation through a rule:\n\n$$CF(H) = CF(\\text{rule}) \\times \\max\\bigl(0,\\ CF(E)\\bigr)$$\n\nFor compound antecedents, $CF(E_1 \\land E_2) = \\min(CF_1, CF_2)$ and $CF(E_1 \\lor E_2) = \\max(CF_1, CF_2)$. When two rules support the *same* hypothesis, combine:\n\n$$CF_{\\text{comb}} = \\begin{cases} CF_1 + CF_2(1 - CF_1) & \\text{both} \\ge 0\\\\[2pt] CF_1 + CF_2(1 + CF_1) & \\text{both} \\le 0\\\\[2pt] \\dfrac{CF_1 + CF_2}{1 - \\min(|CF_1|, |CF_2|)} & \\text{opposite signs}\\end{cases}$$\n\nThe scheme is commutative and associative (order of evidence does not matter) and cheap, but it is not probabilistically sound — it assumes the pieces of evidence are conditionally independent and that rules are modular, which is why it was superseded.\n\n### Bayesian networks\n\nA **Bayesian network** is a directed acyclic graph whose nodes are random variables and whose edges express direct influence, together with a conditional probability table $P(X_i \\mid \\text{Parents}(X_i))$ at each node. Its meaning is the factorisation of the full joint distribution:\n\n$$P(x_1, \\dots, x_n) = \\prod_{i=1}^{n} P\\bigl(x_i \\mid \\text{parents}(X_i)\\bigr)$$\n\nThis is the compactness result: a joint over $n$ booleans needs $2^n - 1$ numbers, but a network in which each node has at most $k$ parents needs only $n \\cdot 2^k$. Each variable is **conditionally independent of its non-descendants given its parents**; the graphical criterion for reading off all independencies is **d-separation**, and a node's **Markov blanket** (parents, children, children's other parents) shields it from the rest of the network.\n\nExact inference by **enumeration** sums out the hidden variables; **variable elimination** does the same while caching factors and avoiding repeated work. Exact inference in general Bayesian networks is **NP-hard**, so approximate methods — **rejection sampling**, **likelihood weighting**, **Gibbs sampling / MCMC** — are used on large networks.\n\n### Dempster-Shafer theory\n\nDS separates *uncertainty* from *ignorance*, which probability cannot. Over a **frame of discernment** $\\Theta$ of mutually exclusive hypotheses, a **basic probability assignment (mass function)** $m$ assigns belief to *subsets* of $\\Theta$, with $m(\\varnothing) = 0$ and $\\sum_{A \\subseteq \\Theta} m(A) = 1$. Mass assigned to $\\Theta$ itself is unassigned belief — pure ignorance.\n\n$$\\text{Bel}(A) = \\sum_{B \\subseteq A} m(B), \\qquad \\text{Pl}(A) = \\sum_{B \\cap A \\ne \\varnothing} m(B) = 1 - \\text{Bel}(\\neg A)$$\n\n$[\\text{Bel}(A), \\text{Pl}(A)]$ is the **belief interval**; its width measures ignorance. **Dempster's rule of combination** fuses two independent mass functions:\n\n$$m_{12}(A) = \\frac{1}{1-K}\\sum_{B \\cap C = A} m_1(B)\\,m_2(C), \\qquad K = \\sum_{B \\cap C = \\varnothing} m_1(B)\\,m_2(C)$$\n\n$K$ is the **conflict**; when $K \\to 1$ the rule produces notoriously counter-intuitive results (Zadeh's paradox)."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — a small Bayesian network, a CF chain and a DS combination",
+     "text": "**(a) Bayesian inference.** Network: $\\text{Rain} \\to \\text{Sprinkler}$, $\\text{Rain} \\to \\text{WetGrass}$, $\\text{Sprinkler} \\to \\text{WetGrass}$.\n\n$P(R) = 0.2$; $P(S \\mid R) = 0.01$, $P(S \\mid \\neg R) = 0.4$;\n$P(W \\mid S,R) = 0.99$, $P(W \\mid S,\\neg R) = 0.9$, $P(W \\mid \\neg S, R) = 0.8$, $P(W \\mid \\neg S, \\neg R) = 0$.\n\n*Find $P(R \\mid W)$ — the grass is wet; did it rain?*\n\nSum out $S$:\n$$P(W \\mid R) = P(S\\mid R)P(W\\mid S,R) + P(\\neg S\\mid R)P(W \\mid \\neg S, R) = 0.01(0.99) + 0.99(0.8)$$\n$$= 0.0099 + 0.792 = 0.8019$$\n$$P(W \\mid \\neg R) = 0.4(0.9) + 0.6(0) = 0.36$$\n\nJoint terms:\n$$P(R, W) = 0.2 \\times 0.8019 = 0.16038, \\qquad P(\\neg R, W) = 0.8 \\times 0.36 = 0.288$$\n$$P(W) = 0.16038 + 0.288 = 0.44838$$\n$$\\boxed{P(R \\mid W) = \\frac{0.16038}{0.44838} = 0.3577}$$\n\nThe prior 0.2 rises to 0.358 — wet grass is evidence for rain, but weak evidence, because the sprinkler explains it more often (note $P(S\\mid \\neg R) = 0.4$ is large). If you additionally learn $S$ is on, $P(R \\mid W, S)$ falls back again: that is **explaining away**, the hallmark of a converging (v-structure) connection.\n\n**(b) Certainty factors.** Two rules conclude *patient has influenza*: rule A fires with $CF_1 = 0.6$, rule B with $CF_2 = 0.4$.\n$$CF_{12} = 0.6 + 0.4(1 - 0.6) = 0.6 + 0.16 = 0.76$$\nA third rule gives *evidence against* with $CF_3 = -0.3$. Opposite signs:\n$$CF_{123} = \\frac{0.76 + (-0.3)}{1 - \\min(0.76,\\,0.3)} = \\frac{0.46}{0.7} = 0.657$$\nBelief drops from 0.76 to 0.657, not to $0.76 - 0.3 = 0.46$: the denominator prevents contradictory evidence from over-correcting.\n\n**(c) Dempster-Shafer.** $\\Theta = \\{\\text{flu},\\ \\text{cold},\\ \\text{allergy}\\}$. Source 1: $m_1(\\{\\text{flu}\\}) = 0.6$, $m_1(\\Theta) = 0.4$. Source 2: $m_2(\\{\\text{cold}\\}) = 0.5$, $m_2(\\Theta) = 0.5$.\n\n| $\\cap$ | $m_2(\\{\\text{cold}\\}) = 0.5$ | $m_2(\\Theta) = 0.5$ |\n|---|---|---|\n| $m_1(\\{\\text{flu}\\}) = 0.6$ | $\\varnothing$ : 0.30 | $\\{\\text{flu}\\}$ : 0.30 |\n| $m_1(\\Theta) = 0.4$ | $\\{\\text{cold}\\}$ : 0.20 | $\\Theta$ : 0.20 |\n\nConflict $K = 0.30$, so divide the rest by $1 - K = 0.70$:\n$$m_{12}(\\{\\text{flu}\\}) = \\tfrac{0.30}{0.70} = 0.4286,\\quad m_{12}(\\{\\text{cold}\\}) = \\tfrac{0.20}{0.70} = 0.2857,\\quad m_{12}(\\Theta) = \\tfrac{0.20}{0.70} = 0.2857$$\nThese sum to 1. Then $\\text{Bel}(\\{\\text{flu}\\}) = 0.4286$ and $\\text{Pl}(\\{\\text{flu}\\}) = 0.4286 + 0.2857 = 0.7143$, giving the belief interval $[0.43,\\ 0.71]$ — width 0.29, the remaining ignorance. Probability theory would have been forced to commit to a single number."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.3-1",
+     "q": "Converting $\\forall x\\, \\exists y\\ \\text{Loves}(x, y)$ to clause form gives",
+     "opts": [
+      "$\\text{Loves}(x, C)$ for a new constant $C$",
+      "$\\text{Loves}(x, f(x))$ for a new function symbol $f$",
+      "$\\text{Loves}(A, B)$ for two new constants",
+      "$\\neg\\text{Loves}(x,y) \\lor \\text{Loves}(y,x)$"
+     ],
+     "ans": 1,
+     "exp": "The existential $\\exists y$ lies inside the scope of $\\forall x$, so the witness for $y$ depends on $x$ and must be a **Skolem function** of $x$, not a constant. A Skolem constant is correct only when the existential is outside every universal quantifier, as in $\\exists y\\, \\forall x\\ \\text{Loves}(x,y) \\to \\text{Loves}(x, C)$."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.3-2",
+     "q": "In the network of the worked example, $P(R) = 0.2$ and $P(R \\mid W) = 0.358$. If we now also observe that the sprinkler is on, $P(R \\mid W, S)$ compared with $P(R\\mid W)$ will",
+     "opts": [
+      "increase, because more evidence always strengthens belief",
+      "decrease, because the sprinkler explains away the wet grass",
+      "stay the same, because $R$ and $S$ are independent",
+      "be undefined without the joint distribution"
+     ],
+     "ans": 1,
+     "exp": "Rain and Sprinkler both cause WetGrass. Given the effect, learning that one cause is present reduces the need to postulate the other — the classic **explaining away** pattern at a converging connection. Rain and Sprinkler are not independent here anyway (there is an edge $R \\to S$), and marginally rain makes the sprinkler *less* likely, reinforcing the drop."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.3-3",
+     "q": "Two rules support hypothesis $H$ with certainty factors $+0.8$ and $+0.5$. The combined certainty factor is",
+     "opts": [
+      "1.3",
+      "0.9",
+      "0.65",
+      "0.4"
+     ],
+     "ans": 1,
+     "exp": "Both are positive, so $CF = CF_1 + CF_2(1 - CF_1) = 0.8 + 0.5(0.2) = 0.8 + 0.1 = 0.9$. The formula is designed so the result always stays inside $[-1, 1]$ and each new piece of confirming evidence closes a fixed fraction of the remaining gap to 1 — never simple addition, which would give the impossible 1.3."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Resolution question? Negate the goal before reading the options",
+     "body": "Every resolution proof starts by adding the negation of what is to be proved. If a question lists the clauses and asks 'which clause set proves X', the answer must contain $\\neg X$. This alone eliminates options in most such questions."
+    },
+    {
+     "title": "Skolem constant versus Skolem function in one test",
+     "body": "Look only at whether the $\\exists$ sits inside any $\\forall$. Inside → function of every enclosing universal variable. Outside → constant. Count the enclosing universals to get the arity: $\\forall x \\forall y \\exists z\\ P(x,y,z)$ gives $P(x, y, g(x,y))$, a binary Skolem function."
+    },
+    {
+     "title": "Unification failures have exactly three causes",
+     "body": "Different constants, different predicate/function name or arity, or the occurs check. If none of these applies and the variables have been standardised apart, the terms unify. Work left to right through the argument lists, applying each binding to the rest before continuing."
+    },
+    {
+     "title": "Bayes net parameter counting",
+     "body": "A node with $k$ boolean parents needs $2^k$ rows and one free number per row. So total parameters $= \\sum_i 2^{|\\text{Parents}(X_i)|}$. Compare against $2^n - 1$ for the full joint to answer 'how much does the network save' — a standard numerical question."
+    },
+    {
+     "title": "CF combination: both positive means 'close the gap'",
+     "body": "$CF_1 + CF_2(1-CF_1)$ is just 'take $CF_2$ of whatever belief is still missing'. So 0.5 then 0.5 gives 0.75, then another 0.5 gives 0.875 — you can do a chain of positive CFs in your head without writing the formula."
+    }
+   ],
+   "traps": [
+    {
+     "title": "$\\forall$ with $\\land$, $\\exists$ with $\\Rightarrow$",
+     "body": "Both are wrong pairings, and both appear as distractors in every FOL translation question. $\\forall x (\\text{Student}(x) \\land \\text{Passes}(x))$ says everything in the universe is a student who passes; $\\exists x (\\text{Student}(x) \\Rightarrow \\text{Passes}(x))$ is true merely because some non-student exists."
+    },
+    {
+     "title": "Resolution is refutation-complete, not complete",
+     "body": "It cannot enumerate all entailed sentences; it can only show that a given sentence's negation is inconsistent with the KB. If a question asks whether resolution is 'complete for first-order logic', the careful answer is 'refutation-complete' — and note that FOL itself is only semi-decidable, so a non-entailed goal may loop forever."
+    },
+    {
+     "title": "Certainty factors are not probabilities",
+     "body": "They do not obey $P(A) + P(\\neg A) = 1$, they are not conditional probabilities, and combining them with Bayes' rule is meaningless. $CF = MB - MD$ can be 0 either because evidence is absent or because belief and disbelief exactly cancel — two very different situations."
+    },
+    {
+     "title": "Bel(A) + Bel(¬A) ≤ 1, with equality only when there is no ignorance",
+     "body": "In Dempster-Shafer the two beliefs need not sum to 1; the shortfall is the mass on supersets. Treating $\\text{Bel}$ as a probability, or assuming $\\text{Pl}(A) = 1 - \\text{Bel}(A)$ instead of $1 - \\text{Bel}(\\neg A)$, is the standard error."
+    }
+   ]
+  },
+  {
+   "id": "10.4",
+   "title": "Planning",
+   "summary": "Components of a planning system, STRIPS operators, goal stack planning traced on the Sussman anomaly, partial-order and hierarchical planning.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## Planning versus search\n\nA planner and a search algorithm both find a sequence of actions from an initial state to a goal, so why is planning a separate subject? Because plain state-space search treats states as **atomic** — indivisible labels with no internal structure — and the goal test as a black box. A planner works with a **factored** representation: states are sets of logical propositions, actions have explicit preconditions and effects, and goals are partial descriptions. That extra structure buys three things search cannot have:\n\n1. **The planner can look inside the goal.** Knowing that the goal is $\\text{ON}(A,B) \\land \\text{ON}(B,C)$ lets it reason backwards from those conditions and derive useful heuristics automatically.\n2. **It can decompose.** Subgoals can be solved largely independently and the results combined, instead of searching one monolithic space.\n3. **It need not commit to an order.** Two actions with no interaction can be left unordered until a reason to order them appears — the **least commitment** principle.\n\nThe three standard assumptions of classical planning define its scope: the world is **fully observable, deterministic, finite and static** (change happens only through the agent's actions), and actions are **instantaneous** with no duration. Relaxing any of these gives conditional planning, contingent planning, replanning or scheduling."
+    },
+    {
+     "t": "md",
+     "text": "## Components of a planning system\n\nWhatever the algorithm, a planner is built from four components, and 'name the components of a planning system' is a recurring short question:\n\n- **A way to represent states and goals.** Classically, conjunctions of function-free ground literals, with the **closed-world assumption**: any literal not listed is false. A goal is a partial state — a conjunction of literals that a state must contain.\n- **A way to represent actions (operators).** Preconditions and effects, parameterised by variables so one schema covers many instances.\n- **A way to detect and resolve interactions** between subplans — the hardest part, and the reason naive decomposition fails.\n- **A search strategy over plans or states**, plus a mechanism for choosing which subgoal to work on next.\n\nThe search can run in either direction. **Progression (forward) planning** applies applicable actions to the initial state; it has a huge branching factor because most applicable actions are irrelevant to the goal. **Regression (backward) planning** starts from the goal and works backwards through **relevant** actions — those whose effects achieve some goal literal without undoing another; the branching factor is far smaller but the intermediate 'states' are partial descriptions, so consistency is harder to check."
+    },
+    {
+     "t": "md",
+     "text": "## STRIPS operators\n\nSTRIPS (Stanford Research Institute Problem Solver, Fikes and Nilsson) gave the representation that every later planner varies. An operator is\n\n$$\\text{OPERATOR}(\\text{args}) : \\quad \\text{PRECONDITION},\\ \\ \\text{DELETE list},\\ \\ \\text{ADD list}$$\n\nApplying the operator to a state $S$ yields $(S \\setminus \\text{DELETE}) \\cup \\text{ADD}$. Deleting first, then adding, matters when a literal appears in both lists. The **STRIPS assumption** — everything not mentioned in the add or delete list is unchanged — is the practical solution to the **frame problem**, the problem of having to state explicitly all the things an action does *not* change. ADL (Action Description Language) relaxes STRIPS by allowing negative preconditions, disjunction, quantified effects, conditional effects and the open-world assumption.\n\nThe **blocks world** operators, in the form used in almost every exam question:\n\n| Operator | Precondition | Delete | Add |\n|---|---|---|---|\n| $\\text{PICKUP}(x)$ | $\\text{ONTABLE}(x) \\land \\text{CLEAR}(x) \\land \\text{ARMEMPTY}$ | $\\text{ONTABLE}(x)$, $\\text{ARMEMPTY}$ | $\\text{HOLDING}(x)$ |\n| $\\text{PUTDOWN}(x)$ | $\\text{HOLDING}(x)$ | $\\text{HOLDING}(x)$ | $\\text{ONTABLE}(x)$, $\\text{ARMEMPTY}$ |\n| $\\text{STACK}(x,y)$ | $\\text{HOLDING}(x) \\land \\text{CLEAR}(y)$ | $\\text{HOLDING}(x)$, $\\text{CLEAR}(y)$ | $\\text{ON}(x,y)$, $\\text{ARMEMPTY}$ |\n| $\\text{UNSTACK}(x,y)$ | $\\text{ON}(x,y) \\land \\text{CLEAR}(x) \\land \\text{ARMEMPTY}$ | $\\text{ON}(x,y)$, $\\text{ARMEMPTY}$ | $\\text{HOLDING}(x)$, $\\text{CLEAR}(y)$ |\n\nA block being held is neither on the table nor clear; $\\text{CLEAR}(x)$ is asserted for a block that has nothing on top and is not in the gripper. Note the asymmetry that catches people: $\\text{STACK}$ deletes $\\text{CLEAR}(y)$ because $x$ is now on $y$, and $\\text{UNSTACK}$ adds $\\text{CLEAR}(y)$ for the same reason."
+    },
+    {
+     "t": "md",
+     "text": "## Goal stack planning\n\nGoal stack planning (the STRIPS control regime) keeps a **stack** whose entries are goals, conjunctions of goals, and operators, plus a **database** of the current world state and a **plan** built as a list of applied operators.\n\nThe loop is:\n\n1. Look at the top of the stack.\n2. If it is a **compound goal** (a conjunction), push its individual conjuncts (in some chosen order) above it.\n3. If it is a **single goal** that is already true in the database, pop it.\n4. If it is a **single goal** that is false, choose an operator whose add-list contains it, push the operator, then push that operator's precondition (as a compound goal) above it.\n5. If it is an **operator** whose preconditions all hold, pop it, apply it to the database, and append it to the plan.\n6. If the stack is empty, the plan is complete — but re-verify each remaining conjunct, because achieving a later one may have destroyed an earlier one.\n\nThe whole method is **linear**: it insists on solving one subgoal completely before starting the next. That is exactly the assumption the Sussman anomaly breaks."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — goal stack planning on the Sussman anomaly",
+     "text": "**Initial state**: $\\text{ON}(C,A) \\land \\text{ONTABLE}(A) \\land \\text{ONTABLE}(B) \\land \\text{CLEAR}(B) \\land \\text{CLEAR}(C) \\land \\text{ARMEMPTY}$.\nBlock $C$ sits on $A$; $A$ and $B$ sit on the table.\n\n**Goal**: $\\text{ON}(A,B) \\land \\text{ON}(B,C)$.\n\nThis is Sussman's anomaly: **neither order of the two subgoals produces the optimal plan**, and a linear planner produces a longer plan with a redundant pair of actions.\n\n### Attempt 1 — solve $\\text{ON}(A,B)$ first\n\nStack (top first): `ON(A,B)` | `ON(B,C)` | `ON(A,B)∧ON(B,C)`.\n\n- `ON(A,B)` is false. The only operator adding it is $\\text{STACK}(A,B)$, whose precondition is $\\text{HOLDING}(A) \\land \\text{CLEAR}(B)$. Push $\\text{STACK}(A,B)$, then that precondition.\n- $\\text{CLEAR}(B)$ already holds → pop. $\\text{HOLDING}(A)$ is false; $\\text{PICKUP}(A)$ adds it and needs $\\text{ONTABLE}(A) \\land \\text{CLEAR}(A) \\land \\text{ARMEMPTY}$. $\\text{ONTABLE}(A)$ and $\\text{ARMEMPTY}$ hold; $\\text{CLEAR}(A)$ is false because $C$ is on $A$.\n- $\\text{CLEAR}(A)$ is added by $\\text{UNSTACK}(C,A)$, whose precondition $\\text{ON}(C,A) \\land \\text{CLEAR}(C) \\land \\text{ARMEMPTY}$ holds outright.\n\n**Apply 1. $\\text{UNSTACK}(C,A)$** → state: $\\text{HOLDING}(C)$, $\\text{CLEAR}(A)$, $\\text{ONTABLE}(A)$, $\\text{ONTABLE}(B)$, $\\text{CLEAR}(B)$. ($\\text{ON}(C,A)$ and $\\text{ARMEMPTY}$ deleted.)\n\nNow $\\text{PICKUP}(A)$ needs $\\text{ARMEMPTY}$, which the gripper does not have. The hand must be emptied:\n\n**Apply 2. $\\text{PUTDOWN}(C)$** → $\\text{ONTABLE}(C)$, $\\text{CLEAR}(C)$, $\\text{ARMEMPTY}$, $\\text{CLEAR}(A)$, $\\text{ONTABLE}(A)$, $\\text{ONTABLE}(B)$, $\\text{CLEAR}(B)$.\n\n**Apply 3. $\\text{PICKUP}(A)$** → $\\text{HOLDING}(A)$; $\\text{ONTABLE}(A)$ and $\\text{ARMEMPTY}$ deleted.\n\n**Apply 4. $\\text{STACK}(A,B)$** → $\\text{ON}(A,B)$, $\\text{ARMEMPTY}$, $\\text{CLEAR}(A)$; $\\text{CLEAR}(B)$ deleted. First subgoal achieved.\n\nState: $\\text{ON}(A,B)$, $\\text{ONTABLE}(B)$, $\\text{ONTABLE}(C)$, $\\text{CLEAR}(A)$, $\\text{CLEAR}(C)$, $\\text{ARMEMPTY}$.\n\nNow `ON(B,C)` comes to the top. It needs $\\text{HOLDING}(B) \\land \\text{CLEAR}(C)$, and $\\text{HOLDING}(B)$ needs $\\text{CLEAR}(B)$ — but $A$ is on $B$. **The only way forward destroys the subgoal just achieved:**\n\n**Apply 5. $\\text{UNSTACK}(A,B)$** → $\\text{HOLDING}(A)$, $\\text{CLEAR}(B)$; $\\text{ON}(A,B)$ gone.\n**Apply 6. $\\text{PUTDOWN}(A)$** → $\\text{ONTABLE}(A)$, $\\text{CLEAR}(A)$, $\\text{ARMEMPTY}$.\n**Apply 7. $\\text{PICKUP}(B)$** → $\\text{HOLDING}(B)$.\n**Apply 8. $\\text{STACK}(B,C)$** → $\\text{ON}(B,C)$, $\\text{CLEAR}(B)$, $\\text{ARMEMPTY}$.\n\nThe final check re-examines $\\text{ON}(A,B)$, now false, so it must be re-achieved:\n\n**Apply 9. $\\text{PICKUP}(A)$**, **Apply 10. $\\text{STACK}(A,B)$** → $\\text{ON}(A,B) \\land \\text{ON}(B,C)$. Done.\n\n**Plan produced (10 steps):**\n```\nUNSTACK(C,A)  PUTDOWN(C)  PICKUP(A)  STACK(A,B)\nUNSTACK(A,B)  PUTDOWN(A)  PICKUP(B)  STACK(B,C)\nPICKUP(A)     STACK(A,B)\n```\nSteps 4 and 5 are $\\text{STACK}(A,B)$ immediately followed by $\\text{UNSTACK}(A,B)$ — a **complementary pair** that a post-processing pass can cancel, together with the now-pointless $\\text{PICKUP}(A)$/$\\text{PUTDOWN}(A)$ around them, leaving the 6-step plan below.\n\n### Attempt 2 — solve $\\text{ON}(B,C)$ first\n\n$\\text{CLEAR}(B)$, $\\text{ONTABLE}(B)$ and $\\text{ARMEMPTY}$ hold, and $C$ is clear, so:\n$\\text{PICKUP}(B)$, $\\text{STACK}(B,C)$ → state $\\text{ON}(B,C)$, $\\text{ON}(C,A)$, $\\text{ONTABLE}(A)$, $\\text{CLEAR}(B)$.\nNow $\\text{ON}(A,B)$ needs $\\text{CLEAR}(A)$, so $C$ must come off $A$ — but $B$ is now on $C$, so $C$ is not clear. The planner must undo its work: $\\text{UNSTACK}(B,C)$, $\\text{PUTDOWN}(B)$, $\\text{UNSTACK}(C,A)$, $\\text{PUTDOWN}(C)$, $\\text{PICKUP}(A)$ … and $\\text{ON}(B,C)$ has been destroyed. Again a redundant excursion.\n\n### The optimal plan\n\n```\nUNSTACK(C,A)  PUTDOWN(C)  PICKUP(B)  STACK(B,C)  PICKUP(A)  STACK(A,B)\n```\nSix steps. It **interleaves** the two subgoals: the first two actions serve $\\text{ON}(A,B)$ (they clear $A$), the next two serve $\\text{ON}(B,C)$, and the last two return to $\\text{ON}(A,B)$. No linear planner that insists on finishing one subgoal before beginning the next can produce it. That is precisely what the Sussman anomaly demonstrates, and why **non-linear (interleaved) planning** was invented."
+    },
+    {
+     "t": "md",
+     "text": "## Non-linear and partial-order planning\n\nA **non-linear planner** may interleave steps belonging to different subgoals. The dominant technique is **partial-order planning (POP)**, which searches the space of *plans* rather than the space of *states*, and orders two actions only when it has a reason to.\n\nA partial plan consists of:\n\n- a set of **actions**, including two dummies: $\\text{Start}$ (no preconditions, effects = the initial state) and $\\text{Finish}$ (preconditions = the goal, no effects);\n- **ordering constraints** $A \\prec B$ ('A before B'), forming a partial order;\n- **causal links** $A \\xrightarrow{\\,p\\,} B$, meaning $A$ achieves precondition $p$ of $B$ and $p$ must remain true between them;\n- a set of **open preconditions** not yet supported by any causal link.\n\nThe algorithm repeatedly picks an open precondition $p$ of some action $B$, chooses an action $A$ (existing or new) that has $p$ as an effect, adds the link $A \\xrightarrow{p} B$ and the ordering $A \\prec B$, and then resolves **threats**. An action $C$ **threatens** the link $A \\xrightarrow{p} B$ if $C$ deletes $p$ and could be ordered between $A$ and $B$. Two repairs exist:\n\n- **Demotion** — force $C \\prec A$ (put the threat before the producer);\n- **Promotion** — force $B \\prec C$ (put the threat after the consumer).\n\nThe plan is complete when no open preconditions remain, and it is a solution if it is also **consistent** (the ordering constraints are acyclic). Any **linearisation** — any total order respecting the constraints — is then a valid plan, which is the great practical advantage: one partial-order plan represents many executable sequences, and the unordered actions can be executed in parallel or assigned to different agents.\n\nOn the Sussman anomaly, POP produces the 6-step plan directly. It adds $\\text{STACK}(B,C)$ for $\\text{ON}(B,C)$ and $\\text{STACK}(A,B)$ for $\\text{ON}(A,B)$ with no ordering between them at first; the threat arises because $\\text{STACK}(A,B)$ deletes $\\text{CLEAR}(B)$, which $\\text{STACK}(B,C)$'s precondition chain needs, and promotion forces $\\text{STACK}(B,C) \\prec \\text{STACK}(A,B)$ — the interleaving falls out of the threat resolution rather than being guessed.\n\nOther non-linear planners named in the syllabus: **NOAH** (Sacerdoti, the first), **NONLIN**, **TWEAK**, **SNLP**, **UCPOP**, and the **constraint-posting** family generally. **GRAPHPLAN** builds a layered **planning graph** of alternating state and action levels with **mutex** relations, then extracts a plan by backward search; the planning graph also yields excellent admissible heuristics for forward search. **SATPLAN** encodes a bounded-length plan as a propositional formula and hands it to a SAT solver."
+    },
+    {
+     "t": "md",
+     "text": "## Hierarchical planning\n\nProblems of realistic size cannot be planned at the level of primitive actions — a holiday planned as individual muscle movements is hopeless. **Hierarchical task network (HTN) planning** introduces **high-level actions (HLAs)**, each with one or more **refinements** into sequences of lower-level actions, bottoming out in **primitive actions** the agent can execute directly.\n\nPlanning proceeds by **refinement**: start with the single HLA 'solve the problem', repeatedly replace an HLA by one of its refinements, and stop when the plan is primitive. The saving is dramatic. If a plan has $d$ primitive actions, flat search costs $O(b^d)$; if the hierarchy has branching $b$ and depth $k$ with $s$ refinements per HLA, the work is roughly $O(b^{d/k})$ per level — each level is a small problem.\n\nThe historical example is **ABSTRIPS**, which uses **abstraction hierarchies**: each precondition is given a **criticality** number, and the planner first solves the problem considering only the most critical preconditions, then successively adds in less critical ones, repairing the plan at each level. The route to a distant city is planned before deciding which door to walk through. The key property required for this to work is the **upward solution property** — a solution at an abstract level can be refined into a solution at the level below, ideally without backtracking across levels (the **downward refinement property**).\n\nRelated extensions worth knowing by name: **conditional planning** (branches on sensing outcomes), **contingency planning** for partially observable worlds, **continuous / replanning** agents that monitor execution and repair, **conformant planning** (no sensing at all), and **scheduling**, which adds durations and resource constraints to an existing plan — planning decides *what* and *in what order*, scheduling decides *when* and *with which resource*."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.4-1",
+     "q": "The Sussman anomaly demonstrates that",
+     "opts": [
+      "the blocks world is not fully observable",
+      "a goal can be unachievable even when each subgoal is achievable",
+      "solving subgoals one at a time can fail to produce an optimal plan, so subgoals must be interleaved",
+      "STRIPS operators cannot represent the blocks world"
+     ],
+     "ans": 2,
+     "exp": "Both subgoals $\\text{ON}(A,B)$ and $\\text{ON}(B,C)$ are individually achievable and the conjunction is achievable in 6 steps. What fails is *linearity*: achieving either subgoal completely first forces the planner to undo it, giving a 10-step plan with a redundant STACK/UNSTACK pair. The cure is a non-linear (partial-order) planner that interleaves steps from the two subgoals."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.4-2",
+     "q": "In partial-order planning, action $C$ deletes $p$ and threatens the causal link $A \\xrightarrow{p} B$. Promotion resolves this by adding the ordering constraint",
+     "opts": [
+      "$C \\prec A$",
+      "$B \\prec C$",
+      "$A \\prec C \\prec B$",
+      "$C \\prec B \\prec A$"
+     ],
+     "ans": 1,
+     "exp": "Promotion pushes the threatening action *after* the consumer: $B \\prec C$, so $p$ is no longer needed by the time $C$ destroys it. Demotion is the mirror image, $C \\prec A$, placing the threat before the producer re-establishes $p$. Option 2 is the threat itself, not a repair."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.4-3",
+     "q": "Applying $\\text{STACK}(A,B)$ in a state containing $\\text{HOLDING}(A)$ and $\\text{CLEAR}(B)$ produces a state in which",
+     "opts": [
+      "$\\text{CLEAR}(B)$ is still true and $\\text{HOLDING}(A)$ is still true",
+      "$\\text{ON}(A,B)$ and $\\text{ARMEMPTY}$ are true, and $\\text{CLEAR}(B)$ and $\\text{HOLDING}(A)$ are false",
+      "$\\text{ON}(B,A)$ and $\\text{ARMEMPTY}$ are true",
+      "$\\text{ONTABLE}(A)$ becomes true"
+     ],
+     "ans": 1,
+     "exp": "Apply the delete list then the add list: delete $\\text{HOLDING}(A)$ and $\\text{CLEAR}(B)$ (B now has A on it), add $\\text{ON}(A,B)$ and $\\text{ARMEMPTY}$ (the gripper is free). $\\text{ONTABLE}(A)$ is not added — A is on B, not on the table — and the STRIPS assumption leaves every other literal untouched."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Trace goal stack planning as a two-column table",
+     "body": "Keep one column for the stack (top at the left) and one for the world database, and write a new row only when something is pushed, popped or applied. Almost every error in these questions comes from forgetting that applying an operator changes the database, which may silently make a lower stack entry false."
+    },
+    {
+     "title": "Delete before add, always",
+     "body": "When applying an operator, remove the delete list first and then add the add list. If a literal is in both, it survives. Doing it in the other order silently loses literals and is the single most common arithmetic-style slip in blocks-world traces."
+    },
+    {
+     "title": "Count the optimal blocks-world plan by counting block moves",
+     "body": "Every block that must change its supporter costs exactly two primitive actions (pick up/unstack, then put down/stack). In the Sussman anomaly $C$, $B$ and $A$ each move once → $3 \\times 2 = 6$ steps, which is the optimal plan length. Use this to check any plan you produce."
+    },
+    {
+     "title": "Threat resolution has only two options",
+     "body": "Demotion or promotion — never anything else, and if both create a cycle in the ordering constraints the partial plan is a dead end and the planner backtracks. A question offering a third 'repair' is offering a distractor."
+    },
+    {
+     "title": "Regression is cheaper than progression when the goal is specific",
+     "body": "If a question asks which direction a planner should search, count relevant actions. Forward from the initial state, nearly every action is applicable and few are relevant; backward from the goal, only actions that add a goal literal are considered. Backward wins whenever the goal is a small conjunction."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Linear does not mean 'linear time'",
+     "body": "A *linear planner* is one that completes each subgoal before starting the next — the word refers to the plan structure, not to complexity. Its opposite is a non-linear or interleaving planner. Partial-order planners are non-linear even though every solution they produce can be linearised."
+    },
+    {
+     "title": "A partial-order plan is not an unordered set of actions",
+     "body": "It is a partially ordered set with explicit constraints; some pairs are strictly ordered because of causal links and threat resolution. A valid execution is any topological sort of that partial order, and a plan with a cycle in its ordering constraints is inconsistent and not a solution at all."
+    },
+    {
+     "title": "The STRIPS assumption is not the frame axiom",
+     "body": "STRIPS *avoids* writing frame axioms by declaring everything unmentioned unchanged. A question that asks 'how does STRIPS handle the frame problem' wants that sentence, not a list of frame axioms — those belong to the situation-calculus approach STRIPS was designed to replace."
+    },
+    {
+     "title": "Hierarchical planning is not the same as abstraction by dropping preconditions",
+     "body": "HTN planning replaces a high-level *action* by a sequence of lower-level ones; ABSTRIPS-style abstraction drops low-criticality *preconditions* and reinstates them level by level. Both are 'hierarchical', but the thing being refined differs, and questions do distinguish them."
+    }
+   ]
+  },
+  {
+   "id": "10.5",
+   "title": "Natural Language Processing",
+   "summary": "The stages of language analysis from morphology to pragmatics, grammars and parsing techniques, the kinds of ambiguity, and semantic analysis.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## Why language is hard\n\nA programming language is designed so that every legal string has exactly one meaning. A natural language is not designed at all. It is **ambiguous at every level**, **elliptical** (speakers leave things out), **context-dependent**, **irregular**, and it changes. A system that understands language must therefore combine several kinds of knowledge — about word forms, about syntax, about word meanings, about the world, and about the speaker's intentions — and it must do so in a way that lets evidence from one level resolve an ambiguity at another.\n\nThe two broad tasks are **natural language understanding** (text in, meaning out) and **natural language generation** (meaning in, text out). Understanding is generally treated as the harder direction because the input is fixed and the analysis must cope with everything the speaker chose to do."
+    },
+    {
+     "t": "md",
+     "text": "## The stages of analysis\n\nThe classical pipeline, in order, is the most frequently asked list in this topic:\n\n1. **Phonology** — the sound system; how sounds combine into words. Relevant only to speech input, where it also involves segmentation of a continuous signal.\n2. **Morphology** — the internal structure of words. A word is built from **morphemes**: a **free morpheme** can stand alone (*book*), a **bound morpheme** cannot (*un-*, *-ed*, *-s*). **Inflectional** morphology changes form without changing part of speech or core meaning (*walk / walked / walks*); **derivational** morphology creates a new word, often of a different class (*happy → happiness*, *nation → national*). Practical tasks: **stemming** (crude suffix stripping, e.g. Porter's algorithm — *studies → studi*) and **lemmatisation** (dictionary-based reduction to the base form — *studies → study*). Finite-state transducers are the standard machinery.\n3. **Lexical analysis** — tokenisation, dictionary lookup, assigning part-of-speech tags. Ambiguity already bites: *book* is a noun or a verb. POS tagging is usually done with HMMs or with the Viterbi algorithm over a tag lattice.\n4. **Syntactic analysis (parsing)** — determine the structure: which words group with which, and what role each group plays. Output is a parse tree or a dependency graph. Rejects ungrammatical strings.\n5. **Semantic analysis** — map the structure to a meaning representation, checking that the meaning is coherent. *Colourless green ideas sleep furiously* is syntactically perfect and semantically anomalous.\n6. **Discourse integration** — the meaning of a sentence depends on the sentences around it. This is where **anaphora resolution** (what does *he* or *it* refer to?), coreference, and discourse structure live.\n7. **Pragmatic analysis** — what the speaker actually intends, as opposed to what the sentence literally says. *Can you pass the salt?* is literally a question about ability and pragmatically a request; *It's cold in here* may be a request to shut the window. **Speech act theory** (Austin, Searle) classifies utterances as assertives, directives, commissives, expressives and declarations, and separates the **locutionary** act (what was said), the **illocutionary** act (what was meant by saying it) and the **perlocutionary** act (the effect achieved).\n\nThe boundaries are not watertight, and processing is not strictly sequential in modern systems — but the order of the list, and which phenomenon belongs to which stage, is exactly what gets examined."
+    },
+    {
+     "t": "md",
+     "text": "## Grammars and parsing\n\nMost NLP syntax uses a **context-free grammar** (Chomsky type 2). A grammar for a fragment of English:\n\n```\nS  -> NP VP            NP -> Det N | NP PP | Pronoun\nVP -> V NP | VP PP     PP -> P NP\nDet -> the | a         N -> man | telescope | park\nV -> saw               P -> with | in\n```\n\nCFGs are inadequate for English in several respects — agreement (*the men walks*), subcategorisation (*sleep* takes no object), and long-distance dependencies — so the linguistic tradition augments them: **augmented transition networks (ATNs)** attach registers and tests to arcs; **unification grammars** and **feature structures** carry number, person and gender and combine them by unification; **transformational grammar** derives surface structure from deep structure; **dependency grammars** drop constituents entirely and link words head-to-dependent; **case grammar** (Fillmore) labels each argument with a deep semantic case — agent, instrument, object, location, source, goal, experiencer — which is much more useful for semantics than the surface subject/object distinction, because *John broke the window* and *The window was broken by John* give the same case frame.\n\n**Parsing strategies.**\n\n- **Top-down** — start at $S$ and expand rules until the terminals match the input. Goal-directed, so it never builds a tree that is not rooted in $S$; but it explores structures that cannot match the actual words, and it loops forever on **left-recursive** rules such as $NP \\to NP\\ PP$.\n- **Bottom-up** — start from the words and combine constituents upward (shift-reduce). Never builds a constituent that is not supported by the input; but it builds many subtrees that cannot be part of any $S$, and it struggles with empty constituents.\n- **Chart parsing / dynamic programming** — record every constituent found once in a **chart** (well-formed substring table) so that it is never recomputed. **Earley's algorithm** is a top-down chart parser running in $O(n^3)$ for arbitrary CFGs, $O(n^2)$ for unambiguous ones and $O(n)$ for many practical grammars, using three operations: *predictor*, *scanner*, *completer*. **CYK (Cocke-Younger-Kasami)** is the bottom-up dynamic-programming parser; it requires the grammar in **Chomsky Normal Form** and runs in $\\Theta(n^3 |G|)$ time with $\\Theta(n^2)$ space.\n- **Probabilistic parsing** — a **PCFG** attaches a probability to each rule, with the probabilities of all rules for one non-terminal summing to 1; the probability of a parse is the product over the rules used, and probabilistic CYK returns the most likely tree. This is the standard way of choosing among the many parses an ambiguous sentence permits.\n- **Deterministic / shift-reduce dependency parsing** with a learned oracle, running in linear time, is what modern practical systems use."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — CYK parsing and a structural ambiguity found",
+     "text": "Grammar in Chomsky Normal Form:\n\n```\nS  -> NP VP        VP -> V NP        VP -> VP PP\nPP -> P NP         NP -> Det N       NP -> NP PP\nNP -> I            V  -> saw         Det -> the\nP  -> with         N  -> man | telescope\n```\n\nSentence: **I saw the man with the telescope** — 7 tokens.\n\nCYK fills a table where cell $[i, \\ell]$ holds the non-terminals deriving the substring of length $\\ell$ starting at position $i$. For $\\ell \\ge 2$, split at every $k$ and combine $[i,k]$ with $[i{+}k, \\ell{-}k]$.\n\n**Length 1** (lexical lookup):\n\n| pos | 1 I | 2 saw | 3 the | 4 man | 5 with | 6 the | 7 telescope |\n|---|---|---|---|---|---|---|---|\n| | NP | V | Det | N | P | Det | N |\n\n**Length 2.** Only $\\text{Det}\\,\\text{N}$ matches a rule: $[3,2] = \\{NP\\}$ (*the man*), $[6,2] = \\{NP\\}$ (*the telescope*). Every other adjacent pair — $NP\\,V$, $V\\,Det$, $N\\,P$, $P\\,Det$ — has no rule.\n\n**Length 3.**\n- $[2,3]$ *saw the man* $= V \\cdot [3,2] = V\\,NP \\Rightarrow \\{VP\\}$.\n- $[5,3]$ *with the telescope* $= P \\cdot [6,2] = P\\,NP \\Rightarrow \\{PP\\}$.\n- $[1,3]$, $[3,3]$, $[4,3]$: empty.\n\n**Length 4.**\n- $[1,4]$ *I saw the man* $= [1,1] \\cdot [2,3] = NP\\,VP \\Rightarrow \\{S\\}$.\n- All others empty.\n\n**Length 5.**\n- $[3,5]$ *the man with the telescope* $= [3,2] \\cdot [5,3] = NP\\,PP \\Rightarrow \\{NP\\}$.\n- Others empty.\n\n**Length 6.** $[2,6]$ *saw the man with the telescope* has **two** derivations:\n- split after 1 token: $V \\cdot [3,5] = V\\,NP \\Rightarrow VP$ — the telescope modifies *the man*;\n- split after 3 tokens: $[2,3] \\cdot [5,3] = VP\\,PP \\Rightarrow VP$ — the telescope modifies *saw*.\n\nSo $[2,6] = \\{VP, VP\\}$ — the same symbol arrived at two ways.\n\n**Length 7.** $[1,7] = [1,1] \\cdot [2,6] = NP\\,VP \\Rightarrow \\{S\\}$, **and because $[2,6]$ had two derivations, so does $S$**.\n\n**Answer:** the sentence is grammatical, and the grammar assigns it exactly **2 parses** — the classic PP-attachment ambiguity between *I saw (the man with the telescope)* and *I saw (the man) with the telescope*. CYK detects it automatically, because the count of ways a symbol enters a cell is the number of derivations. A PCFG would break the tie by comparing $P(NP \\to NP\\ PP)$ against $P(VP \\to VP\\ PP)$ and the lexical probabilities.\n\n**Complexity check.** There are $O(n^2) = $ 28 cells; each considers up to $n-1 = 6$ split points, hence the $O(n^3)$ bound, with $n = 7$ giving on the order of $7^3 = 343$ elementary combinations — far fewer than the exponential number of trees a naive backtracking parser would enumerate."
+    },
+    {
+     "t": "md",
+     "text": "## Ambiguity\n\nEvery stage of the pipeline has its own kind of ambiguity, and naming them correctly is a standard question.\n\n- **Lexical (word-sense) ambiguity** — one word form, several meanings: *bank* (financial / river), *bat*, *plant*. A special case is **part-of-speech ambiguity**: *book* as noun or verb, *flies* in *Time flies like an arrow*.\n- **Syntactic (structural) ambiguity** — one string, several parse trees.\n  - **Attachment ambiguity**: *I saw the man with the telescope* (worked above); *The police shot the rioters with guns*.\n  - **Coordination ambiguity**: *old men and women* — is *old* distributed over both?\n  - **Gap/analytical ambiguity**: *Visiting relatives can be boring*.\n- **Semantic ambiguity** — a single parse still has more than one meaning: *Every student reads a book* (one book each, or one book in total — a **quantifier scope** ambiguity).\n- **Referential / anaphoric ambiguity** — *The council refused the demonstrators a permit because they feared violence*: who is *they*? Resolving this needs world knowledge; the pair of sentences differing only in *feared*/*advocated* is Winograd's classic demonstration.\n- **Pragmatic ambiguity** — the literal meaning is clear but the intent is not: *Can you open the window?*\n- **Vagueness** is distinct from ambiguity — *tall* has no sharp boundary, but it is not several meanings.\n\nThe number of syntactic parses grows explosively. For a verb phrase followed by $n$ prepositional phrases each of which may attach to any preceding head, the count of attachment structures is the **Catalan number** $C_n = \\frac{1}{n+1}\\binom{2n}{n}$: $C_1 = 1$, $C_2 = 2$, $C_3 = 5$, $C_4 = 14$, $C_5 = 42$. Two PPs already give 5 readings. This is why disambiguation, not parsing, is the real problem."
+    },
+    {
+     "t": "md",
+     "text": "## Semantic analysis\n\nSemantic analysis turns a parse into a meaning representation — usually a **first-order logic** formula, a **semantic network**, a **frame/case structure**, or a **conceptual dependency** graph (all covered in topic 10.3).\n\nThe standard method is **compositional semantics** following the **principle of compositionality**: the meaning of a phrase is a function of the meanings of its parts and the way they are combined. Each grammar rule is paired with a semantic rule, usually written with lambda expressions:\n\n```\nS  -> NP VP        { VP.sem(NP.sem) }\nVP -> V NP         { V.sem(NP.sem) }\nV  -> loves        { λy λx . Loves(x, y) }\n```\n\nso *John loves Mary* builds $\\lambda y \\lambda x.\\text{Loves}(x,y)$ applied to *Mary* then to *John*, giving $\\text{Loves}(\\text{John}, \\text{Mary})$. Quantifiers are handled with **quantified noun phrases** and **quasi-logical forms** that postpone the scope decision.\n\nOther components of semantic processing:\n\n- **Selectional restrictions** — a verb constrains the semantic type of its arguments. *Drink* requires a liquid object, so *The man drank the table* is rejected, and in *I ate the dish* the restriction pushes *dish* towards the *food* sense. This is the cheapest and most effective word-sense disambiguation signal.\n- **Word-sense disambiguation (WSD)** — choosing among dictionary senses. The **Lesk algorithm** picks the sense whose dictionary gloss overlaps most with the context words; supervised classifiers and, more recently, contextual embeddings do better.\n- **Semantic role labelling** — filling the case frame: agent, patient, instrument, beneficiary, location, source, goal. **Thematic roles** abstract away from surface syntax so that active and passive sentences yield the same structure.\n- **Lexical semantics** — the relations stored in a resource such as **WordNet**: synonymy, antonymy, **hyponymy/hypernymy** (*dog* is a hyponym of *animal*), **meronymy/holonymy** (part-of), troponymy for verbs. Sets of synonyms are **synsets**.\n- **Distributional semantics** — the distributional hypothesis that words occurring in similar contexts have similar meanings, realised as vector representations (LSA, word2vec, GloVe) and, in contextual models, one vector per occurrence rather than per word type.\n\nAbove the sentence, **discourse** processing supplies **coherence relations** (elaboration, explanation, contrast), **anaphora resolution** (pronouns, definite descriptions, one-anaphora) using recency, syntactic parallelism, salience and world knowledge, and **centering theory** for tracking the discourse focus. **Pragmatics** adds Grice's **maxims of conversation** — quantity, quality, relation and manner — which licence the **implicatures** that let a hearer infer more than was said."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.5-1",
+     "q": "Determining that *they* in 'The city council denied the demonstrators a permit because they feared violence' refers to the council belongs to which stage of NLP?",
+     "opts": [
+      "Morphological analysis",
+      "Syntactic analysis",
+      "Discourse integration",
+      "Lexical analysis"
+     ],
+     "ans": 2,
+     "exp": "Resolving a pronoun against an antecedent is **anaphora resolution**, which is part of discourse integration — the meaning of the sentence depends on material outside the immediate constituent structure. Syntax alone leaves *they* ambiguous between both plural noun phrases; only world knowledge about who fears violence settles it."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.5-2",
+     "q": "CYK parsing requires the grammar to be in",
+     "opts": [
+      "Greibach Normal Form",
+      "Chomsky Normal Form",
+      "Backus-Naur Form",
+      "Kleene Normal Form"
+     ],
+     "ans": 1,
+     "exp": "CYK combines exactly two sub-spans per cell, which requires every production to be $A \\to BC$ or $A \\to a$ — Chomsky Normal Form. Greibach Normal Form ($A \\to a\\alpha$) suits top-down recursive-descent parsing without left recursion; BNF is a notation, not a normal form. Any CFG can be converted to CNF, so this is no loss of generality."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.5-3",
+     "q": "'Visiting relatives can be boring' is an example of",
+     "opts": [
+      "lexical ambiguity only",
+      "structural (syntactic) ambiguity",
+      "referential ambiguity",
+      "pragmatic ambiguity"
+     ],
+     "ans": 1,
+     "exp": "The two readings — 'relatives who are visiting' (participle modifying a noun) and 'the act of visiting relatives' (gerund phrase as subject) — correspond to two different parse trees over the same words, which is exactly structural ambiguity. No word changes its dictionary sense, nothing refers back to earlier text, and the speaker's intent is not at issue."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Match the phenomenon to the stage by what knowledge it needs",
+     "body": "Word structure → morphology. Which words group together → syntax. Whether the grouping makes sense → semantics. What earlier sentences supply → discourse. What the speaker wants → pragmatics. Running that checklist answers every 'which stage handles X' question without memorising examples."
+    },
+    {
+     "title": "Count PP-attachment readings with Catalan numbers",
+     "body": "$n$ prepositional phrases after a verb phrase give $C_n$ structures: 1, 2, 5, 14, 42. So 'I saw the man with the telescope in the park' has three attachment sites for two PPs → 5 parses. Far faster than drawing trees."
+    },
+    {
+     "title": "CYK ambiguity check without drawing trees",
+     "body": "The number of parses is the number of distinct ways the start symbol enters the top cell. Track counts, not just symbol sets, and the ambiguity count falls out of the same table you built for recognition."
+    },
+    {
+     "title": "Stemming versus lemmatisation in one word: dictionary",
+     "body": "A stemmer chops affixes by rule and may produce a non-word (*studies → studi*); a lemmatiser consults a lexicon and returns a real base form (*studies → study*, *better → good*). Any question contrasting them turns on whether a dictionary is consulted."
+    },
+    {
+     "title": "Top-down loops, bottom-up wastes",
+     "body": "Two failure modes, two causes. Top-down cannot handle left recursion (infinite loop) and predicts constituents the words do not support; bottom-up handles left recursion fine but builds constituents no $S$ can use. Chart parsing exists to have neither."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Syntax versus semantics: grammatical is not meaningful",
+     "body": "*Colourless green ideas sleep furiously* passes every syntactic test and fails at semantics; *Man the ideas green* fails at syntax. If an option says a sentence is 'rejected by the parser' for being nonsensical, it is wrong — the parser accepts it and the semantic analyser rejects it."
+    },
+    {
+     "title": "Word-sense ambiguity is lexical, not semantic ambiguity",
+     "body": "Examiners distinguish them: *bank* having two dictionary entries is lexical; *Every student reads a book* having two scope readings with one parse and one sense per word is semantic. Mislabelling word-sense problems as semantic ambiguity is a common slip."
+    },
+    {
+     "title": "Inflection versus derivation",
+     "body": "Inflection never changes the part of speech and never creates a new dictionary entry (*walks*, *walked*, *walking*); derivation usually does both (*happy → happiness*, *teach → teacher*). Plural *-s* and past *-ed* are inflectional; *-ness*, *-er*, *un-* are derivational."
+    },
+    {
+     "title": "Earley and CYK differ in direction and requirements",
+     "body": "Both are $O(n^3)$ chart methods, but Earley is top-down and works on any CFG, while CYK is bottom-up and needs CNF. A statement that 'CYK works on any context-free grammar without conversion' is false as written."
+    }
+   ]
+  },
+  {
+   "id": "10.6",
+   "title": "Multi Agent Systems",
+   "summary": "Agent properties and architectures, agents versus objects, agent communication languages and protocols, negotiation and auctions, and the semantic web stack.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## What makes something an agent\n\nThe working definition, due to Wooldridge and Jennings, is that an agent is a computer system situated in an environment and capable of **autonomous action** in that environment in order to meet its design objectives. The four properties of a **weak notion of agency** are the list examiners ask for:\n\n- **Autonomy** — it operates without direct human intervention and has control over its own internal state and actions.\n- **Reactivity** — it perceives the environment and responds to changes in a timely fashion.\n- **Pro-activeness** — it takes the initiative to pursue goals, rather than only responding.\n- **Social ability** — it interacts with other agents (and people) through some communication language.\n\nA **strong notion of agency** additionally attributes mental states — belief, desire, intention, knowledge, obligation — and sometimes mobility, veracity, benevolence and rationality. The engineering difficulty is balancing reactivity against pro-activeness: a purely reactive agent never achieves anything long-term, while a purely goal-driven one keeps executing a plan whose preconditions have evaporated.\n\n**Agent architectures** fall into three families:\n\n- **Reactive (behaviour-based)** — no symbolic model, no reasoning; direct perception-action coupling. **Brooks' subsumption architecture** stacks simple behaviours in layers where higher layers may subsume (inhibit or override) lower ones. Fast and robust, but hard to make goal-directed and impossible to analyse formally.\n- **Deliberative (symbolic)** — an explicit world model and planning. The dominant instance is **BDI**: **Beliefs** (what the agent takes the world to be), **Desires** (states of affairs it would like), **Intentions** (desires it has committed to and is acting on). Intentions provide persistence — an agent does not reconsider everything at every step — and the design question is the **commitment strategy**: *blind* (persist until achieved), *single-minded* (persist until achieved or believed unachievable), *open-minded* (persist while still desired). The problem of deliberative agents is that the world changes while they think.\n- **Hybrid (layered)** — a reactive layer for fast response, a planning layer, and a cooperation/social layer. Layers may be **horizontal** (all connected to sensors and actuators, needing a mediator) or **vertical** (a chain, with one entry and one exit point)."
+    },
+    {
+     "t": "md",
+     "text": "## Agents versus objects\n\nThis comparison appears almost every year, so state the distinctions precisely.\n\n| | Object | Agent |\n|---|---|---|\n| Control over own behaviour | No — a public method executes when called | Yes — a request may be refused |\n| Autonomy | Over state only (encapsulation) | Over state **and** behaviour |\n| Activity | Passive; runs only when invoked | Active; has its own thread of control, runs continuously |\n| Invocation | Method call, direct | Message passing, asynchronous, often broadcast |\n| Behaviour type | Reactive only | Reactive **and** pro-active |\n| Flexibility | Fixed method semantics | Adaptive, may reason about whether and how to act |\n| Standard slogan | 'Objects do it for free' | 'Agents do it because they want to' |\n\nThe compact statement: an object encapsulates *state* and exposes *behaviour*; an agent encapsulates *state and behaviour*, deciding for itself whether to perform a requested action. Agents are also normally multi-threaded, whereas an object system typically has a single thread of control passed around by method invocation.\n\nA **multi-agent system (MAS)** is a collection of interacting agents, each with incomplete information and limited capability, with no global control, decentralised data and asynchronous computation. Those four characteristics — and they are examined as a list — are what distinguish MAS from distributed problem solving with a central designer."
+    },
+    {
+     "t": "md",
+     "text": "## Communication: speech acts, KQML and FIPA-ACL\n\nAgent communication rests on **speech act theory**: an utterance is an action. Searle's classification — **assertives** (inform), **directives** (request), **commissives** (promise), **expressives**, **declarations** — maps directly onto message types.\n\nAn **agent communication language (ACL)** separates three layers of a message:\n\n- **Content layer** — the actual proposition, in a content language such as KIF (Knowledge Interchange Format, a Lisp-like FOL syntax), SL, or Prolog.\n- **Message layer** — the **performative** (the illocutionary force) plus parameters: sender, receiver, content language, ontology, reply-with, in-reply-to.\n- **Communication layer** — transport, addressing, message identification.\n\n**KQML** (Knowledge Query and Manipulation Language) was the first widely used ACL. Its performatives group into query (`ask-if`, `ask-one`, `ask-all`, `stream-all`), informational (`tell`, `untell`, `deny`, `insert`), capability/facilitation (`advertise`, `broker-one`, `recommend-one`, `recruit-one`), and networking (`register`, `unregister`, `subscribe`). A **facilitator** agent matches advertisements to requests. Example:\n\n```\n(ask-one\n  :sender      agent-A\n  :receiver    stock-server\n  :language    KIF\n  :ontology    NYSE-tickers\n  :reply-with  q1\n  :content     (price IBM ?p))\n```\n\n**FIPA-ACL** is the later standard from the Foundation for Intelligent Physical Agents. It has 22 **communicative acts** — `inform`, `request`, `query-if`, `query-ref`, `agree`, `refuse`, `propose`, `accept-proposal`, `reject-proposal`, `cfp` (call for proposals), `failure`, `not-understood`, `subscribe`, and others. Its crucial improvement over KQML is a **formal semantics**, given as **feasibility preconditions** and a **rational effect** in a modal logic of belief, uncertainty and intention. For `inform`, the sender must believe the proposition and must not believe the receiver already knows it; the rational effect is that the receiver comes to believe it. KQML's semantics, by contrast, was only informally described, and its performative set was not fixed — the two standard criticisms.\n\n**Interaction protocols** sequence these messages. The best known is the **Contract Net Protocol** (Smith): a *manager* announces a task with a **call for proposals**; potential *contractors* evaluate it and submit **bids**; the manager **awards** the contract to the best bidder; the contractor executes and **reports**. Any agent may be manager for one task and contractor for another, and an awarded task may itself be re-announced, giving a hierarchy. Other FIPA protocols: request, query, English/Dutch auction, iterated contract net, brokering."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — a Contract Net round and two auction rules",
+     "text": "**(a) Contract Net.** A manager agent must get a dataset analysed by 18:00 and announces:\n\n```\n(cfp :content (analyse dataset-D7 :deadline 18:00) :reply-by 10:05)\n```\n\nThree contractors reply with (cost, completion time): $C_1 = (40, 17\\!:\\!30)$, $C_2 = (25, 18\\!:\\!30)$, $C_3 = (35, 17\\!:\\!50)$.\n\nThe manager's evaluation function rejects any bid missing the deadline, then minimises cost. $C_2$ is **eliminated on the deadline despite the lowest price**; between $C_1$ and $C_3$, $C_3$ costs 35 < 40, so:\n\n```\n(accept-proposal :receiver C3)   (reject-proposal :receiver C1)\n(reject-proposal :receiver C2)\n```\n\n$C_3$ then sends `agree`, and on completion `inform-done`, or `failure` if it cannot deliver. The pattern to remember is **announce → bid → award → execute → report**, with the manager applying its own criterion, not a fixed one.\n\n**(b) Auctions as negotiation mechanisms.** Four private valuations for one indivisible item: $v_A = 100$, $v_B = 80$, $v_C = 65$, $v_D = 50$.\n\n- **English (ascending, open-cry).** Price rises; bidders drop out at their valuations. $D$ leaves at 50, $C$ at 65, $B$ at 80. $A$ wins just above 80, so the price is about **80** — the second-highest valuation.\n- **Vickrey (sealed-bid second-price).** Each submits one sealed bid; the highest bidder wins but **pays the second-highest bid**. Truthful bidding is a dominant strategy, so bids equal valuations: $A$ wins and pays **80**.\n- **First-price sealed-bid.** The winner pays their own bid, so bidders shade downwards; $A$ bids something below 100 and above what it expects $B$ to bid. The outcome is strategically complicated and the revenue is, in expectation, the same as Vickrey's — the **revenue equivalence theorem**.\n- **Dutch (descending).** Price falls from a high start until someone accepts; strategically equivalent to first-price sealed-bid.\n\nThe efficient allocation — the item goes to the agent valuing it most — is achieved by all four here. The point of the comparison is that **English and Vickrey are strategy-proof** (bid your true value) while **Dutch and first-price are not**. This is why Vickrey-style mechanisms underpin most multi-agent resource allocation."
+    },
+    {
+     "t": "md",
+     "text": "## Coordination, cooperation and negotiation\n\nAgents in a MAS must coordinate because their actions interact — through shared resources, through interdependent subtasks, or through conflicting goals.\n\n**Cooperative distributed problem solving** assumes benevolent agents with a common goal. Two classic phases: **task sharing** (decompose and distribute work, as in Contract Net) and **result sharing** (exchange partial results, as in the **blackboard architecture**, where independent knowledge sources read and write a shared global data structure under a control component — HEARSAY-II was the original).\n\n**Self-interested agents** require **negotiation**: a process by which a joint decision is reached by two or more agents each trying to maximise their own utility. A negotiation setting is defined by a **negotiation set** (the possible proposals), a **protocol** (the legal moves), **strategies** (private, chosen by each agent), and a **rule for agreement**. A deal is **Pareto optimal** if no other deal makes one agent better off without making another worse off; the **negotiation set** proper is the set of deals that are individually rational (better than conflict for both) and Pareto optimal.\n\n**Game-theoretic ideas** appear directly. In a **Prisoner's dilemma**-shaped interaction, mutual defection is the unique **Nash equilibrium** while mutual cooperation is Pareto-superior, which is why repeated interaction and reputation matter; **tit-for-tat** is the classic robust strategy for the iterated game. A **dominant strategy** is best regardless of what others do; a **Nash equilibrium** is a profile where no agent gains by unilaterally deviating; **mechanism design** is the inverse problem of designing the rules so that self-interested behaviour produces a desired outcome.\n\nOther coordination mechanisms: **organisational structuring** (fixed roles and authority), **multi-agent planning** (plan merging with conflict detection — the partial-order machinery of topic 10.4), **social laws** and **norms**, and **coalition formation** with payoff division by the **Shapley value** or the **core**.\n\n**Mobile agents** move their code and state between hosts, reducing network traffic and permitting disconnected operation, at the cost of substantial security problems in both directions (a malicious agent attacking a host, and a malicious host attacking an agent). Standard platforms named in the syllabus: **JADE** (FIPA-compliant, Java), **JACK**, **Aglets**, **Zeus**, and the **Gaia** methodology for analysis and design of agent systems in terms of roles, protocols, and the acquaintance model."
+    },
+    {
+     "t": "md",
+     "text": "## The semantic web and ontologies for knowledge sharing\n\nThe web is a network of documents built for humans to read. The **semantic web** adds machine-interpretable meaning, so that software agents can find, combine and reason over data. Its architecture is the **layer cake**, from the bottom:\n\n1. **URI / IRI and Unicode** — global identification and character encoding.\n2. **XML, XML Schema, namespaces** — syntax and structure.\n3. **RDF (Resource Description Framework)** — the data model. Everything is a **triple**: *subject, predicate, object*, equivalently a labelled directed edge. A set of triples is a graph. Serialisations: RDF/XML, Turtle, N-Triples, JSON-LD.\n4. **RDFS (RDF Schema)** — a light vocabulary language: `rdfs:Class`, `rdfs:subClassOf`, `rdf:Property`, `rdfs:subPropertyOf`, `rdfs:domain`, `rdfs:range`. Enough for taxonomies and simple inheritance inference.\n5. **OWL (Web Ontology Language)** — a real ontology language based on **description logics**, adding cardinality restrictions, disjointness, equivalence (`owl:sameAs`, `owl:equivalentClass`), property characteristics (transitive, symmetric, functional, inverse-functional), and value restrictions. Three original species trading expressiveness for decidability: **OWL Lite**, **OWL DL** (decidable, corresponds to the description logic $\\mathcal{SHOIN}(D)$) and **OWL Full** (maximally expressive, undecidable). OWL 2 adds profiles EL, QL and RL tuned for different reasoning tasks.\n6. **SPARQL** — the query language for RDF graphs, matching triple patterns.\n7. **Rules (RIF/SWRL)**, then **Logic**, **Proof** and **Trust**, with **digital signature** and **cryptography** running vertically alongside.\n\nAn **ontology** in this setting is the shared vocabulary that makes data from different sources combinable: classes, properties, individuals, and axioms. Its role in a multi-agent system is precisely knowledge sharing — two agents can only exchange meaningful content if the `:ontology` parameter of their messages names a vocabulary both understand. Where they do not, **ontology mapping / alignment / merging** is needed, and it is an open problem.\n\nThe practical difficulties, worth naming in a descriptive answer, are **scale**, **vagueness** (ontologies are crisp, human categories are not), **uncertainty**, **inconsistency** between independently authored ontologies, and **deceit** — the reason the trust layer exists at all. Description-logic reasoners answer **subsumption** ('is every $A$ a $B$?'), **classification** (build the class hierarchy), **consistency** and **instance checking**, which is what turns a vocabulary into something an agent can reason with rather than merely parse."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.6-1",
+     "q": "Which is the sharpest distinction between an object and an agent?",
+     "opts": [
+      "An object has state while an agent does not",
+      "An object can be invoked by another object, whereas an agent decides for itself whether to act on a request",
+      "An agent must be written in a declarative language",
+      "Objects communicate asynchronously while agents use method calls"
+     ],
+     "ans": 1,
+     "exp": "Both have state; the difference is control over *behaviour*. Calling a public method on an object always executes it, whereas an agent receiving a request evaluates it against its own goals and may refuse — 'objects do it for free, agents do it because they want to'. Option 3 is irrelevant to the definition, and option 4 reverses the communication styles."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.6-2",
+     "q": "In the Contract Net Protocol, the correct sequence is",
+     "opts": [
+      "Bid → announce → award → execute",
+      "Announce → bid → award → execute → report",
+      "Award → announce → bid → report",
+      "Announce → award → bid → execute"
+     ],
+     "ans": 1,
+     "exp": "The manager first announces the task (a call for proposals), potential contractors then bid, the manager awards the contract to the chosen bidder, the contractor executes and finally reports. Any agent can be a manager for one task and a contractor for another, and an awarded task may be re-announced, which is how task hierarchies form."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.6-3",
+     "q": "Four bidders value an item at 100, 80, 65 and 50. Under a Vickrey (second-price sealed-bid) auction with truthful bidding, the winner pays",
+     "opts": [
+      "50",
+      "65",
+      "80",
+      "100"
+     ],
+     "ans": 2,
+     "exp": "The highest bidder wins but pays the **second-highest** bid, which is 80. Because the price does not depend on one's own bid, bidding one's true valuation is a dominant strategy — this is what makes Vickrey strategy-proof, and it yields the same price an ascending English auction would reach."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Weak agency = four properties, in one mnemonic",
+     "body": "Autonomy, Reactivity, Pro-activeness, Social ability. Any list in a multiple-choice option that swaps one of these for 'mobility', 'veracity' or 'benevolence' is describing the *strong* notion, which is the wrong answer unless the question says 'strong'."
+    },
+    {
+     "title": "KQML versus FIPA-ACL: look for 'formal semantics'",
+     "body": "The one reliable discriminator is that FIPA-ACL has a formal semantics (feasibility preconditions and rational effect in a modal BDI logic) and a fixed set of 22 communicative acts, whereas KQML's performative set was open and its semantics informal. Almost every comparison question turns on that sentence."
+    },
+    {
+     "title": "English and Vickrey give the same price",
+     "body": "Both settle at the second-highest valuation, and both are strategy-proof; Dutch and first-price sealed-bid are strategically equivalent to each other and require shading. Pair them two by two and four separate auction questions collapse into one fact."
+    },
+    {
+     "title": "Read the semantic web stack bottom-up as syntax → data → schema → logic",
+     "body": "URI/Unicode (identify), XML (syntax), RDF (data model — triples), RDFS (simple schema), OWL (expressive ontology), SPARQL (query), then rules/logic/proof/trust. If an option places OWL below RDF, or SPARQL below RDF, it has the layers inverted."
+    },
+    {
+     "title": "RDF is always a triple",
+     "body": "Any 'which of the following is the RDF data model' question is answered by *subject-predicate-object*, equivalently a directed labelled graph. Not tables, not trees, not key-value pairs — and RDFS adds vocabulary to RDF rather than replacing it."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Autonomy is over behaviour, not just state",
+     "body": "Encapsulation gives an object autonomy over its state, which is why 'agents have private data' is not a distinguishing property. The distinguishing property is that an agent controls whether its behaviour is invoked at all."
+    },
+    {
+     "title": "BDI intentions are not desires",
+     "body": "Desires are what the agent would like; intentions are the subset it has committed to and will persist with, constraining future deliberation. An option defining intention as 'the agent's most preferred desire' misses the commitment, which is the whole point."
+    },
+    {
+     "title": "OWL Full is not simply 'better OWL'",
+     "body": "OWL Full is more expressive but **undecidable** — no reasoner can be complete for it. OWL DL is the decidable sublanguage and the one used in practice. 'Most expressive' and 'best' are not the same answer."
+    },
+    {
+     "title": "A multi-agent system is defined by decentralisation, not by count",
+     "body": "Several agents under one central controller with global knowledge is distributed problem solving, not a MAS in the technical sense. The defining features are incomplete information, no global control, decentralised data and asynchronous computation."
+    }
+   ]
+  },
+  {
+   "id": "10.7",
+   "title": "Fuzzy Sets and Fuzzy Logic",
+   "summary": "Membership functions, set operations and alpha-cuts, fuzzy relations and composition, Mamdani and Sugeno inference, and every defuzzification method with a worked centroid.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## Vagueness is not uncertainty\n\nA probability of 0.7 that a bottle contains drinkable liquid says the bottle is either drinkable or not, and we do not know which; after opening it the number collapses to 0 or 1. A membership of 0.7 in the fuzzy set *drinkable* says the liquid is partly drinkable, and opening the bottle changes nothing. Probability models **uncertainty about a crisp fact**; fuzzy set theory models **vagueness in the concept itself**. Terms like *tall*, *hot*, *fast* and *approximately 5* have no sharp boundary, and forcing one — 'tall means at least 180 cm' — makes a 179.9 cm person entirely not tall, which is absurd.\n\nZadeh's move (1965) was to replace the characteristic function $\\chi_A : X \\to \\{0,1\\}$ of a crisp set by a **membership function**\n\n$$\\mu_A : X \\to [0,1]$$\n\nA fuzzy set is then the set of pairs $A = \\{(x, \\mu_A(x)) \\mid x \\in X\\}$, where $X$ is the **universe of discourse**. Discrete fuzzy sets are written $A = \\mu_1/x_1 + \\mu_2/x_2 + \\cdots$ — the '+' is enumeration, not addition, and '/' is not division.\n\nBasic descriptors:\n\n- **Support**: $\\text{supp}(A) = \\{x : \\mu_A(x) > 0\\}$ — a crisp set.\n- **Core (nucleus)**: $\\{x : \\mu_A(x) = 1\\}$.\n- **Height**: $\\sup_x \\mu_A(x)$. $A$ is **normal** if its height is 1, otherwise **subnormal**.\n- **Boundary**: $\\{x : 0 < \\mu_A(x) < 1\\}$.\n- **Crossover point**: where $\\mu_A(x) = 0.5$.\n- **Cardinality**: $|A| = \\sum_x \\mu_A(x)$ (the *scalar cardinality* or sigma-count); relative cardinality is $|A|/|X|$.\n- **Convexity**: $A$ is convex if $\\mu_A(\\lambda x_1 + (1-\\lambda)x_2) \\ge \\min(\\mu_A(x_1), \\mu_A(x_2))$ for all $\\lambda \\in [0,1]$ — informally, the membership function has no dips. A **fuzzy number** is a normal, convex fuzzy set on $\\mathbb{R}$ with piecewise-continuous membership."
+    },
+    {
+     "t": "md",
+     "text": "## Membership functions\n\nThe standard shapes, all defined on a real universe:\n\n**Triangular**, parameters $a < b < c$ (feet at $a, c$, peak at $b$):\n$$\\mu(x) = \\max\\!\\left(\\min\\!\\left(\\frac{x-a}{b-a},\\ \\frac{c-x}{c-b}\\right),\\ 0\\right)$$\n\n**Trapezoidal**, parameters $a<b\\le c<d$ (flat top from $b$ to $c$):\n$$\\mu(x) = \\max\\!\\left(\\min\\!\\left(\\frac{x-a}{b-a},\\ 1,\\ \\frac{d-x}{d-c}\\right),\\ 0\\right)$$\n\n**Gaussian**, centre $c$, width $\\sigma$: $\\mu(x) = e^{-(x-c)^2 / 2\\sigma^2}$ — smooth, never reaches 0.\n\n**Generalised bell**: $\\mu(x) = \\dfrac{1}{1 + \\left|\\frac{x-c}{a}\\right|^{2b}}$ — a flat top whose width is controlled separately from the slope.\n\n**Sigmoidal**: $\\mu(x) = \\dfrac{1}{1 + e^{-a(x-c)}}$ — open on one side, used for *large* and *small*.\n\n**S-function and $\\pi$-function** are the classical Zadeh shapes, the $\\pi$-function being an S rising then falling.\n\nTriangular and trapezoidal shapes dominate practical controllers because they need only two or three multiplications to evaluate; Gaussian and bell shapes are preferred where a differentiable membership is needed, as in neuro-fuzzy training (ANFIS).\n\n**Linguistic variables and hedges.** A linguistic variable such as *speed* takes linguistic values *slow, medium, fast*, each a fuzzy set. **Hedges** are operators on membership: concentration *very* $A$ is $\\mu_A^2$, dilation *somewhat*/*more or less* $A$ is $\\mu_A^{1/2}$, *extremely* is $\\mu_A^3$, *indeed* intensifies contrast ($2\\mu^2$ below 0.5, $1-2(1-\\mu)^2$ above). Note that *very* **reduces** every membership below 1 — squaring a number in $[0,1]$ makes it smaller — which trips people up."
+    },
+    {
+     "t": "md",
+     "text": "## Set operations\n\nThe standard (Zadeh) operators, for all $x$:\n\n| Operation | Definition |\n|---|---|\n| Union | $\\mu_{A \\cup B}(x) = \\max(\\mu_A(x), \\mu_B(x))$ |\n| Intersection | $\\mu_{A \\cap B}(x) = \\min(\\mu_A(x), \\mu_B(x))$ |\n| Complement | $\\mu_{\\bar A}(x) = 1 - \\mu_A(x)$ |\n| Containment | $A \\subseteq B \\iff \\mu_A(x) \\le \\mu_B(x)\\ \\forall x$ |\n| Equality | $A = B \\iff \\mu_A(x) = \\mu_B(x)\\ \\forall x$ |\n| Difference | $\\mu_{A - B}(x) = \\min(\\mu_A(x),\\ 1-\\mu_B(x))$ |\n\nAlternatives, used when min/max is too coarse:\n\n- **Algebraic product** $\\mu_A \\cdot \\mu_B$ and **algebraic sum** $\\mu_A + \\mu_B - \\mu_A\\mu_B$.\n- **Bounded difference** $\\max(0, \\mu_A + \\mu_B - 1)$ and **bounded sum** $\\min(1, \\mu_A + \\mu_B)$.\n- **Drastic product/sum**, the extreme cases.\n\nIn general, an intersection operator is a **t-norm** (commutative, associative, monotone, with identity 1) and a union operator is a **t-conorm / s-norm** (identity 0). Min is the *largest* t-norm and max the *smallest* t-conorm, so min/max intersections are the largest and unions the smallest among all consistent choices.\n\n**Which crisp laws survive.** Commutativity, associativity, distributivity, idempotence, absorption, De Morgan's laws and involution ($\\bar{\\bar A} = A$) all hold for min/max/complement. But:\n\n$$A \\cap \\bar A \\ne \\varnothing \\qquad\\text{and}\\qquad A \\cup \\bar A \\ne X$$\n\nThe **law of contradiction** and the **law of excluded middle fail**. If $\\mu_A(x) = 0.6$ then $\\mu_{\\bar A}(x) = 0.4$, so $\\mu_{A \\cap \\bar A}(x) = \\min(0.6, 0.4) = 0.4 \\ne 0$ and $\\mu_{A \\cup \\bar A}(x) = 0.6 \\ne 1$. The maximum possible value of $\\mu_{A\\cap\\bar A}$ is 0.5, attained at the crossover point. This is the single most-examined fact in the topic."
+    },
+    {
+     "t": "md",
+     "text": "## Alpha-cuts and the decomposition theorem\n\nThe **$\\alpha$-cut** of a fuzzy set is the **crisp** set of elements whose membership reaches $\\alpha$:\n\n$$A_\\alpha = \\{x \\in X : \\mu_A(x) \\ge \\alpha\\}, \\qquad \\alpha \\in (0,1]$$\n\nThe **strong $\\alpha$-cut** uses strict inequality: $A_{\\alpha^+} = \\{x : \\mu_A(x) > \\alpha\\}$. Note that $\\text{supp}(A) = A_{0^+}$ (the strong 0-cut) and $\\text{core}(A) = A_1$.\n\nProperties: $\\alpha$-cuts are **nested** — $\\alpha_1 < \\alpha_2 \\Rightarrow A_{\\alpha_2} \\subseteq A_{\\alpha_1}$; and they distribute over operations, $(A\\cap B)_\\alpha = A_\\alpha \\cap B_\\alpha$, $(A\\cup B)_\\alpha = A_\\alpha \\cup B_\\alpha$ (complement does **not** distribute). The **level set** of $A$ is the set of distinct $\\alpha$ values its membership function takes.\n\nThe **decomposition (resolution) theorem** rebuilds the fuzzy set from its cuts:\n$$A = \\bigcup_{\\alpha \\in (0,1]} \\alpha \\cdot A_\\alpha \\qquad\\text{i.e.}\\qquad \\mu_A(x) = \\sup_{\\alpha} \\min\\bigl(\\alpha,\\ \\chi_{A_\\alpha}(x)\\bigr)$$\nThis matters practically: any operation on fuzzy sets can be performed cut by cut using ordinary crisp set operations, which is how fuzzy arithmetic on fuzzy numbers is implemented. A fuzzy set is convex **iff every $\\alpha$-cut is a convex (interval) crisp set** — the usual way to test convexity.\n\nThe **extension principle** lifts an ordinary function $f : X \\to Y$ to fuzzy sets:\n$$\\mu_{f(A)}(y) = \\sup_{x : f(x) = y} \\mu_A(x)$$\nwith $\\mu_{f(A)}(y) = 0$ when no $x$ maps to $y$. For several arguments the sup is over all tuples mapping to $y$, with the memberships combined by min."
+    },
+    {
+     "t": "md",
+     "text": "## Fuzzy relations and composition\n\nA **fuzzy relation** $R$ on $X \\times Y$ is a fuzzy set of ordered pairs: $\\mu_R(x,y) \\in [0,1]$ gives the strength of the relationship. It is written as a matrix when the universes are finite.\n\nThe **max-min composition** of $R$ on $X\\times Y$ with $S$ on $Y \\times Z$ is a relation on $X \\times Z$:\n\n$$\\mu_{R \\circ S}(x, z) = \\max_{y \\in Y} \\ \\min\\bigl(\\mu_R(x,y),\\ \\mu_S(y,z)\\bigr)$$\n\nThis is matrix multiplication with $\\times \\to \\min$ and $+ \\to \\max$. The **max-product (max-dot) composition** replaces min by ordinary multiplication:\n\n$$\\mu_{R \\bullet S}(x,z) = \\max_y\\ \\bigl(\\mu_R(x,y) \\cdot \\mu_S(y,z)\\bigr)$$\n\nMax-min composition is associative but **not commutative**, and it generalises crisp relational composition exactly.\n\nA relation on $X \\times X$ can be **reflexive** ($\\mu_R(x,x) = 1$), **symmetric** ($\\mu_R(x,y) = \\mu_R(y,x)$), and **max-min transitive** ($\\mu_R(x,z) \\ge \\max_y \\min(\\mu_R(x,y), \\mu_R(y,z))$, i.e. $R \\circ R \\subseteq R$). Reflexive + symmetric is a **fuzzy tolerance (proximity) relation**; adding transitivity gives a **fuzzy equivalence (similarity) relation**, whose $\\alpha$-cuts are ordinary equivalence relations — the basis of fuzzy clustering."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — operations, alpha-cuts and max-min composition",
+     "text": "Universe $X = \\{1,2,3,4,5,6\\}$ with\n$$A = 0.2/1 + 0.5/2 + 0.8/3 + 1.0/4 + 0.7/5 + 0.3/6$$\n$$B = 0.6/1 + 0.4/2 + 0.9/3 + 0.5/4 + 0.2/5 + 0.8/6$$\n\n**Union** (max): $0.6/1 + 0.5/2 + 0.9/3 + 1.0/4 + 0.7/5 + 0.8/6$.\n**Intersection** (min): $0.2/1 + 0.4/2 + 0.8/3 + 0.5/4 + 0.2/5 + 0.3/6$.\n**Complement of $A$**: $0.8/1 + 0.5/2 + 0.2/3 + 0.0/4 + 0.3/5 + 0.7/6$.\n**$A \\cap \\bar A$**: $\\min$ of the two lines $= 0.2/1 + 0.5/2 + 0.2/3 + 0.0/4 + 0.3/5 + 0.3/6$ — **not empty**, with maximum 0.5 at $x = 2$ where $\\mu_A = 0.5$ is the crossover point.\n**Algebraic product** $A\\cdot B$: $0.12/1 + 0.20/2 + 0.72/3 + 0.50/4 + 0.14/5 + 0.24/6$. Note every value is $\\le$ the min-intersection, as a t-norm must be.\n**Cardinality** $|A| = 0.2+0.5+0.8+1.0+0.7+0.3 = 3.5$; relative cardinality $3.5/6 = 0.583$.\n**Height** of $A$ is 1.0, so $A$ is **normal**; core $= \\{4\\}$; support $= \\{1,2,3,4,5,6\\}$; crossover point at $x=2$.\n\n**$\\alpha$-cuts of $A$:**\n$$A_{0.2} = \\{1,2,3,4,5,6\\},\\quad A_{0.5} = \\{2,3,4,5\\},\\quad A_{0.8} = \\{3,4\\},\\quad A_{1.0} = \\{4\\}$$\nStrong cut $A_{0.5^+} = \\{3,4,5\\}$ — note $x=2$ drops out because $0.5 > 0.5$ is false. The cuts are nested as required. All are intervals of consecutive integers, so $A$ is **convex**.\n\n**Hedges:** *very* $A$ $= \\mu_A^2 = 0.04/1 + 0.25/2 + 0.64/3 + 1.0/4 + 0.49/5 + 0.09/6$ (memberships shrink); *more or less* $A = \\mu_A^{1/2} = 0.447/1 + 0.707/2 + 0.894/3 + 1.0/4 + 0.837/5 + 0.548/6$ (memberships grow).\n\n**Max-min composition.** $X = \\{x_1, x_2\\}$, $Y = \\{y_1, y_2\\}$, $Z = \\{z_1, z_2\\}$:\n$$R = \\begin{pmatrix} 0.3 & 0.8 \\\\ 0.6 & 0.9\\end{pmatrix}, \\qquad S = \\begin{pmatrix} 0.5 & 0.9 \\\\ 0.4 & 1.0 \\end{pmatrix}$$\n\n$$\\mu_{R\\circ S}(x_1,z_1) = \\max\\bigl(\\min(0.3, 0.5),\\ \\min(0.8, 0.4)\\bigr) = \\max(0.3,\\ 0.4) = 0.4$$\n$$\\mu_{R\\circ S}(x_1,z_2) = \\max\\bigl(\\min(0.3, 0.9),\\ \\min(0.8, 1.0)\\bigr) = \\max(0.3,\\ 0.8) = 0.8$$\n$$\\mu_{R\\circ S}(x_2,z_1) = \\max\\bigl(\\min(0.6, 0.5),\\ \\min(0.9, 0.4)\\bigr) = \\max(0.5,\\ 0.4) = 0.5$$\n$$\\mu_{R\\circ S}(x_2,z_2) = \\max\\bigl(\\min(0.6, 0.9),\\ \\min(0.9, 1.0)\\bigr) = \\max(0.6,\\ 0.9) = 0.9$$\n\n$$R \\circ S = \\begin{pmatrix} 0.4 & 0.8 \\\\ 0.5 & 0.9\\end{pmatrix}$$\n\nFor contrast, **max-product** gives $(x_1,z_1) = \\max(0.15, 0.32) = 0.32$, $(x_1,z_2) = \\max(0.27, 0.80) = 0.80$, $(x_2,z_1) = \\max(0.30, 0.36) = 0.36$, $(x_2,z_2) = \\max(0.54, 0.90) = 0.90$ — every entry is $\\le$ the max-min result, as expected since the product is a smaller t-norm than min."
+    },
+    {
+     "t": "md",
+     "text": "## Fuzzy inference systems\n\nA fuzzy controller has four components: a **fuzzifier**, a **rule base**, an **inference engine**, and a **defuzzifier** (plus a **database** of membership function definitions).\n\n**Fuzzification** converts a crisp input $x_0$ into membership degrees in each linguistic set of that variable — simply evaluate each membership function at $x_0$. (Singleton fuzzification, the usual choice, treats $x_0$ as a spike of membership 1.)\n\nThe **rule base** is a set of IF-THEN rules over linguistic variables. The antecedent's **firing strength** $w_i$ is computed by the t-norm: `AND` → min (or product), `OR` → max.\n\n**Mamdani inference** (the original, and the one in most exam questions):\n\n1. Fuzzify the inputs.\n2. Compute each rule's firing strength $w_i$.\n3. **Implication**: clip (min) or scale (product) the rule's *fuzzy* consequent set by $w_i$.\n4. **Aggregation**: combine all clipped consequents into one fuzzy set, usually by max.\n5. **Defuzzify** the aggregate to a crisp output.\n\n**Sugeno (Takagi-Sugeno-Kang) inference** changes only the consequent: it is a **crisp function of the inputs**, $z = f(x,y)$ — a constant for **zero-order** Sugeno, a linear expression $z = px + qy + r$ for **first-order**. There is no output fuzzy set and therefore **no defuzzification step**; the output is the weighted average\n\n$$z^* = \\frac{\\sum_i w_i z_i}{\\sum_i w_i}$$\n\nSugeno is computationally cheaper, guarantees a continuous output surface, and is differentiable in its parameters, so it is used in **ANFIS** and other neuro-fuzzy systems. Mamdani is more intuitive, better suited to expressing human expert knowledge, and its output is a fuzzy set that can be inspected. **Tsukamoto inference** is a third variant in which each consequent is a monotonic membership function and each rule's crisp output is obtained by inverting it at $w_i$."
+    },
+    {
+     "t": "md",
+     "text": "## Defuzzification\n\nGiven the aggregated output fuzzy set $C$ over universe $Z$, produce one crisp number.\n\n| Method | Formula / rule | Character |\n|---|---|---|\n| **Centroid (COA, centre of gravity)** | $z^* = \\dfrac{\\int z\\,\\mu_C(z)\\,dz}{\\int \\mu_C(z)\\,dz}$, discretely $\\dfrac{\\sum z_j \\mu_C(z_j)}{\\sum \\mu_C(z_j)}$ | most used; smooth; every rule contributes; expensive |\n| **Bisector** | the $z^*$ splitting the area into two equal halves | close to centroid, cheaper, not identical |\n| **Mean of maximum (MOM)** | mean of all $z$ where $\\mu_C$ is maximal | ignores the shape below the peak |\n| **Smallest of maximum (SOM)** | leftmost maximising $z$ | conservative |\n| **Largest of maximum (LOM)** | rightmost maximising $z$ | aggressive |\n| **Weighted average** | $z^* = \\dfrac{\\sum_i \\mu(\\bar z_i)\\,\\bar z_i}{\\sum_i \\mu(\\bar z_i)}$ over each set's representative point | valid only for symmetric output sets; this is what Sugeno effectively uses |\n| **Centre of sums (COS)** | $z^* = \\dfrac{\\sum_j z_j \\sum_i \\mu_{C_i}(z_j)}{\\sum_j \\sum_i \\mu_{C_i}(z_j)}$ — aggregate by **sum**, counting overlaps twice | much faster than centroid; overlapping regions weigh more |\n| **Centre of largest area** | centroid of the largest connected subregion | for non-convex aggregates |\n| **Height / max-membership** | the $z$ with the single highest membership | only for peaked, unimodal outputs |\n\nThe centroid is the default answer unless a question names another method. Note that the centroid of an aggregate produced by **max** aggregation is generally *not* the weighted average of the individual centroids, because max discards the overlap — which is exactly the difference between COA and COS."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — a full Mamdani cycle with centroid defuzzification",
+     "text": "**System.** Tip percentage from service and food quality, universes $0$–$10$ for the inputs and $0$–$20$ for the tip.\n\nInput sets: *service is good* is triangular $(0, 5, 10)$; *food is delicious* is the ramp $\\mu = (x-5)/5$ on $[5,10]$.\nOutput sets: *average* is triangular $(5, 10, 15)$; *generous* is triangular $(10, 15, 20)$.\n\nRules: **R1** IF service is good THEN tip is average. **R2** IF food is delicious THEN tip is generous.\n\n**Step 1 — fuzzify.** Crisp inputs: service $= 6$, food $= 8$.\n$$\\mu_{\\text{good}}(6) = \\frac{10-6}{10-5} = 0.8, \\qquad \\mu_{\\text{delicious}}(8) = \\frac{8-5}{5} = 0.6$$\n\n**Step 2 — firing strengths.** Each rule has a single antecedent, so $w_1 = 0.8$, $w_2 = 0.6$.\n\n**Step 3 — implication (clipping).** *average* is clipped at 0.8, *generous* at 0.6.\n\n**Step 4 — aggregation by max**, sampled at integer tips:\n\n| $z$ | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n| clipped *average* | 0 | 0.2 | 0.4 | 0.6 | 0.8 | 0.8 | 0.8 | 0.6 | 0.4 | 0.2 | 0 | 0 | 0 | 0 | 0 | 0 |\n| clipped *generous* | 0 | 0 | 0 | 0 | 0 | 0 | 0.2 | 0.4 | 0.6 | 0.6 | 0.6 | 0.6 | 0.6 | 0.4 | 0.2 | 0 |\n| **max** | 0 | 0.2 | 0.4 | 0.6 | 0.8 | 0.8 | 0.8 | 0.6 | 0.6 | 0.6 | 0.6 | 0.6 | 0.6 | 0.4 | 0.2 | 0 |\n\n**Step 5 — centroid.**\n$$\\sum \\mu = 0.2+0.4+0.6+0.8+0.8+0.8+0.6+0.6+0.6+0.6+0.6+0.6+0.4+0.2 = 7.8$$\n$$\\sum z\\mu = 6(0.2)+7(0.4)+8(0.6)+9(0.8)+10(0.8)+11(0.8)+12(0.6)+13(0.6)$$\n$$\\qquad +\\,14(0.6)+15(0.6)+16(0.6)+17(0.6)+18(0.4)+19(0.2)$$\n$$= 1.2+2.8+4.8+7.2+8.0+8.8+7.2+7.8+8.4+9.0+9.6+10.2+7.2+3.8 = 96.0$$\n$$\\boxed{z^* = \\frac{96.0}{7.8} = 12.31\\%}$$\n\n**Other defuzzifiers on the same aggregate.**\n- Maximum membership is 0.8, attained at $z = 9, 10, 11$. So **MOM** $= (9+10+11)/3 = 10$, **SOM** $= 9$, **LOM** $= 11$.\n- **Bisector**: half the total is $7.8/2 = 3.9$. Cumulative sums: $z\\le 6$: 0.2; $\\le 7$: 0.6; $\\le 8$: 1.2; $\\le 9$: 2.0; $\\le 10$: 2.8; $\\le 11$: 3.6; $\\le 12$: 4.2. The half-area point is crossed at $z = 12$, so the bisector is **12**.\n- **Sugeno equivalent.** Replace the consequents by the crisp values 10 (*average*) and 18 (*generous*):\n$$z^* = \\frac{0.8(10) + 0.6(18)}{0.8+0.6} = \\frac{8.0 + 10.8}{1.4} = \\frac{18.8}{1.4} = 13.43\\%$$\n\nFive methods, five different answers: 12.31, 12, 10, 9, 11 — and 13.43 for Sugeno. This is why a question must name the method, and why you must use the one it names."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — discrete centroid on its own",
+     "text": "An aggregated output has $\\mu = \\{0.0/1,\\ 0.3/2,\\ 0.6/3,\\ 1.0/4,\\ 1.0/5,\\ 0.4/6,\\ 0.1/7\\}$.\n\n$$\\sum \\mu = 0.0+0.3+0.6+1.0+1.0+0.4+0.1 = 3.4$$\n$$\\sum z\\mu = 1(0)+2(0.3)+3(0.6)+4(1.0)+5(1.0)+6(0.4)+7(0.1)$$\n$$= 0 + 0.6 + 1.8 + 4.0 + 5.0 + 2.4 + 0.7 = 14.5$$\n$$z^*_{\\text{COA}} = \\frac{14.5}{3.4} = 4.26$$\n\nCompare: maximum membership 1.0 occurs at $z = 4$ and $z = 5$, so **MOM** $= 4.5$, **SOM** $= 4$, **LOM** $= 5$. For the **bisector**, half the total is 1.7; the cumulative sum reaches 0.9 at $z=3$ and 1.9 at $z=4$, so the bisector is $z = 4$. The centroid sits at 4.26 rather than at 4.5 because the long left tail (0.3 and 0.6 at $z = 2, 3$) pulls it down while the right tail is lighter — the centroid is the only method that sees the whole shape."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.7-1",
+     "q": "For a fuzzy set $A$ with $\\mu_A(x) = 0.7$ at some point $x$, the value of $\\mu_{A \\cap \\bar A}(x)$ is",
+     "opts": [
+      "0",
+      "0.3",
+      "0.7",
+      "1"
+     ],
+     "ans": 1,
+     "exp": "$\\mu_{\\bar A}(x) = 1 - 0.7 = 0.3$, and intersection is min, so $\\min(0.7, 0.3) = 0.3$. The law of contradiction fails in fuzzy logic: $A \\cap \\bar A$ is empty only if every membership is 0 or 1. The largest value this expression can take is 0.5, at the crossover point."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.7-2",
+     "q": "An aggregated output fuzzy set is $\\{0.2/2,\\ 0.6/4,\\ 1.0/6,\\ 0.6/8,\\ 0.2/10\\}$. Its centroid defuzzified value is",
+     "opts": [
+      "5.0",
+      "6.0",
+      "6.5",
+      "7.2"
+     ],
+     "ans": 1,
+     "exp": "$\\sum \\mu = 0.2+0.6+1.0+0.6+0.2 = 2.6$ and $\\sum z\\mu = 0.4 + 2.4 + 6.0 + 4.8 + 2.0 = 15.6$, so $z^* = 15.6/2.6 = 6.0$. The shortcut: the membership function is symmetric about $z = 6$, and the centroid of any symmetric set is its axis of symmetry — no arithmetic needed."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.7-3",
+     "q": "Which statement about Mamdani and Sugeno inference is correct?",
+     "opts": [
+      "Both produce a fuzzy output set that must be defuzzified",
+      "Mamdani consequents are fuzzy sets; Sugeno consequents are crisp functions of the inputs, so no defuzzification is needed",
+      "Sugeno uses max-min composition while Mamdani uses max-product",
+      "Mamdani cannot use the product implication operator"
+     ],
+     "ans": 1,
+     "exp": "The entire difference lies in the consequent. Mamdani rules conclude with a fuzzy set, which must be clipped, aggregated and defuzzified; Sugeno rules conclude with a constant (zero-order) or a linear function of the inputs (first-order), and the output is the firing-strength-weighted average, $\\sum w_i z_i / \\sum w_i$. Mamdani may use either min (clipping) or product (scaling) implication."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Symmetric aggregate ⇒ centroid is the axis",
+     "body": "If the output membership function is symmetric about some $z_0$, the centroid, bisector and mean-of-maximum all equal $z_0$. Check for symmetry before computing anything — it converts a long summation into a one-second answer."
+    },
+    {
+     "title": "Two columns and two sums for any discrete centroid",
+     "body": "Write $z$, $\\mu$, $z\\mu$. Add the last two columns. Divide. Do the $\\sum\\mu$ first: if it comes out as a round number the division is usually clean, and if it does not, recheck before dividing."
+    },
+    {
+     "title": "Compose fuzzy relations as min-then-max, row by column",
+     "body": "Max-min composition is matrix multiplication with $\\times\\to\\min$ and $+\\to\\max$. Take row $i$ of $R$ and column $j$ of $S$, pair the entries, take the min of each pair, then the max over pairs. Doing it in any other order is the commonest error in these questions."
+    },
+    {
+     "title": "$\\alpha$-cut = 'greater than OR EQUAL'",
+     "body": "Plain $\\alpha$-cut uses $\\ge$, strong $\\alpha$-cut uses $>$. So an element whose membership is exactly $\\alpha$ is in $A_\\alpha$ and out of $A_{\\alpha^+}$. Questions are set precisely on that boundary element."
+    },
+    {
+     "title": "Hedge direction: very shrinks, more-or-less grows",
+     "body": "Squaring a number in $[0,1]$ decreases it, taking the square root increases it. So *very tall* has lower memberships than *tall*, and *more or less tall* has higher ones, everywhere except at 0 and 1 where they are fixed."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Excluded middle and contradiction both fail",
+     "body": "$A \\cup \\bar A \\ne X$ and $A \\cap \\bar A \\ne \\varnothing$. Every other Boolean law — De Morgan, distributivity, idempotence, involution, absorption — still holds for min/max/1−μ. An option claiming 'all Boolean laws hold' or 'De Morgan's laws fail' is wrong either way."
+    },
+    {
+     "title": "Fuzzy membership is not probability",
+     "body": "Memberships need not sum to 1 across a universe, they do not obey the Kolmogorov axioms, and $\\mu_A(x) = 0.7$ does not mean a 70% chance of anything. Probability quantifies uncertainty about a crisp event; membership quantifies degree of a vague property."
+    },
+    {
+     "title": "Sugeno has no defuzzification stage",
+     "body": "Its output is already crisp, produced by a weighted average of the rule outputs. Calling that weighted average 'centroid defuzzification' is a common conflation — the centroid operates on an aggregated *fuzzy set*, which Sugeno never builds."
+    },
+    {
+     "title": "Centre of sums double-counts overlaps; centroid does not",
+     "body": "COA is taken over the max-aggregated set, so an overlapping region is counted once; COS sums the individual clipped sets, so an overlap contributes twice. The two therefore give different numbers, and a question naming one will not accept the other."
+    }
+   ]
+  },
+  {
+   "id": "10.8",
+   "title": "Genetic Algorithms",
+   "summary": "Encoding, fitness, selection schemes, crossover and mutation operators, the full GA cycle traced over one generation, and the schema theorem.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## The idea\n\nA genetic algorithm is a **population-based stochastic search** method inspired by natural selection. Instead of improving one candidate solution, it maintains a population of them, scores each by a **fitness function**, preferentially breeds the better ones, and recombines and perturbs them to produce the next generation. Over many generations the population concentrates in high-fitness regions.\n\nGAs belong to the family of **evolutionary computation** alongside evolution strategies, evolutionary programming and genetic programming (where the individuals are programs, usually trees, rather than fixed-length strings). In the search taxonomy of topic 10.1 a GA is **stochastic beam search with recombination**: it keeps $k$ states, but successors are produced by combining *pairs* of parents rather than by mutating one.\n\nWhat a GA needs, and nothing more:\n- a **representation (encoding)** of candidate solutions as chromosomes;\n- a **fitness function** that scores a chromosome;\n- **selection**, **crossover** and **mutation** operators;\n- population size, crossover rate $p_c$, mutation rate $p_m$, and a **termination criterion**.\n\nNotably it needs **no gradient, no derivative, and no continuity** — only the ability to score a candidate. That is why GAs are applied to combinatorial problems, to black-box optimisation, and to problems whose objective is discontinuous or noisy. The costs are that there is no optimality guarantee, the result varies between runs, and evaluating fitness for a whole population every generation is expensive."
+    },
+    {
+     "t": "md",
+     "text": "## Encoding\n\nThe encoding maps the problem's solution space (the **phenotype**) to strings the operators can act on (the **genotype**).\n\n- **Binary encoding.** The classical choice: each chromosome is a bit string. To encode a real variable $x \\in [x_{\\min}, x_{\\max}]$ in $\\ell$ bits, decode the integer $b$ as\n$$x = x_{\\min} + \\frac{b}{2^{\\ell}-1}\\,(x_{\\max}-x_{\\min})$$\nso the resolution is $(x_{\\max}-x_{\\min})/(2^\\ell - 1)$. **Gray coding** is often preferred because adjacent integers differ in exactly one bit, so a single mutation makes a small phenotypic change — with plain binary, 0111 → 1000 needs four simultaneous flips, the **Hamming cliff**.\n- **Real-valued encoding.** A vector of floats; needs arithmetic crossover and Gaussian mutation instead of bit operators. Preferred for continuous optimisation with many variables.\n- **Permutation encoding.** For ordering problems such as the travelling salesman; a chromosome is a permutation of city indices. Ordinary crossover would produce invalid tours, so specialised operators are required.\n- **Tree encoding.** Used by genetic programming for expressions and programs.\n\nThe design rule is that small changes in the genotype should cause small changes in the phenotype and in fitness; an encoding where they do not makes the search effectively random."
+    },
+    {
+     "t": "md",
+     "text": "## Selection schemes\n\nSelection decides which individuals become parents. The tension is between **selection pressure** (favouring the fit, which drives convergence) and **diversity** (which prevents premature convergence to a local optimum).\n\n- **Roulette wheel (fitness-proportionate) selection.** Individual $i$ is chosen with probability $p_i = f_i / \\sum_j f_j$; equivalently its expected count is $f_i / \\bar f$. Simple, but it has two well-known failures: one **super-individual** with far higher fitness dominates the pool and causes premature convergence, and late in a run when all fitnesses are nearly equal the selection pressure vanishes. It also requires non-negative fitness, so a minimisation problem must be transformed.\n- **Stochastic universal sampling (SUS).** One spin of a wheel with $N$ equally spaced pointers, so the actual count of each individual is within 1 of its expected count. Same expectation as roulette, far less variance.\n- **Rank selection.** Sort by fitness and assign selection probability from the **rank**, not the raw value. Immune to scaling and to super-individuals, but slows convergence because it discards information about how much better the best is.\n- **Tournament selection.** Pick $k$ individuals at random and take the best. Selection pressure is tuned by $k$ ($k=2$ binary tournament is the common choice); no sorting or global sums needed, so it parallelises trivially. The most used scheme in practice.\n- **Truncation selection.** Keep the top $x\\%$ and breed only from them.\n- **Boltzmann selection.** Probability $\\propto e^{f_i/T}$ with a cooling temperature: low pressure early, high late — the simulated-annealing idea applied to selection.\n- **Elitism.** Copy the best one or few individuals unchanged into the next generation. This is not a selection scheme by itself but an overlay; without it the best-so-far can be lost, and with it the best fitness is monotonically non-decreasing. Elitism is what guarantees a GA converges to the global optimum given infinite time.\n\n**Fitness scaling** (linear scaling, sigma truncation, power-law scaling) is applied before roulette selection to control pressure explicitly."
+    },
+    {
+     "t": "md",
+     "text": "## Crossover and mutation\n\n**Crossover (recombination)** is the exploitation operator: it combines building blocks already present in two parents. It is applied with probability $p_c$, typically 0.6–0.95; with probability $1-p_c$ the parents are copied unchanged.\n\n- **Single-point**: choose a cut point $k \\in \\{1, \\dots, \\ell-1\\}$ and swap tails.\n- **Two-point / $k$-point**: swap the segment(s) between cut points; less prone to the positional bias of single-point crossover, which tends to keep the ends of a chromosome together.\n- **Uniform crossover**: for each position independently, take the bit from parent 1 with probability 0.5. Maximally disruptive of long schemata but unbiased by gene position.\n- **Arithmetic / blend crossover** (real encodings): child $= \\lambda p_1 + (1-\\lambda)p_2$.\n- **Permutation crossovers**: **PMX** (partially mapped), **OX** (order), **CX** (cycle) — all designed so the child is still a valid permutation.\n\n**Mutation** is the exploration operator: it introduces alleles that may be absent from the whole population and prevents permanent loss of diversity. Applied per gene with a small probability $p_m$, typically $1/\\ell$ or around 0.001–0.01.\n\n- **Bit-flip** for binary; **swap**, **inversion**, **scramble** and **insertion** for permutations; **Gaussian / creep** ($x \\leftarrow x + N(0,\\sigma)$) for reals.\n\nThe expected number of mutated bits in a generation is $N \\ell p_m$ for a population of $N$ chromosomes of length $\\ell$ — a standard small calculation.\n\n**Replacement.** *Generational* GAs replace the whole population each cycle; *steady-state* GAs replace only one or two individuals per cycle, usually the worst. The **generation gap** is the fraction replaced."
+    },
+    {
+     "t": "md",
+     "text": "## The GA cycle\n\n```\nt := 0\ninitialise population P(0) at random\nevaluate fitness of every individual in P(0)\nwhile not termination_condition:\n    select parents from P(t)            # selection\n    apply crossover with probability pc # recombination\n    apply mutation with probability pm  # variation\n    evaluate fitness of the offspring\n    form P(t+1) from offspring (+ elites)   # replacement\n    t := t + 1\n```\n\nTermination is by a generation limit, a fitness threshold, a wall-clock budget, or stagnation (no improvement for $k$ generations).\n\nThe standard analysis is the **schema theorem** (Holland's fundamental theorem). A **schema** $H$ is a template over $\\{0,1,*\\}$, where $*$ matches either bit; it denotes a set of chromosomes. Its **order** $o(H)$ is the number of fixed positions, and its **defining length** $\\delta(H)$ is the distance between the first and last fixed position. For $H = 1{*}{*}0{*}$ with $\\ell = 5$: $o(H) = 2$ and $\\delta(H) = 4 - 1 = 3$.\n\n$$m(H, t+1) \\ \\ge\\ m(H,t)\\,\\frac{f(H)}{\\bar f}\\left[1 - p_c \\frac{\\delta(H)}{\\ell - 1} - o(H)\\,p_m\\right]$$\n\nIn words: **short, low-order, above-average schemata receive exponentially increasing numbers of trials in successive generations.** Such schemata are the **building blocks**, and the **building block hypothesis** says a GA works by assembling them into better solutions. The theorem is an inequality and a lower bound only — it ignores schemata *created* by crossover — and it is the standard criticism that it says nothing about convergence to an optimum. A problem engineered so that assembling good building blocks leads *away* from the optimum is a **deceptive problem**."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — one complete generation on $f(x)=x^2$",
+     "text": "**Problem.** Maximise $f(x) = x^2$ for integer $x \\in [0, 31]$, encoded in 5 bits. Population size 4.\n\n**Step 1 — initial population and fitness.**\n\n| # | String | $x$ | $f(x) = x^2$ | $p_i = f_i/\\sum f$ | expected count $f_i/\\bar f$ |\n|---|---|---|---|---|---|\n| 1 | 01101 | 13 | 169 | 0.1444 | 0.578 |\n| 2 | 11000 | 24 | **576** | 0.4923 | 1.969 |\n| 3 | 01000 | 8 | 64 | 0.0547 | 0.219 |\n| 4 | 10011 | 19 | 361 | 0.3085 | 1.234 |\n| | | | $\\sum = 1170$ | $\\sum = 1.000$ | $\\sum = 4.000$ |\n\n$\\bar f = 1170/4 = 292.5$, best $= 576$.\n\nCheck one probability: $169/1170 = 0.1444$; and one expected count: $169/292.5 = 0.578$. The expected counts must sum to the population size, and $0.578 + 1.969 + 0.219 + 1.234 = 4.000$ ✓.\n\n**Step 2 — roulette wheel selection.** Spinning four times gives actual counts close to the expectations; take the typical outcome $\\{1, 2, 0, 1\\}$ — string 2 copied twice, string 3 eliminated. Mating pool:\n\n$$\\text{01101},\\quad \\text{11000},\\quad \\text{11000},\\quad \\text{10011}$$\n\n**Step 3 — crossover.** Pair 1 = (01101, 11000) with cut after position 4; pair 2 = (11000, 10011) with cut after position 2.\n\nPair 1: $0110|1$ and $1100|0$ $\\Rightarrow$ children $0110\\mathbf{0}$ and $1100\\mathbf{1}$.\nPair 2: $11|000$ and $10|011$ $\\Rightarrow$ children $11\\mathbf{011}$ and $10\\mathbf{000}$.\n\n**Step 4 — mutation.** With $p_m = 0.001$ and $4 \\times 5 = 20$ bits, the expected number of flips is $20 \\times 0.001 = 0.02$, so in this generation none occurs.\n\n**Step 5 — new population and fitness.**\n\n| # | String | $x$ | $f(x)$ |\n|---|---|---|---|\n| 1 | 01100 | 12 | 144 |\n| 2 | 11001 | 25 | 625 |\n| 3 | 11011 | 27 | **729** |\n| 4 | 10000 | 16 | 256 |\n| | | | $\\sum = 1754$ |\n\n$\\bar f = 1754/4 = 438.5$, best $= 729$.\n\n**Result of one generation:** average fitness $292.5 \\to 438.5$ (+50%), best fitness $576 \\to 729$ (+27%). Note that string 3 of the new population, 11011 $= 27$, was **not present in the initial population** and is better than anything in it — crossover created it by combining the high-order bits of 11000 with the low-order bits of 10011. That is the building-block mechanism in one step.\n\n**Step 6 — check against the schema theorem.** Take $H = 1{*}{*}{*}{*}$, so $o(H) = 1$ and $\\delta(H) = 0$. Its members in the initial population are 11000 ($f = 576$) and 10011 ($f = 361$), so $m(H, 0) = 2$ and\n$$f(H) = \\frac{576 + 361}{2} = 468.5, \\qquad \\frac{f(H)}{\\bar f} = \\frac{468.5}{292.5} = 1.602$$\nThe theorem predicts at least $2 \\times 1.602 \\times [1 - p_c\\cdot 0 - 1\\cdot p_m] \\approx 3.2$ copies — and the mating pool does contain three members of $H$ (11000, 11000, 10011), while the final population contains **all four**. A schema of defining length 0 cannot be disrupted by crossover, which is why the bracket is essentially 1.\n\n**Contrast** with $H' = 1{*}{*}{*}1$, where $o(H') = 2$ and $\\delta(H') = 4$. With $p_c = 0.8$ and $\\ell = 5$, the disruption term is $0.8 \\times 4/4 = 0.8$, so the bracket falls to about $0.2$ — this long schema is eight-tenths likely to be broken every time crossover fires, and it will not propagate reliably however fit it is. Short and low-order is the whole message."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.8-1",
+     "q": "A population has fitnesses 10, 20, 30 and 40. Under roulette-wheel selection, the expected number of copies of the individual with fitness 30 in a mating pool of size 4 is",
+     "opts": [
+      "0.75",
+      "1.2",
+      "1.5",
+      "3.0"
+     ],
+     "ans": 1,
+     "exp": "$\\sum f = 100$, so $p = 30/100 = 0.3$ and the expected count in a pool of 4 is $4 \\times 0.3 = 1.2$. Equivalently $f_i/\\bar f = 30/25 = 1.2$. The expected counts $0.4, 0.8, 1.2, 1.6$ sum to 4, which is the check to run."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.8-2",
+     "q": "For the schema $H = *1**0*$ over chromosomes of length 6, the order and defining length are",
+     "opts": [
+      "$o(H)=2$, $\\delta(H)=5$",
+      "$o(H)=2$, $\\delta(H)=3$",
+      "$o(H)=4$, $\\delta(H)=3$",
+      "$o(H)=2$, $\\delta(H)=4$"
+     ],
+     "ans": 1,
+     "exp": "Fixed positions are 2 and 5, so the order (count of non-$*$ symbols) is 2. The defining length is the distance between the first and last fixed positions, $5 - 2 = 3$ — a distance, not a count of positions, so it is 3 and not 4. Short defining length means crossover rarely splits the schema."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.8-3",
+     "q": "Which statement about crossover and mutation is correct?",
+     "opts": [
+      "Crossover explores new regions while mutation exploits existing good solutions",
+      "Crossover recombines existing material while mutation can reintroduce alleles lost from the population",
+      "Mutation rates are typically higher than crossover rates",
+      "Crossover alone is sufficient to reach any point of the search space"
+     ],
+     "ans": 1,
+     "exp": "Crossover only shuffles genes already present, so if every individual has a 0 at some position, no amount of crossover will ever produce a 1 there — only mutation can. Hence crossover is the exploitation operator (typically $p_c$ = 0.6–0.95) and mutation the exploration operator (typically $p_m$ around $1/\\ell$), which also makes options 1, 3 and 4 false."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Expected counts must sum to the population size",
+     "body": "Compute $\\bar f$ first, then each $f_i/\\bar f$. The column has to add up to $N$. If it does not, you have mis-added the fitnesses — this catches arithmetic slips before they reach the answer."
+    },
+    {
+     "title": "Defining length is a difference, order is a count",
+     "body": "$\\delta(H) = (\\text{last fixed position}) - (\\text{first fixed position})$, and $o(H) = $ number of non-$*$ symbols. A fully specified string of length $\\ell$ has $o = \\ell$ and $\\delta = \\ell - 1$; a schema with one fixed symbol has $\\delta = 0$ and cannot be disrupted by crossover at all."
+    },
+    {
+     "title": "Crossover disruption probability = $p_c\\,\\delta(H)/(\\ell-1)$",
+     "body": "Single-point crossover has $\\ell - 1$ possible cut points, and $\\delta(H)$ of them fall inside the schema. So the survival factor is $1 - p_c\\delta/(\\ell-1)$, and you can answer 'probability this schema is destroyed' questions directly without the full theorem."
+    },
+    {
+     "title": "Count the number of chromosomes a schema matches",
+     "body": "A schema with $k$ stars over a binary alphabet matches $2^k$ strings, and a chromosome of length $\\ell$ belongs to $2^\\ell$ schemata. A population of $N$ chromosomes therefore processes between $2^\\ell$ and $N2^\\ell$ schemata — Holland's **implicit parallelism**, usually quoted as $O(N^3)$ usefully processed schemata."
+    },
+    {
+     "title": "Decode binary to a real range with one formula",
+     "body": "$x = x_{\\min} + \\dfrac{b}{2^\\ell - 1}(x_{\\max} - x_{\\min})$, with $b$ the unsigned integer value. The denominator is $2^\\ell - 1$, not $2^\\ell$, so that the all-ones string maps exactly to $x_{\\max}$ — a frequent off-by-one in numerical questions."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Mutation is not a minor detail",
+     "body": "Without mutation, any allele absent from the initial population at a given locus can never appear, so the reachable search space collapses. Conversely, a mutation rate that is too high turns the GA into a random walk. An option describing mutation as 'optional fine-tuning' is wrong."
+    },
+    {
+     "title": "Roulette wheel selection needs non-negative fitness",
+     "body": "Fitness-proportionate selection is undefined for negative values and meaningless for a minimisation objective as stated. The objective must be transformed (e.g. $f = C - g$, or $f = 1/(1+g)$) before roulette selection is applied. Rank and tournament selection have no such requirement."
+    },
+    {
+     "title": "The schema theorem is a lower bound, not a convergence proof",
+     "body": "It bounds the expected number of copies of a schema from below and ignores schemata that crossover creates. It does not prove a GA finds the optimum, and deceptive problems are the standing counterexample. Calling it 'a proof that GAs converge' is the error the question is testing."
+    },
+    {
+     "title": "Elitism is not selection",
+     "body": "Elitism copies the best individuals into the next generation unchanged; it sits alongside whatever selection scheme is used. Without it the best-so-far solution can be destroyed by crossover or mutation and the best fitness can go down between generations."
+    }
+   ]
+  },
+  {
+   "id": "10.9",
+   "title": "Artificial Neural Networks",
+   "summary": "The perceptron and its learning rule, the XOR impossibility, multilayer networks and backpropagation worked end to end, activation functions, SOMs and Hopfield networks.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## The artificial neuron\n\nAn artificial neural network is a collection of simple processing units whose behaviour comes from the pattern of connections between them and the numerical **weights** on those connections. Knowledge is not stored in symbols or rules; it is distributed across the weights, and it is acquired by adjusting them from examples.\n\nThe **McCulloch-Pitts neuron** (1943) is the starting point: binary inputs, a fixed threshold $\\theta$, excitatory weights of $+1$ and inhibitory weights that veto the output entirely. It fires when the weighted sum reaches $\\theta$. It has no learning rule — the weights are set by hand — but it already shows that a network of such units can compute any Boolean function.\n\nThe general unit computes\n\n$$\\text{net} = \\sum_{i=1}^{n} w_i x_i + b, \\qquad y = \\varphi(\\text{net})$$\n\nwhere $b$ is the **bias** (equivalently a weight $w_0$ on a constant input $x_0 = 1$) and $\\varphi$ is the **activation function**. Treating the bias as $w_0 x_0$ is the standard simplification, because it lets the threshold be learned by the same rule as every other weight.\n\n**Learning paradigms**: **supervised** (target outputs given — perceptron, backpropagation), **unsupervised** (structure discovered from inputs alone — Hebbian learning, competitive learning, SOM), and **reinforcement** (only a scalar reward). **Hebb's rule**, $\\Delta w_{ij} = \\eta\\, x_i\\, y_j$ — 'neurons that fire together wire together' — is the ancestor of all of them and is unsupervised."
+    },
+    {
+     "t": "md",
+     "text": "## Activation functions\n\n| Function | Definition | Range | Derivative | Notes |\n|---|---|---|---|---|\n| Step (threshold) | $1$ if net $\\ge 0$, else $0$ | $\\{0,1\\}$ | undefined | perceptron; not differentiable, so no gradient learning |\n| Signum (bipolar) | $\\pm 1$ | $\\{-1,1\\}$ | undefined | Hopfield networks |\n| Linear | $\\varphi(z) = z$ | $\\mathbb{R}$ | 1 | stacking linear layers gains nothing |\n| **Sigmoid (logistic)** | $\\sigma(z) = \\dfrac{1}{1+e^{-z}}$ | $(0,1)$ | $\\sigma(z)\\bigl(1-\\sigma(z)\\bigr)$ | the classic; derivative peaks at $0.25$ |\n| **tanh** | $\\dfrac{e^{z}-e^{-z}}{e^{z}+e^{-z}}$ | $(-1,1)$ | $1-\\tanh^2 z$ | zero-centred, so usually trains faster than sigmoid |\n| **ReLU** | $\\max(0,z)$ | $[0,\\infty)$ | 1 if $z>0$, else 0 | no saturation for $z>0$; cheap; 'dying ReLU' problem |\n| Leaky ReLU | $\\max(\\alpha z, z)$, $\\alpha \\approx 0.01$ | $\\mathbb{R}$ | $\\alpha$ or 1 | fixes dying ReLU |\n| Softmax | $e^{z_i}/\\sum_j e^{z_j}$ | $(0,1)$, sums to 1 | — | multi-class output layer |\n\nThe sigmoid derivative identity $\\sigma' = \\sigma(1-\\sigma)$ is what makes backpropagation cheap — the derivative is computed from the already-known output, with no extra exponentials. It also causes the **vanishing gradient** problem: since $\\sigma' \\le 0.25$, a gradient passing back through $k$ sigmoid layers is multiplied by at most $0.25^k$, which is $\\approx 10^{-6}$ at $k = 10$, so early layers barely learn. ReLU exists largely to remove that factor."
+    },
+    {
+     "t": "md",
+     "text": "## The perceptron and its learning rule\n\nRosenblatt's **perceptron** (1958) is a single unit with a step activation, and it is a **linear classifier**: it separates the input space with the hyperplane $\\sum w_i x_i + b = 0$.\n\nThe **perceptron learning rule** updates only when the output is wrong:\n\n$$w_i \\leftarrow w_i + \\eta\\,(t - o)\\,x_i, \\qquad b \\leftarrow b + \\eta\\,(t - o)$$\n\nwith $t$ the target, $o$ the actual output and $\\eta$ the learning rate. Read it directly: if $t = o$ nothing changes; if the output was 0 but should be 1, every weight on an *active* input increases, pushing the net input up; if the output was 1 but should be 0, they decrease. Inputs that are 0 leave their weights alone.\n\nThe **perceptron convergence theorem** (Novikoff): if the training set is **linearly separable**, the rule converges to a separating weight vector in a **finite** number of updates, for any positive $\\eta$ and any initial weights. If the data are not separable it never converges and cycles indefinitely — which is why the **pocket algorithm** (keep the best weights seen so far) is used in practice.\n\nThe related **delta rule (Widrow-Hoff / LMS / ADALINE)** uses the *net input* rather than the thresholded output:\n$$\\Delta w_i = \\eta\\,(t - \\text{net})\\,x_i$$\nIt is gradient descent on the squared error, so it converges to the least-squares solution even when the data are not separable — the key contrast with the perceptron rule."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — perceptron weight updates, and learning AND",
+     "text": "**(a) A single update, step by step.** Weights $w = (0.5, -0.3)$, bias $b = 0.2$, learning rate $\\eta = 0.2$, step activation ($o = 1$ if net $\\ge 0$). Pattern $x = (1, 0)$ with target $t = 0$.\n\n$$\\text{net} = 0.5(1) + (-0.3)(0) + 0.2 = 0.7 \\ \\ge 0 \\ \\Rightarrow\\ o = 1, \\qquad t - o = -1$$\n\n$$\\Delta w_1 = 0.2(-1)(1) = -0.2 \\Rightarrow w_1 = 0.3$$\n$$\\Delta w_2 = 0.2(-1)(0) = 0 \\ \\ \\Rightarrow w_2 = -0.3 \\ \\text{(unchanged — its input was 0)}$$\n$$\\Delta b = 0.2(-1) = -0.2 \\ \\ \\Rightarrow b = 0.0$$\n\nRe-present the pattern: net $= 0.3 + 0 + 0.0 = 0.3 \\ge 0$, still $o = 1$, still wrong. Update again: $w_1 = 0.1$, $b = -0.2$. Now net $= 0.1 - 0.2 = -0.1 < 0$, so $o = 0 = t$ ✓. Two presentations were needed — the rule corrects gradually in steps of size $\\eta$.\n\n**(b) Learning AND from scratch.** Binary inputs, $\\eta = 1$, all weights and the bias starting at 0, step activation with net $\\ge 0 \\Rightarrow 1$. Patterns in the order $(0,0), (0,1), (1,0), (1,1)$ with targets $0,0,0,1$.\n\n| Epoch | Pattern | net | $o$ | $t$ | $t-o$ | new $(w_1,w_2,b)$ |\n|---|---|---|---|---|---|---|\n| 1 | (0,0) | 0 | 1 | 0 | −1 | (0, 0, −1) |\n| 1 | (0,1) | −1 | 0 | 0 | 0 | (0, 0, −1) |\n| 1 | (1,0) | −1 | 0 | 0 | 0 | (0, 0, −1) |\n| 1 | (1,1) | −1 | 0 | 1 | +1 | (1, 1, 0) |\n| 2 | (0,0) | 0 | 1 | 0 | −1 | (1, 1, −1) |\n| 2 | (0,1) | 0 | 1 | 0 | −1 | (1, 0, −2) |\n| 2 | (1,0) | −1 | 0 | 0 | 0 | (1, 0, −2) |\n| 2 | (1,1) | −1 | 0 | 1 | +1 | (2, 1, −1) |\n| 3 | (0,1) | 0 | 1 | 0 | −1 | (2, 0, −2) |\n| 3 | (1,0) | 0 | 1 | 0 | −1 | (1, 0, −3) |\n| 3 | (1,1) | −2 | 0 | 1 | +1 | (2, 1, −2) |\n| 4 | (1,0) | 0 | 1 | 0 | −1 | (1, 1, −3) |\n| 4 | (1,1) | −1 | 0 | 1 | +1 | (2, 2, −2) |\n| 5 | (0,1) | 0 | 1 | 0 | −1 | (2, 1, −3) |\n\n(Rows with $t - o = 0$ after epoch 2 are omitted.) **Epoch 6** passes with no errors: $(0,0) \\to -3 < 0 \\to 0$; $(0,1) \\to 1-3 = -2 < 0 \\to 0$; $(1,0) \\to 2-3 = -1 < 0 \\to 0$; $(1,1) \\to 2+1-3 = 0 \\ge 0 \\to 1$. **Converged with $w = (2,1)$, $b = -3$**, i.e. the decision line $2x_1 + x_2 = 3$ — which separates $(1,1)$ from the other three corners, exactly as the convergence theorem promises for a linearly separable problem.\n\n**(c) Why XOR is impossible for a single perceptron.** Suppose weights $w_1, w_2$ and bias $b$ implement XOR with the rule 'output 1 iff $w_1x_1 + w_2x_2 + b \\ge 0$'. The four patterns give:\n\n$$(0,0) \\to 0:\\quad b < 0 \\tag{1}$$\n$$(0,1) \\to 1:\\quad w_2 + b \\ge 0 \\ \\Rightarrow\\ w_2 \\ge -b > 0 \\tag{2}$$\n$$(1,0) \\to 1:\\quad w_1 + b \\ge 0 \\ \\Rightarrow\\ w_1 \\ge -b > 0 \\tag{3}$$\n$$(1,1) \\to 0:\\quad w_1 + w_2 + b < 0 \\tag{4}$$\n\nAdding (2) and (3): $w_1 + w_2 \\ge -2b$, so $w_1 + w_2 + b \\ge -2b + b = -b > 0$ by (1). This contradicts (4). **No weights exist.** Geometrically, the two classes $\\{(0,1),(1,0)\\}$ and $\\{(0,0),(1,1)\\}$ lie on opposite diagonals of the unit square and no straight line separates them. Minsky and Papert's 1969 demonstration of this, together with the absence of a learning rule for multilayer networks, caused the first 'AI winter' for neural research."
+    },
+    {
+     "t": "md",
+     "text": "## Multilayer perceptrons and backpropagation\n\nAdding a **hidden layer** of non-linear units solves XOR: the hidden units form new features (for instance $h_1 = \\text{OR}$, $h_2 = \\text{AND}$, and output $= h_1 \\land \\neg h_2$), and the output unit separates them linearly. The **universal approximation theorem** makes this general: a feedforward network with a **single hidden layer** of enough units with a non-constant, bounded, continuous activation can approximate any continuous function on a compact set to arbitrary accuracy. It is an existence result — it says nothing about how many units are needed or how to find the weights.\n\nThe activation must be **non-linear**: a stack of linear layers is a single linear map, so depth would buy nothing.\n\n**Backpropagation** (Rumelhart, Hinton, Williams, 1986) is gradient descent on the error, with the chain rule used to propagate the error signal backwards. For squared error $E = \\tfrac12 \\sum_k (t_k - y_k)^2$ and sigmoid units, define the **local gradient** $\\delta$:\n\n- Output unit $k$: $\\ \\delta_k = (t_k - y_k)\\,y_k(1-y_k)$\n- Hidden unit $j$: $\\ \\delta_j = h_j(1-h_j)\\displaystyle\\sum_k \\delta_k\\,v_{jk}$\n\nand update every weight by\n$$\\Delta w_{ij} = \\eta\\,\\delta_j\\,x_i$$\n\nThe hidden $\\delta$ is the weighted sum of the $\\delta$s it feeds into — that is the 'backward propagation of error'. The full algorithm per pattern: **forward pass** (compute all activations), **backward pass** (compute all $\\delta$s from output to input, using the *old* weights), **update** (apply all $\\Delta w$).\n\nPractical points that get examined:\n- **Learning rate.** Too small → slow; too large → oscillation or divergence. **Momentum** $\\Delta w(n) = \\eta\\delta x + \\alpha \\Delta w(n-1)$ damps oscillation across ravines and speeds progress along them.\n- **Batch versus incremental (stochastic).** Batch accumulates gradients over the whole training set before updating — the true gradient, but slow; stochastic updates after each pattern, noisier but faster and better at escaping shallow minima.\n- **Local minima and plateaux.** Backpropagation is a local method and offers no global guarantee.\n- **Overfitting**, countered by a validation set with **early stopping**, weight decay (regularisation), and dropout.\n- **Symmetry breaking.** Weights must be initialised to small *random* values; if they all start equal, every hidden unit computes the same thing and receives the same $\\delta$, forever."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — one forward and backward pass",
+     "text": "A 2-2-1 network, sigmoid everywhere, $\\eta = 0.5$, error $E = \\tfrac12(t-y)^2$.\n\nInputs $x_1 = 1.0$, $x_2 = 0.5$; target $t = 1.0$.\nHidden unit $h_1$: $w_{11} = 0.5$, $w_{21} = -0.3$, bias $b_1 = 0.1$.\nHidden unit $h_2$: $w_{12} = 0.2$, $w_{22} = 0.4$, bias $b_2 = -0.2$.\nOutput $y$: $v_1 = 0.6$, $v_2 = -0.4$, bias $b_3 = 0.3$.\n\n**Forward pass.**\n$$\\text{net}_{h_1} = 0.5(1.0) + (-0.3)(0.5) + 0.1 = 0.5 - 0.15 + 0.1 = 0.45$$\n$$h_1 = \\sigma(0.45) = \\frac{1}{1+e^{-0.45}} = \\frac{1}{1.63763} = 0.610639$$\n$$\\text{net}_{h_2} = 0.2(1.0) + 0.4(0.5) - 0.2 = 0.2 + 0.2 - 0.2 = 0.20$$\n$$h_2 = \\sigma(0.20) = \\frac{1}{1.81873} = 0.549834$$\n$$\\text{net}_y = 0.6(0.610639) + (-0.4)(0.549834) + 0.3 = 0.366383 - 0.219934 + 0.3 = 0.446449$$\n$$y = \\sigma(0.446449) = 0.609795$$\n$$E = \\tfrac12(1.0 - 0.609795)^2 = \\tfrac12(0.390205)^2 = 0.076130$$\n\n**Backward pass — output layer.**\n$$\\delta_y = (t-y)\\,y(1-y) = 0.390205 \\times 0.609795 \\times 0.390205 = 0.092847$$\n\n$$\\Delta v_1 = \\eta\\,\\delta_y\\,h_1 = 0.5(0.092847)(0.610639) = 0.028348 \\Rightarrow v_1 = 0.628348$$\n$$\\Delta v_2 = 0.5(0.092847)(0.549834) = 0.025525 \\Rightarrow v_2 = -0.374475$$\n$$\\Delta b_3 = 0.5(0.092847) = 0.046424 \\Rightarrow b_3 = 0.346424$$\n\n**Backward pass — hidden layer** (using the **old** $v$ values):\n$$\\delta_{h_1} = h_1(1-h_1)\\,\\delta_y\\,v_1 = 0.610639(0.389361)(0.092847)(0.6) = 0.013245$$\n$$\\delta_{h_2} = h_2(1-h_2)\\,\\delta_y\\,v_2 = 0.549834(0.450166)(0.092847)(-0.4) = -0.009193$$\n\n$$\\Delta w_{11} = 0.5(0.013245)(1.0) = 0.006623 \\Rightarrow w_{11} = 0.506623$$\n$$\\Delta w_{21} = 0.5(0.013245)(0.5) = 0.003311 \\Rightarrow w_{21} = -0.296689$$\n$$\\Delta b_1 = 0.006623 \\Rightarrow b_1 = 0.106623$$\n$$\\Delta w_{12} = 0.5(-0.009193)(1.0) = -0.004596 \\Rightarrow w_{12} = 0.195404$$\n$$\\Delta w_{22} = 0.5(-0.009193)(0.5) = -0.002298 \\Rightarrow w_{22} = 0.397702$$\n$$\\Delta b_2 = -0.004596 \\Rightarrow b_2 = -0.204596$$\n\n**Verification.** Re-run the forward pass with the new weights: $\\text{net}_{h_1} = 0.464875 \\Rightarrow h_1 = 0.614176$; $\\text{net}_{h_2} = 0.189654 \\Rightarrow h_2 = 0.547273$; $\\text{net}_y = 0.527402 \\Rightarrow y = 0.628877$, giving\n$$E = \\tfrac12(1 - 0.628877)^2 = 0.068866$$\ndown from $0.076130$. The error fell by about 9.5% in one update, which is what gradient descent should do.\n\n**Note the sign of $\\delta_{h_2}$.** It is negative because $v_2 = -0.4$ is negative: raising $h_2$ *lowers* the output, and since the output is too low, $h_2$ must be reduced. The $\\delta$s carry the direction automatically — do not take absolute values."
+    },
+    {
+     "t": "md",
+     "text": "## Self-organising maps and Hopfield networks\n\n### Self-organising map (Kohonen SOM)\n\n An unsupervised, **competitive learning** network that projects high-dimensional input onto a low-dimensional (usually 2-D) grid of neurons while **preserving topology**: inputs that are close in the input space map to neurons that are close on the grid.\n\nEach neuron $j$ has a weight vector $\\mathbf{w}_j$ in the input space. Per input $\\mathbf{x}$:\n\n1. **Competition** — find the **best matching unit (BMU)**, the $j^*$ minimising $\\lVert \\mathbf{x} - \\mathbf{w}_j\\rVert$.\n2. **Cooperation** — identify the BMU's topological neighbourhood via a neighbourhood function $h_{j^*j}(t)$, typically Gaussian, whose radius **shrinks** over time.\n3. **Adaptation** — $\\ \\mathbf{w}_j \\leftarrow \\mathbf{w}_j + \\eta(t)\\,h_{j^*j}(t)\\,(\\mathbf{x} - \\mathbf{w}_j)$ for every neuron in the neighbourhood, with $\\eta(t)$ also decaying.\n\nThe update moves the winner (and, less strongly, its neighbours) *towards* the input. The two phases are **ordering** (large neighbourhood, large $\\eta$, the map unfolds) and **convergence** (small neighbourhood, small $\\eta$, fine tuning). A **winner-take-all** network is the degenerate SOM with a neighbourhood of radius 0; it performs vector quantisation but preserves no topology.\n\n*Small numerical illustration.* Two neurons with $\\mathbf{w}_1 = (0.2, 0.6)$, $\\mathbf{w}_2 = (0.8, 0.9)$; input $\\mathbf{x} = (0.5, 0.4)$, $\\eta = 0.5$.\n$$d_1^2 = (0.5-0.2)^2 + (0.4-0.6)^2 = 0.09 + 0.04 = 0.13$$\n$$d_2^2 = (0.5-0.8)^2 + (0.4-0.9)^2 = 0.09 + 0.25 = 0.34$$\nNeuron 1 wins. $\\mathbf{w}_1 \\leftarrow (0.2,0.6) + 0.5\\bigl[(0.5,0.4) - (0.2,0.6)\\bigr] = (0.2,0.6) + 0.5(0.3,-0.2) = (0.35,\\,0.50)$ — halfway to the input, as $\\eta = 0.5$ dictates.\n\n### Hopfield network\n\nA **recurrent, fully connected, single-layer** network of bipolar units ($s_i \\in \\{-1,+1\\}$) used as an **associative (content-addressable) memory**: present a corrupted pattern and the network settles into the nearest stored one.\n\nWeights are set in one shot by the **Hebbian outer-product rule** over $p$ patterns $\\mathbf{x}^{(1)}, \\dots, \\mathbf{x}^{(p)}$:\n$$w_{ij} = \\sum_{\\mu=1}^{p} x_i^{(\\mu)} x_j^{(\\mu)} \\quad (i \\ne j), \\qquad w_{ii} = 0$$\nThe weight matrix is **symmetric** with **zero diagonal**, which is exactly what guarantees convergence. Units are updated **asynchronously** (one at a time, in random order) by $s_i \\leftarrow \\text{sgn}\\bigl(\\sum_j w_{ij}s_j - \\theta_i\\bigr)$.\n\nThe **energy function**\n$$E = -\\frac12 \\sum_i \\sum_{j \\ne i} w_{ij}\\,s_i\\,s_j + \\sum_i \\theta_i\\,s_i$$\nis non-increasing under asynchronous updates with symmetric weights, so the dynamics descend to a local minimum and **always converge to a stable state** — the stored patterns are designed to be those minima. Synchronous updating can produce 2-cycles instead.\n\n**Capacity.** The standard result is\n$$p_{\\max} \\approx 0.138\\,N$$\nfor $N$ neurons, the number of random patterns that can be stored with a small but non-zero error rate; if *perfect* recall of every pattern is required the bound tightens to $p_{\\max} \\approx N/(2\\ln N)$. Exceeding capacity produces **spurious states** — stable configurations that are mixtures of stored patterns, or their reversals — and the memory degrades catastrophically. So a 100-neuron Hopfield net stores about 13 patterns, not 100.\n\nRelated recurrent architectures: the **Boltzmann machine** (a stochastic Hopfield net with hidden units and simulated annealing, which escapes local minima), **BAM** (bidirectional associative memory, a two-layer hetero-associative version), and the **Hamming network** for nearest-neighbour classification in Hamming distance."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.9-1",
+     "q": "A perceptron with $w = (0.4, -0.6)$ and bias $b = 0.1$ receives $x = (1, 1)$ with target $t = 1$ and step activation ($o = 1$ iff net $\\ge 0$). With $\\eta = 0.5$, the updated weights are",
+     "opts": [
+      "(0.4, −0.6), b = 0.1 — no change",
+      "(0.9, −0.1), b = 0.6",
+      "(−0.1, −1.1), b = −0.4",
+      "(0.9, −0.1), b = 0.1"
+     ],
+     "ans": 1,
+     "exp": "net $= 0.4 - 0.6 + 0.1 = -0.1 < 0$, so $o = 0$ while $t = 1$, giving $t - o = +1$. Then $\\Delta w_i = 0.5(+1)x_i = 0.5$ for both inputs (both are 1) and $\\Delta b = 0.5$, so $w = (0.9, -0.1)$ and $b = 0.6$. Option 4 forgets to update the bias, which is the usual slip."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.9-2",
+     "q": "A Hopfield network with 200 neurons can reliably store approximately how many random bipolar patterns?",
+     "opts": [
+      "14",
+      "28",
+      "100",
+      "200"
+     ],
+     "ans": 1,
+     "exp": "The standard capacity result is $p_{\\max} \\approx 0.138N = 0.138 \\times 200 \\approx 27.6$, i.e. about 28. Storing more produces spurious stable states and the associative memory breaks down. The tighter bound for error-free recall of every pattern, $N/(2\\ln N) = 200/(2 \\times 5.3) \\approx 19$, is the other quoted figure — either way it is a small fraction of $N$, never $N$ itself."
+    },
+    {
+     "t": "check",
+     "id": "chk-10.9-3",
+     "q": "Why can a single-layer perceptron not implement XOR?",
+     "opts": [
+      "The step activation is not differentiable",
+      "XOR requires more than two inputs",
+      "The XOR classes are not linearly separable, and a perceptron can only realise a hyperplane decision boundary",
+      "The perceptron learning rule does not converge for binary inputs"
+     ],
+     "ans": 2,
+     "exp": "A perceptron outputs 1 exactly on one side of the hyperplane $\\sum w_ix_i + b = 0$. For XOR the positive cases $(0,1),(1,0)$ and the negative cases $(0,0),(1,1)$ lie on opposite diagonals of the unit square, so no line separates them — adding inequalities (0,1) and (1,0) contradicts (1,1). Non-differentiability is real but is a separate limitation about learning, not about representability."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Perceptron update: only active inputs change their weights",
+     "body": "$\\Delta w_i = \\eta(t-o)x_i$ is zero whenever $x_i = 0$. So in a binary problem, scan the input for the 1s and update only those weights — plus the bias, which always updates because its input is the constant 1. Forgetting the bias is the single most common error in these questions."
+    },
+    {
+     "title": "Sigmoid derivative from the output, never from the net input",
+     "body": "Once you have $y = \\sigma(\\text{net})$, the derivative is $y(1-y)$. You never need to differentiate the exponential or recompute $\\sigma$. Likewise $\\tanh' = 1 - \\tanh^2$. This halves the arithmetic in any backpropagation question."
+    },
+    {
+     "title": "Backward pass uses the OLD weights",
+     "body": "Compute every $\\delta$ first, from output layer to input layer, and only then apply all the weight changes. Using an already-updated $v_1$ when computing $\\delta_{h_1}$ gives a wrong answer — and the mistake is invisible unless you check the error actually decreased."
+    },
+    {
+     "title": "SOM winner by squared distance",
+     "body": "Skip the square root: the neuron minimising $\\lVert x - w\\rVert^2$ is the one minimising $\\lVert x-w\\rVert$. Then the update $w + \\eta(x-w)$ moves the weight a fraction $\\eta$ of the way to the input, so $\\eta = 0.5$ lands exactly halfway — a fast mental check."
+    },
+    {
+     "title": "Count weights before answering architecture questions",
+     "body": "A fully connected $n$-$h$-$m$ network has $nh + hm$ weights plus $h + m$ biases. For 2-2-1 that is $4 + 2 + 3 = 9$ parameters, matching the nine numbers in the worked example. Questions asking 'how many weights must be trained' are answered by this formula."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Perceptron rule and delta rule are not the same",
+     "body": "The perceptron rule uses $(t - o)$ with $o$ the *thresholded* output and only converges on linearly separable data; the delta rule uses $(t - \\text{net})$, is gradient descent on squared error, and converges to a least-squares fit even on inseparable data. Confusing them is a standard trap."
+    },
+    {
+     "title": "XOR needs a hidden layer, not more inputs or a better rule",
+     "body": "The limitation is representational. No choice of weights, learning rate or number of epochs makes a single perceptron compute XOR; only adding a non-linear hidden layer does. Note also that a hidden layer of *linear* units still fails, because a composition of linear maps is linear."
+    },
+    {
+     "title": "Hopfield capacity is about $0.14N$, not $N$ or $2^N$",
+     "body": "Students assume $N$ bipolar units store $N$ patterns. They do not: crosstalk between stored patterns creates spurious minima, and the usable figure is $0.138N$. Also note the weight matrix must have a **zero diagonal** and be **symmetric**, or convergence is no longer guaranteed."
+    },
+    {
+     "title": "Universal approximation does not mean 'one hidden layer is always enough in practice'",
+     "body": "The theorem guarantees a single hidden layer suffices *in principle*, with no bound on its width and no statement about learnability. Deeper networks can represent some functions exponentially more compactly. An option claiming 'more than one hidden layer is never useful' is wrong."
+    }
+   ]
+  }
+ ]
+}

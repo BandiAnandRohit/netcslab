@@ -1,0 +1,1002 @@
+[
+ {
+  "id": "c6.1-1",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "Name the five generic framework activities, in order.",
+  "back": "**Communication → Planning → Modeling → Construction → Deployment.** Testing is *inside* Construction, not a sixth activity.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.1-2",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "How many umbrella activities are there, and name four.",
+  "back": "Eight. Project tracking and control, risk management, SQA, technical reviews, measurement, SCM, reusability management, work product preparation.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.1-3",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "What are the three types of process pattern?",
+  "back": "**Task** (one action), **Stage** (one framework activity), **Phase** (the whole project's activity sequence). Scope increases Task ⊂ Stage ⊂ Phase.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.1-4",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "When is the waterfall model actually appropriate?",
+  "back": "When requirements are fixed, well understood and stable, the technology is familiar, and the work is a well-defined adaptation of an existing system.",
+  "kind": "concept"
+ },
+ {
+  "id": "c6.1-5",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "In the V-model, which test level pairs with architectural/system design?",
+  "back": "**System testing.** The pairs are requirements↔acceptance, system design↔system test, component design↔integration test, module design↔unit test.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.1-6",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "What is delivered in the first increment of the incremental model?",
+  "back": "The **core product** — the essential functionality only. Customer feedback on it drives the plan for the next increment.",
+  "kind": "concept"
+ },
+ {
+  "id": "c6.1-7",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "What is RAD's delivery window and what are its five phases?",
+  "back": "**60–90 days.** Business modelling, data modelling, process modelling, application generation, testing and turnover.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.1-8",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "Give three situations where RAD is the wrong choice.",
+  "back": "The system cannot be modularised; technical risk is high; the customer and developers cannot commit to the rapid-fire timebox. (Also when high performance must be tuned at interfaces.)",
+  "kind": "concept"
+ },
+ {
+  "id": "c6.1-9",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "What are Boehm's four quadrants of the spiral model?",
+  "back": "1. Determine objectives, alternatives, constraints. 2. Evaluate alternatives; identify and resolve **risks**. 3. Develop and verify the next-level product. 4. Plan the next phase.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.1-10",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "What makes the spiral model unique among the classical models?",
+  "back": "Explicit **risk analysis on every circuit**, and it does not stop at delivery — circuits continue through enhancement and maintenance.",
+  "kind": "concept"
+ },
+ {
+  "id": "c6.1-11",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "What does the concurrent development model represent?",
+  "back": "Framework activities existing **simultaneously in different states** (none, under development, awaiting changes, under review, under revision, baselined, done), with transitions triggered by events elsewhere.",
+  "kind": "concept"
+ },
+ {
+  "id": "c6.1-12",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "Which model suits safety-critical software that must be mathematically verified?",
+  "back": "The **formal methods model** (Cleanroom), using Z, VDM or B. Expensive, time-consuming, needs specialist training.",
+  "kind": "concept"
+ },
+ {
+  "id": "c6.1-13",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "What is an aspect in AOSD?",
+  "back": "A representation of a **crosscutting concern** — security, logging, persistence — that cannot be localised in any one module and is woven in at defined join points.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.1-14",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "Name the Unified Process phases in order.",
+  "back": "**Inception → Elaboration → Construction → Transition** (Pressman's generic UP adds Production). The executable architectural baseline is produced in **Elaboration**.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.1-15",
+  "unit": 6,
+  "topic": "6.1",
+  "front": "What are the five CMMI staged maturity levels?",
+  "back": "1 Initial, 2 Managed, 3 Defined, 4 Quantitatively Managed, 5 Optimizing. Level 3 is the first with an organisation-wide standard process; level 4 adds statistical control.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.2-1",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "State the four values of the Agile Manifesto.",
+  "back": "Individuals and interactions > processes and tools; working software > comprehensive documentation; customer collaboration > contract negotiation; responding to change > following a plan — while the right-hand items still have value.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.2-2",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "How many agile principles are there, and what does principle 7 say?",
+  "back": "**Twelve.** Principle 7: *working software is the primary measure of progress*.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.2-3",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "Which agile principle defines simplicity?",
+  "back": "Principle 10: *simplicity — the art of maximising the work not done — is essential*.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.2-4",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "Name XP's five values.",
+  "back": "Communication, simplicity, feedback, courage, respect.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.2-5",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "What are XP's four framework activities?",
+  "back": "**Planning** (user stories, velocity), **Design** (KISS, CRC cards, spike solutions, refactoring), **Coding** (test-first, pair programming, continuous integration), **Testing** (automated unit suite, customer acceptance tests).",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.2-6",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "What is a spike solution in XP?",
+  "back": "A throwaway prototype built to attack one difficult design or technical problem, so that the risk is resolved before the real design commits to it.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.2-7",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "Name Scrum's three roles and three artefacts.",
+  "back": "Roles: **Product Owner, Scrum Master, Development Team**. Artefacts: **Product Backlog, Sprint Backlog, Increment**.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.2-8",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "Give the five Scrum events with their one-month-sprint timeboxes.",
+  "back": "Sprint ≤ 1 month; Sprint Planning 8 h; **Daily Scrum 15 min**; Sprint Review 4 h; Sprint Retrospective 3 h.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.2-9",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "Does the Daily Scrum timebox shrink for a two-week sprint?",
+  "back": "**No.** Planning, Review and Retrospective scale down (4 h / 2 h / 1.5 h), but the Daily Scrum is always 15 minutes — it re-plans the next 24 hours.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.2-10",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "What are ASD's three phases?",
+  "back": "**Speculation, Collaboration, Learning** (Highsmith). Mission-driven, component-based, timeboxed, risk-driven and change-tolerant.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.2-11",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "What does MoSCoW stand for and which method uses it?",
+  "back": "**Must have, Should have, Could have, Won't have this time** — the prioritisation scheme of **DSDM**, which is built on the Pareto 80/20 principle.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.2-12",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "Name FDD's five activities.",
+  "back": "Develop an overall model; build a features list; plan by feature; design by feature; build by feature. A feature must be buildable in **two weeks or less**.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.2-13",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "What two parameters select a member of the Crystal family?",
+  "back": "**Team size** (colour: Clear, Yellow, Orange, Red…) and **criticality** (Comfort, Discretionary money, Essential money, Life).",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.2-14",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "List Lean software development's seven principles.",
+  "back": "Eliminate waste; build quality in; create knowledge; defer commitment; deliver fast; respect people; optimise the whole.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.2-15",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "What does Kanban limit, and what does Scrum limit?",
+  "back": "**Kanban limits work in progress** (an explicit WIP cap per column, pull-based, no iterations). **Scrum limits time** (a fixed-length sprint with a committed scope).",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.2-16",
+  "unit": 6,
+  "topic": "6.2",
+  "front": "Name five attributes that distinguish a WebApp.",
+  "back": "Network intensiveness, concurrency, unpredictable load, continuous evolution, immediacy of delivery. (Also data/content driven, availability, security, aesthetics.)",
+  "kind": "concept"
+ },
+ {
+  "id": "c6.3-1",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "Distinguish functional from non-functional requirements in one line each.",
+  "back": "**Functional**: what services the system provides. **Non-functional**: constraints on how well it does it, or on the process and environment — performance, security, usability, portability, standards.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.3-2",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "Give Sommerville's three classes of non-functional requirement.",
+  "back": "**Product** (usability, efficiency, reliability, portability, security), **Organisational** (environmental, operational, development standards), **External** (regulatory, ethical, legislative, interoperability).",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.3-3",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "Name the seven requirements-engineering tasks in order.",
+  "back": "Inception, Elicitation, Elaboration, Negotiation, Specification, Validation, Requirements management.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.3-4",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "What are Christel and Kang's three elicitation problems?",
+  "back": "Problems of **scope**, problems of **understanding**, problems of **volatility**.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.3-5",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "What is FAST/JAD?",
+  "back": "Facilitated Application Specification Technique — a facilitated joint meeting of customers and developers at a neutral site, producing consolidated lists of objects, services, constraints and performance criteria.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.3-6",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "What three requirement bands does QFD define?",
+  "back": "**Normal** (stated objectives; satisfaction proportional to fulfilment), **Expected** (so fundamental they go unmentioned), **Exciting** (beyond expectation; delight when present).",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.3-7",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "Difference between <<include>> and <<extend>> between use cases?",
+  "back": "**include**: the base use case *always* uses the included behaviour (factored-out commonality). **extend**: the extending use case *conditionally* adds behaviour at a named extension point.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.3-8",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "How many scenarios does one use case contain?",
+  "back": "Many: exactly one **primary scenario** (the happy path) plus any number of alternative and exception scenarios. A scenario is one path through a use case.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.3-9",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "Name the four element groups of the analysis model.",
+  "back": "Scenario-based (use case, activity, swimlane), class-based (class diagram, CRC), flow-oriented (DFD, PSPEC), behavioural (state, sequence diagrams).",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.3-10",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "How many processes does a level 0 DFD contain?",
+  "back": "Exactly **one** — the whole system as a single bubble, surrounded by external entities. That diagram is the **context diagram**.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.3-11",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "What are DFD levelling and balancing?",
+  "back": "**Levelling** is refining a bubble into a lower-level DFD. **Balancing** is the rule that the refined diagram's net inputs and outputs must match the parent bubble's.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.3-12",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "Give the three top-level sections of an IEEE 830 SRS.",
+  "back": "1. Introduction; 2. Overall description; 3. Specific requirements (plus appendixes and index).",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.3-13",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "List the eight qualities of a good SRS (IEEE 830).",
+  "back": "Correct, unambiguous, complete, consistent, ranked for importance/stability, verifiable, modifiable, traceable.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.3-14",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "\"The system shall be user-friendly.\" Which SRS quality does this break?",
+  "back": "**Verifiable** (and unambiguous) — no finite, cost-effective process can check it. Fix it by attaching a measurable criterion, e.g. \"a trained operator completes a booking in under 90 s\".",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.3-15",
+  "unit": 6,
+  "topic": "6.3",
+  "front": "What does traceability of a requirement mean?",
+  "back": "**Backward** traceable to the source or earlier document that produced it, and **forward** traceable to the design and code elements that implement it.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.4-1",
+  "unit": 6,
+  "topic": "6.4",
+  "front": "Name the four levels of software design.",
+  "back": "Data/class design, architectural design, interface design, component-level design.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.4-2",
+  "unit": 6,
+  "topic": "6.4",
+  "front": "State the cohesion ladder from weakest to strongest.",
+  "back": "**Coincidental, Logical, Temporal, Procedural, Communicational, Sequential, Functional.** Mnemonic: Co-Lo-Te-Pro-Com-Se-Fun.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.4-3",
+  "unit": 6,
+  "topic": "6.4",
+  "front": "State the coupling ladder from worst to best.",
+  "back": "**Content, Common, External, Control, Stamp, Data.** Content (reaching into another module's internals) is worst; data (simple parameters, all used) is best.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.4-4",
+  "unit": 6,
+  "topic": "6.4",
+  "front": "How do you tell procedural from sequential cohesion?",
+  "back": "Ask whether data flows. If element 2 consumes what element 1 produced → **sequential** (higher). If they merely must run in that order but pass nothing → **procedural** (lower).",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.4-5",
+  "unit": 6,
+  "topic": "6.4",
+  "front": "A module is passed a whole record but uses only one field. Which coupling?",
+  "back": "**Stamp coupling.** Passing just that field as a simple parameter would reduce it to **data coupling**.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.4-6",
+  "unit": 6,
+  "topic": "6.4",
+  "front": "What is the signature of control coupling?",
+  "back": "A parameter that is a **switch** — a mode, type or flag — which selects which branch runs inside the callee, rather than data the callee processes.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.4-7",
+  "unit": 6,
+  "topic": "6.4",
+  "front": "What is information hiding, and why does it matter?",
+  "back": "Parnas: each module conceals its design decisions behind an interface, so a change to a hidden decision stays inside that module and errors do not propagate. It is the justification for modular maintainability.",
+  "kind": "concept"
+ },
+ {
+  "id": "c6.4-8",
+  "unit": 6,
+  "topic": "6.4",
+  "front": "Is more modularity always cheaper?",
+  "back": "**No.** Module cost falls with the number of modules but interface cost rises, so total cost is U-shaped with a **region of minimum cost**. Beyond it the design is overmodular.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.4-9",
+  "unit": 6,
+  "topic": "6.4",
+  "front": "Define functional independence and how it is measured.",
+  "back": "Each module addresses one sub-function with simple interfaces. Measured by **high cohesion and low coupling** simultaneously.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.4-10",
+  "unit": 6,
+  "topic": "6.4",
+  "front": "Name five architectural styles.",
+  "back": "Data-centred (repository/blackboard), data-flow (pipe and filter, batch sequential), call and return, object-oriented, layered.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.4-11",
+  "unit": 6,
+  "topic": "6.4",
+  "front": "What does MVC separate?",
+  "back": "**Model** (data and business rules), **View** (presentation), **Controller** (interprets user input and selects model behaviour).",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.4-12",
+  "unit": 6,
+  "topic": "6.4",
+  "front": "When do you use transform mapping versus transaction mapping?",
+  "back": "**Transform**: the DFD is a pipeline with afferent flow, a central transform and efferent flow. **Transaction**: one incoming item fans out to several mutually exclusive action paths, giving a dispatcher module.",
+  "kind": "concept"
+ },
+ {
+  "id": "c6.4-13",
+  "unit": 6,
+  "topic": "6.4",
+  "front": "What is the scope-of-effect / scope-of-control rule?",
+  "back": "The **scope of effect** of a decision (the modules it affects) should lie **within the scope of control** of the module in which the decision is made.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.4-14",
+  "unit": 6,
+  "topic": "6.4",
+  "front": "Mandel's three golden rules of interface design?",
+  "back": "Place the user in control; reduce the user's memory load; make the interface consistent.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.5-1",
+  "unit": 6,
+  "topic": "6.5",
+  "front": "Quality assurance versus quality control?",
+  "back": "**QA** is process-oriented and preventive (define, audit, train, measure). **QC** is product-oriented and corrective (reviews, walkthroughs, inspections, testing of specific artefacts).",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.5-2",
+  "unit": 6,
+  "topic": "6.5",
+  "front": "Name McCall's five Product Operation factors.",
+  "back": "Correctness, Reliability, Efficiency, Integrity, Usability.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.5-3",
+  "unit": 6,
+  "topic": "6.5",
+  "front": "Name McCall's Product Revision and Product Transition factors.",
+  "back": "**Revision** (3): maintainability, flexibility, testability. **Transition** (3): portability, reusability, interoperability. Eleven factors in total, split 5-3-3.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.5-4",
+  "unit": 6,
+  "topic": "6.5",
+  "front": "List the six ISO 9126 quality characteristics.",
+  "back": "Functionality, Reliability, Usability, Efficiency, Maintainability, Portability. ISO 25010 raises it to eight by adding Security and Compatibility.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.5-5",
+  "unit": 6,
+  "topic": "6.5",
+  "front": "Where do security and testability sit in ISO 9126?",
+  "back": "**Security** is a sub-characteristic of **Functionality**; **testability** is a sub-characteristic of **Maintainability**. McCall instead gives them top-level factors (Integrity, Testability).",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.5-6",
+  "unit": 6,
+  "topic": "6.5",
+  "front": "What does FURPS stand for?",
+  "back": "**Functionality, Usability, Reliability, Performance, Supportability** (Hewlett-Packard). FURPS+ adds design, implementation, interface and physical constraints.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.5-7",
+  "unit": 6,
+  "topic": "6.5",
+  "front": "Give the three risk categories by what they threaten.",
+  "back": "**Project** risks (budget, schedule, staffing, resources), **technical** risks (design, implementation, verification, maintenance), **business** risks (market, strategic, sales, management, budget).",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.5-8",
+  "unit": 6,
+  "topic": "6.5",
+  "front": "What are known, predictable and unpredictable risks?",
+  "back": "**Known**: found by careful evaluation of plan and environment. **Predictable**: extrapolated from past project experience. **Unpredictable**: extremely hard to identify in advance.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.5-9",
+  "unit": 6,
+  "topic": "6.5",
+  "front": "State the risk exposure formula and what it bounds.",
+  "back": "$RE = P \\times C$, in money. It is the expected loss, and therefore the **maximum rational spend** on mitigating that risk.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.5-10",
+  "unit": 6,
+  "topic": "6.5",
+  "front": "What does RMMM stand for?",
+  "back": "**Risk Mitigation, Monitoring and Management.** Mitigate = reduce probability or impact now; monitor = watch indicators and check mitigation is applied; manage = execute the contingency plan when the trigger fires.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.5-11",
+  "unit": 6,
+  "topic": "6.5",
+  "front": "State the MTBF and availability formulas.",
+  "back": "$\\text{MTBF} = \\text{MTTF} + \\text{MTTR}$ and $\\text{Availability} = \\dfrac{\\text{MTTF}}{\\text{MTTF} + \\text{MTTR}} \\times 100\\%$.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.5-12",
+  "unit": 6,
+  "topic": "6.5",
+  "front": "MTTF = 450 h and MTTR = 50 h. Availability?",
+  "back": "MTBF = 500 h, so availability $=450/500 = \\mathbf{90\\%}$.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.5-13",
+  "unit": 6,
+  "topic": "6.5",
+  "front": "Reliability for constant failure rate?",
+  "back": "$\\lambda = 1/\\text{MTTF}$ and $R(t) = e^{-\\lambda t} = e^{-t/\\text{MTTF}}$. POFOD, ROCOF and AVAIL are the alternative metrics.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.5-14",
+  "unit": 6,
+  "topic": "6.5",
+  "front": "Is a reliable system necessarily safe?",
+  "back": "**No.** Reliability is conformance to specification over time; safety is freedom from hazardous behaviour. A system can execute a wrong specification perfectly and cause harm.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.6-1",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "State the three-point size estimate formula.",
+  "back": "$EV = \\dfrac{a + 4m + b}{6}$ with optimistic $a$, most likely $m$, pessimistic $b$.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.6-2",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "Name the five function point information domain values.",
+  "back": "External Inputs, External Outputs, External Inquiries, Internal Logical Files, External Interface Files.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.6-3",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "Give the FP weighting table (simple / average / complex).",
+  "back": "EI 3/4/6, EO 4/5/7, EQ 3/4/6, ILF 7/10/15, EIF 5/7/10.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.6-4",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "State the function point formula and the range of its adjustment factor.",
+  "back": "$\\text{FP} = \\text{UFP} \\times (0.65 + 0.01\\sum F_i)$ with $\\sum F_i \\in [0,70]$, so VAF $\\in [0.65, 1.35]$ — at most ±35%.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.6-5",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "How many general system characteristics are there, and what is each rated out of?",
+  "back": "**Fourteen**, each rated **0 (no influence) to 5 (essential)**, giving $\\sum F_i$ between 0 and 70.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.6-6",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "UFP = 300 with all fourteen GSCs rated 3. Find FP.",
+  "back": "$\\sum F_i = 42$, VAF $= 0.65 + 0.42 = 1.07$, so FP $= 300 \\times 1.07 = \\mathbf{321}$.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.6-7",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "Give the basic COCOMO effort and duration equations.",
+  "back": "$E = a(\\text{KLOC})^{b}$ person-months and $D = c\\,E^{d}$ months, with average staff $N = E/D$.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.6-8",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "Give the basic COCOMO coefficients for all three modes.",
+  "back": "Organic **2.4, 1.05**; Semi-detached **3.0, 1.12**; Embedded **3.6, 1.20**. Duration: $c = 2.5$ for all three, with $d = 0.38, 0.35, 0.32$ respectively.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.6-9",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "Give the intermediate COCOMO multipliers.",
+  "back": "Organic **3.2**, Semi-detached **3.0**, Embedded **2.8**, with the same exponents 1.05 / 1.12 / 1.20, and $E = a(\\text{KLOC})^{b} \\times \\text{EAF}$.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.6-10",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "Compute basic COCOMO effort for 32 KLOC embedded.",
+  "back": "$32 = 2^5$ so $32^{1.2} = 2^{6} = 64$, giving $E = 3.6 \\times 64 = \\mathbf{230.4}$ person-months.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.6-11",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "What distinguishes the three COCOMO modes?",
+  "back": "**Organic**: small experienced team, familiar application, flexible requirements. **Semi-detached**: mixed experience, mixed rigidity. **Embedded**: tight hardware/software/operational constraints, change very expensive.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.6-12",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "Name COCOMO II's three sub-models and their size units.",
+  "back": "**Application composition** (object points), **Early design** (function points, 7 effort multipliers), **Post-architecture** (KSLOC or FP, 17 multipliers and 5 scale factors).",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.6-13",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "State the COCOMO II post-architecture equation.",
+  "back": "$\\text{PM} = 2.94 \\times \\text{Size}^{E} \\times \\prod \\text{EM}_i$ with $E = 0.91 + 0.01\\sum SF_j$ over the five scale factors PREC, FLEX, RESL, TEAM, PMAT.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.6-14",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "State Putnam's software equation and its effort form.",
+  "back": "$L = C_k K^{1/3} t_d^{4/3}$, so $K = \\dfrac{L^3}{C_k^{3} t_d^{4}}$. Effort varies as the **inverse fourth power of time**.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.6-15",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "Schedule cut from 3 years to 2 with size unchanged. Effort multiplier?",
+  "back": "$(3/2)^4 = 81/16 = \\mathbf{5.06}$. Ratios need no absolute numbers: $K_1/K_2 = (t_2/t_1)^4$.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.6-16",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "State the 40-20-40 rule.",
+  "back": "**40% analysis and design, 20% coding, 40% testing and debugging.** Coding is the *smallest* of the three.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.6-17",
+  "unit": 6,
+  "topic": "6.6",
+  "front": "Give the four earned-value formulas.",
+  "back": "$\\text{SPI} = \\text{BCWP}/\\text{BCWS}$, $\\text{CPI} = \\text{BCWP}/\\text{ACWP}$, $\\text{SV} = \\text{BCWP} - \\text{BCWS}$, $\\text{CV} = \\text{BCWP} - \\text{ACWP}$. Index above 1 is good.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.7-1",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "Verification versus validation, in one question each.",
+  "back": "**Verification**: are we building the product *right*? (conformance to spec, mostly static — reviews, inspections). **Validation**: are we building the *right* product? (fitness for use, dynamic — acceptance, alpha, beta).",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.7-2",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "State the error → fault → failure chain.",
+  "back": "A human makes an **error**, which puts a **fault** (defect, bug) in the artefact, which on execution may produce a **failure** — an observed deviation from required behaviour. An unexecuted fault causes no failure.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.7-3",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "What is a stub and what is a driver?",
+  "back": "A **stub** replaces a module that the unit under test **calls** (below it). A **driver** replaces the module that **calls** the unit under test (above it).",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.7-4",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "Which integration strategy needs stubs and which needs drivers?",
+  "back": "**Top-down needs stubs** (lower modules do not exist yet). **Bottom-up needs drivers** (no caller exists yet). Sandwich needs both.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.7-5",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "What does regression testing re-run?",
+  "back": "A representative sample of all tests, tests focused on the functions likely to be affected, and tests on the components that were actually changed — not the entire suite.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.7-6",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "Give the three ways to compute cyclomatic complexity.",
+  "back": "$V(G) = E - N + 2P$; $V(G) = \\text{predicate nodes} + 1$; $V(G) = \\text{number of regions}$ (including the unbounded one). All three must agree.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.7-7",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "A flow graph has 14 edges and 11 nodes, one component. Find $V(G)$.",
+  "back": "$V(G) = 14 - 11 + 2 = \\mathbf{5}$, so it has 4 predicate nodes and 5 regions.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.7-8",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "Does `if (a && b)` count as one predicate node?",
+  "back": "**No** — a compound condition splits into **two** predicate nodes, because each simple condition is an independent decision.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.7-9",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "What does $V(G)$ bound?",
+  "back": "It is an **upper bound on the number of tests** needed to guarantee every statement is executed and every condition takes both values, and the **size of the basis set** of independent paths. Guideline: keep $V(G) \\le 10$.",
+  "kind": "concept"
+ },
+ {
+  "id": "c6.7-10",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "Must every basis path be executable?",
+  "back": "**No.** The basis set is derived from the graph, not the semantics, so some paths may be infeasible; the tester substitutes realisable paths covering the same new edges.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.7-11",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "How do you test a simple loop with maximum $n$ passes?",
+  "back": "Skip it entirely; 1 pass; 2 passes; $m$ passes with $m < n$; and $n-1$, $n$, $n+1$ passes.",
+  "kind": "concept"
+ },
+ {
+  "id": "c6.7-12",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "How does equivalence partitioning handle a range $a..b$?",
+  "back": "One valid class ($a \\le x \\le b$) and two invalid classes ($x < a$ and $x > b$). Test one representative from each.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.7-13",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "Give the four boundary-value-analysis test counts for $n$ variables.",
+  "back": "Normal **$4n+1$**; robust **$6n+1$**; worst case **$5^n$**; robust worst case **$7^n$**.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.7-14",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "What does cause-effect graphing add over partitioning and BVA?",
+  "back": "It tests **combinations** of input conditions. Causes and effects are linked with boolean operators and constraints (E, I, O, R, M), then converted to a limited-entry decision table whose columns become test cases.",
+  "kind": "concept"
+ },
+ {
+  "id": "c6.7-15",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "Alpha versus beta testing?",
+  "back": "**Alpha**: at the developer's site, customer runs it, **developer present**, controlled environment, happens first. **Beta**: at the customer's site, end users run it, **developer absent**, live environment.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.7-16",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "What is stress testing, and what is sensitivity testing?",
+  "back": "**Stress**: abnormal quantity, frequency or volume of resource demand. **Sensitivity**: hunting the small band of input inside a valid class that causes instability or incorrect processing.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.7-17",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "Name the three debugging strategies.",
+  "back": "**Brute force** (dumps, traces, print statements — least efficient), **backtracking** (walk backwards from the symptom), **cause elimination** (binary partitioning of hypotheses).",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.7-18",
+  "unit": 6,
+  "topic": "6.7",
+  "front": "Does condition coverage imply decision coverage?",
+  "back": "**No.** For `if (a || b)`, tests (T,F) and (F,T) give full condition coverage but both take the true branch. That gap is why condition/decision coverage and MC/DC exist.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.8-1",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "Give the IEEE definition of a baseline.",
+  "back": "A specification or product that has been **formally reviewed and agreed upon**, that thereafter serves as the **basis for further development**, and that can be **changed only through formal change control procedures**.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.8-2",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "What counts as a software configuration item?",
+  "back": "Any information item under configuration control: specifications, plans, design documents, source code, test plans and cases, executables, databases, manuals, change requests — and increasingly the build tools themselves.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.8-3",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "Name the five SCM tasks.",
+  "back": "Identification, version control, change control, configuration auditing, status reporting (status accounting).",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.8-4",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "Version, revision, variant, release — distinguish them.",
+  "back": "**Version**: any distinguishable instance. **Revision**: corrects or improves and is meant to **replace** its predecessor. **Variant**: functionally equivalent for a different environment and **co-exists**. **Release**: a version shipped to customers.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.8-5",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "Order the change control steps for a baselined item.",
+  "back": "Change request → evaluation and **change report** → **CCA/CCB decision** → **ECO** → check out → make change → review and audit → check in → baseline for testing → promote → release.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.8-6",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "What level of change control applies before an item is baselined?",
+  "back": "**Informal** — the developer simply makes the change. Project-level control applies once baselined, formal control with a CCB once released.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.8-7",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "What does a configuration audit ask that a technical review does not?",
+  "back": "Was the change in the ECO actually made and were extra modifications added? Was an FTR held? Were SCM procedures followed? Were all related SCIs updated?",
+  "kind": "concept"
+ },
+ {
+  "id": "c6.8-8",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "Name the four maintenance categories and their rough shares.",
+  "back": "**Perfective ~50%**, adaptive ~25%, corrective ~21%, preventive ~4%. Enhancement dominates — corrective is not the largest.",
+  "kind": "trap"
+ },
+ {
+  "id": "c6.8-9",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "Give Lehman's first two laws of software evolution.",
+  "back": "1. **Continuing change** — an E-type program must be continually adapted or become less satisfactory. 2. **Increasing complexity** — complexity rises as it evolves unless work is done to reduce it.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.8-10",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "What is MTTC?",
+  "back": "**Mean time to change** — the average time to analyse a change request, design the modification, implement it, test it and distribute it. It is the standard maintainability metric.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.8-11",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "Name the three levels of software reuse.",
+  "back": "Application system reuse (COTS, product lines), component reuse (subsystems and components), object and function reuse (classes, library functions).",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.8-12",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "Name the three steps of component-based reuse and the preferred wrapping technique.",
+  "back": "Qualification, adaptation, composition (plus update). **Black-box wrapping** — changing only the interface — is preferred over grey-box and white-box wrapping.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.8-13",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "Reuse break-even: build premium $p$, per-reuse cost $r$ (as multiples of single-use cost $C$).",
+  "back": "$p + rn = n \\Rightarrow n = \\dfrac{p}{1-r}$. With $p = 1.5$ and $r = 0.2$, $n = 1.875$, so the **second** use is the first profitable one.",
+  "kind": "formula"
+ },
+ {
+  "id": "c6.8-14",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "Name the six activities of the software re-engineering process model.",
+  "back": "Inventory analysis, document restructuring, reverse engineering, code restructuring, data restructuring, forward engineering.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.8-15",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "Define reverse engineering precisely.",
+  "back": "Analysing a program to create a representation of it at a **higher level of abstraction** than the source code — design recovery. It changes nothing in the system.",
+  "kind": "definition"
+ },
+ {
+  "id": "c6.8-16",
+  "unit": 6,
+  "topic": "6.8",
+  "front": "How do reverse engineering, forward engineering, restructuring and re-engineering differ?",
+  "back": "Abstraction goes **up** (reverse), **down** (forward), **sideways** (restructuring, behaviour preserved) and **up then down** (re-engineering, which contains reverse engineering).",
+  "kind": "trap"
+ }
+]

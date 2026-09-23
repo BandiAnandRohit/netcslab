@@ -1,0 +1,932 @@
+{
+ "unit": 1,
+ "summary": "Discrete mathematics and optimization: logic, sets and relations, counting, algebra, graphs, Boolean functions and operations research — a large, formula-dense unit whose marks come almost entirely from mechanical numericals that can be practised to certainty.",
+ "topics": [
+  {
+   "id": "1.1",
+   "title": "Mathematical Logic",
+   "summary": "Propositions, truth tables, equivalence laws, normal forms, predicates and quantifiers, and the rules of inference.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## Why logic comes first\n\nEvery other topic in this syllabus is written in the language of logic. A database constraint, a loop invariant, the definition of an equivalence relation, the correctness argument for a scheduling algorithm — all of them are logical statements, and the exam tests whether you can manipulate such statements mechanically rather than by intuition.\n\nA **proposition** is a declarative sentence that is definitely true or definitely false, but not both. \"7 is prime\" is a proposition. \"x + 1 = 5\" is not, because its truth depends on $x$ — it is a *predicate*, and we will come back to it. \"Close the door\" is not a proposition at all, because it makes no claim.\n\nFrom atomic propositions we build compound ones with five connectives:\n\n| Connective | Symbol | Read as | False exactly when |\n|---|---|---|---|\n| Negation | $\\neg p$ | not $p$ | $p$ is true |\n| Conjunction | $p \\wedge q$ | $p$ and $q$ | either is false |\n| Disjunction | $p \\vee q$ | $p$ or $q$ (inclusive) | both are false |\n| Implication | $p \\to q$ | if $p$ then $q$ | $p$ true and $q$ false |\n| Biconditional | $p \\leftrightarrow q$ | $p$ if and only if $q$ | truth values differ |\n\nThe one that causes trouble is implication. $p \\to q$ is **false in exactly one row**: the row where the antecedent holds and the consequent fails. Every other row is true, including both rows where $p$ is false. So \"if the moon is made of cheese then 2 + 2 = 5\" is a *true* statement. This is not a philosophical claim about causation; it is a definition chosen so that $p \\to q$ means \"$p$ never happens without $q$\", which is what proofs need.\n\nPrecedence, highest first: $\\neg$, then $\\wedge$, then $\\vee$, then $\\to$, then $\\leftrightarrow$. Implication associates to the **right**, so $p \\to q \\to r$ means $p \\to (q \\to r)$. Write the brackets in an exam anyway; a misparsed formula costs the whole mark."
+    },
+    {
+     "t": "md",
+     "text": "## Truth tables and the three classifications\n\nA formula with $n$ distinct propositional variables has $2^n$ rows in its truth table. Fill the columns from the inside out.\n\nEvery formula is exactly one of:\n\n- **Tautology** — true in every row. Example: $p \\vee \\neg p$, or $((p \\to q) \\wedge p) \\to q$.\n- **Contradiction** — false in every row. Example: $p \\wedge \\neg p$.\n- **Contingency** — true in some rows and false in others.\n\nTwo formulas $A$ and $B$ are **logically equivalent**, written $A \\equiv B$, when $A \\leftrightarrow B$ is a tautology — equivalently, when their truth tables have identical final columns. $A$ **logically implies** $B$ when $A \\to B$ is a tautology, i.e. every row that makes $A$ true also makes $B$ true.\n\nAround implication sit three derived forms, and the exam tests them constantly:\n\n$$\\text{Converse of } p\\to q: \\; q \\to p \\qquad \\text{Inverse}: \\; \\neg p \\to \\neg q \\qquad \\text{Contrapositive}: \\; \\neg q \\to \\neg p$$\n\nOnly the **contrapositive is equivalent** to the original. The converse and the inverse are equivalent to each other (each is the contrapositive of the other) but not to $p \\to q$. Memorise the pattern: contrapositive = swap *and* negate; converse = swap only; inverse = negate only."
+    },
+    {
+     "t": "md",
+     "text": "## The equivalence laws\n\nThese are the algebra you compute with. Every one of them can be verified with a four-row truth table, but you should know them cold.\n\n| Name | Law |\n|---|---|\n| Identity | $p \\wedge T \\equiv p$; $p \\vee F \\equiv p$ |\n| Domination | $p \\vee T \\equiv T$; $p \\wedge F \\equiv F$ |\n| Idempotent | $p \\vee p \\equiv p$; $p \\wedge p \\equiv p$ |\n| Double negation | $\\neg\\neg p \\equiv p$ |\n| Commutative | $p \\vee q \\equiv q \\vee p$; $p \\wedge q \\equiv q \\wedge p$ |\n| Associative | $(p\\vee q)\\vee r \\equiv p \\vee (q \\vee r)$, same for $\\wedge$ |\n| Distributive | $p \\vee (q \\wedge r) \\equiv (p\\vee q)\\wedge(p \\vee r)$; $p \\wedge (q \\vee r) \\equiv (p\\wedge q)\\vee(p\\wedge r)$ |\n| De Morgan | $\\neg(p \\wedge q) \\equiv \\neg p \\vee \\neg q$; $\\neg(p \\vee q) \\equiv \\neg p \\wedge \\neg q$ |\n| Absorption | $p \\vee (p \\wedge q) \\equiv p$; $p \\wedge (p \\vee q) \\equiv p$ |\n| Negation | $p \\vee \\neg p \\equiv T$; $p \\wedge \\neg p \\equiv F$ |\n\nPlus the rewriting rules that eliminate the two awkward connectives:\n\n$$p \\to q \\equiv \\neg p \\vee q \\qquad\\qquad \\neg(p \\to q) \\equiv p \\wedge \\neg q$$\n$$p \\leftrightarrow q \\equiv (p \\to q)\\wedge(q \\to p) \\equiv (p \\wedge q) \\vee (\\neg p \\wedge \\neg q)$$\n\nTwo more that appear in \"which is *not* equivalent\" questions:\n\n$$p \\to (q \\to r) \\equiv (p \\wedge q) \\to r \\quad\\text{(exportation)} \\qquad (p \\vee q) \\to r \\equiv (p \\to r)\\wedge(q\\to r)$$\n\nNote carefully that $(p \\wedge q) \\to r$ is **not** $(p \\to r)\\wedge(q \\to r)$; the distribution rules for $\\to$ over $\\wedge$ and $\\vee$ in the antecedent swap the connective."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — simplifying without a truth table",
+     "text": "Simplify $\\neg(p \\vee q) \\vee (\\neg p \\wedge q)$.\n\n$$\\begin{aligned}\n\\neg(p\\vee q)\\vee(\\neg p \\wedge q) &\\equiv (\\neg p \\wedge \\neg q) \\vee (\\neg p \\wedge q) && \\text{De Morgan}\\\\\n&\\equiv \\neg p \\wedge(\\neg q \\vee q) && \\text{Distributive (factor out } \\neg p)\\\\\n&\\equiv \\neg p \\wedge T && \\text{Negation law}\\\\\n&\\equiv \\neg p && \\text{Identity}\n\\end{aligned}$$\n\nCheck one row to be safe: take $p = F, q = T$. The original is $\\neg(F \\vee T)\\vee(T \\wedge T) = F \\vee T = T$, and $\\neg p = T$. Take $p = T, q = F$: original is $\\neg(T)\\vee(F\\wedge F)= F \\vee F = F$, and $\\neg p = F$. Agreed.\n\nNow show that $(p \\to q) \\to (p \\to r)$ is not a tautology, and find what it *is* equivalent to.\n\n$$\\begin{aligned}\n(p\\to q)\\to(p\\to r) &\\equiv \\neg(\\neg p \\vee q)\\vee(\\neg p \\vee r)\\\\\n&\\equiv (p \\wedge \\neg q)\\vee \\neg p \\vee r\\\\\n&\\equiv \\big((p \\vee \\neg p)\\wedge(\\neg q \\vee \\neg p)\\big)\\vee r && \\text{distribute } \\vee \\neg p\\\\\n&\\equiv (\\neg p \\vee \\neg q)\\vee r\n\\end{aligned}$$\n\nSo the formula is $\\neg p \\vee \\neg q \\vee r$, which is false exactly when $p = q = T$ and $r = F$ — one row out of eight, so it is a contingency, not a tautology. Equivalently it is $(p \\wedge q) \\to r$."
+    },
+    {
+     "t": "md",
+     "text": "## Normal forms: CNF, DNF and the principal forms\n\nA **literal** is a variable or its negation. A formula is in\n\n- **Disjunctive normal form (DNF)** if it is an OR of ANDs of literals: $(p \\wedge \\neg q)\\vee(\\neg p \\wedge r)$.\n- **Conjunctive normal form (CNF)** if it is an AND of ORs of literals: $(p \\vee \\neg q)\\wedge(\\neg p \\vee r)$.\n\nEvery formula has both. To convert: eliminate $\\leftrightarrow$ and $\\to$, push negations inward with De Morgan until they sit on variables only, then distribute — $\\wedge$ over $\\vee$ to get CNF, $\\vee$ over $\\wedge$ to get DNF.\n\nThe **principal** (canonical, full) normal forms are the ones where every clause mentions **every** variable exactly once.\n\n- **PDNF** = disjunction of the **minterms** of the true rows. The minterm for a row writes $p$ if $p$ is true in that row and $\\neg p$ if it is false.\n- **PCNF** = conjunction of the **maxterms** of the false rows. The maxterm for a row writes $p$ if $p$ is **false** in that row and $\\neg p$ if it is true — the complementary convention, which is where marks are lost.\n\nIndex the rows $0,1,\\dots,2^n-1$ by reading the variable assignment as a binary number with $T = 1$. Then PDNF $= \\sum m_i$ over true rows and PCNF $= \\prod M_j$ over false rows, and the two index sets partition $\\{0,\\dots,2^n-1\\}$. A tautology has all $2^n$ minterms and no maxterms; a contradiction has the reverse. Because the row indices are complementary, **you only ever build one table**: get the minterm list and the maxterm list is everything else."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — PDNF and PCNF of $(p \\to q)\\wedge(q\\to r)$",
+     "text": "Build the table with $p$ as the most significant bit and $T = 1$.\n\n| $i$ | $p$ | $q$ | $r$ | $p\\to q$ | $q \\to r$ | $F$ |\n|---|---|---|---|---|---|---|\n| 0 | 0 | 0 | 0 | 1 | 1 | **1** |\n| 1 | 0 | 0 | 1 | 1 | 1 | **1** |\n| 2 | 0 | 1 | 0 | 1 | 0 | 0 |\n| 3 | 0 | 1 | 1 | 1 | 1 | **1** |\n| 4 | 1 | 0 | 0 | 0 | 1 | 0 |\n| 5 | 1 | 0 | 1 | 0 | 1 | 0 |\n| 6 | 1 | 1 | 0 | 1 | 0 | 0 |\n| 7 | 1 | 1 | 1 | 1 | 1 | **1** |\n\nTrue rows: $\\{0,1,3,7\\}$. False rows: $\\{2,4,5,6\\}$.\n\n**PDNF** $= \\sum m(0,1,3,7)$:\n$$(\\neg p \\wedge \\neg q \\wedge \\neg r)\\vee(\\neg p \\wedge \\neg q \\wedge r)\\vee(\\neg p \\wedge q \\wedge r)\\vee(p \\wedge q \\wedge r)$$\n\n**PCNF** $= \\prod M(2,4,5,6)$. Row 2 is $(p,q,r)=(0,1,0)$, so its maxterm complements each bit's literal: $(p \\vee \\neg q \\vee r)$. Row 4 is $(1,0,0)$: $(\\neg p \\vee q \\vee r)$. Row 5 is $(1,0,1)$: $(\\neg p \\vee q \\vee \\neg r)$. Row 6 is $(1,1,0)$: $(\\neg p \\vee \\neg q \\vee r)$.\n\n$$\\text{PCNF} = (p \\vee \\neg q \\vee r)\\wedge(\\neg p \\vee q \\vee r)\\wedge(\\neg p \\vee q \\vee \\neg r)\\wedge(\\neg p \\vee \\neg q \\vee r)$$\n\nSanity check: 4 minterms + 4 maxterms = 8 rows. Also note $\\neg F$ has PDNF $\\sum m(2,4,5,6)$ — the index sets simply swap under negation."
+    },
+    {
+     "t": "md",
+     "text": "## Predicates and quantifiers\n\nA **predicate** $P(x)$ becomes a proposition once $x$ is given a value from a stated **domain**, or once it is quantified.\n\n- $\\forall x\\, P(x)$ — \"for all $x$ in the domain, $P(x)$\". Over a finite domain $\\{a_1,\\dots,a_n\\}$ it is the conjunction $P(a_1)\\wedge\\cdots\\wedge P(a_n)$.\n- $\\exists x\\, P(x)$ — \"for some $x$\", the corresponding disjunction.\n\nOver an **empty domain** $\\forall x\\,P(x)$ is vacuously **true** and $\\exists x\\,P(x)$ is **false**. That single fact decides several exam questions.\n\nThe two English patterns to get right:\n\n$$\\text{\"All } A \\text{ are } B\\text{\"} \\;\\equiv\\; \\forall x\\,(A(x)\\to B(x)) \\qquad \\text{\"Some } A \\text{ are } B\\text{\"} \\;\\equiv\\; \\exists x\\,(A(x)\\wedge B(x))$$\n\nUniversals take $\\to$; existentials take $\\wedge$. Writing $\\forall x (A(x)\\wedge B(x))$ for \"all students are clever\" claims that *everything in the universe* is a clever student, which is far stronger. Writing $\\exists x (A(x)\\to B(x))$ for \"some students are clever\" is satisfied by any non-student at all, which is far weaker.\n\n**Negation** moves inward by flipping each quantifier and negating the body:\n\n$$\\neg\\forall x\\,P(x)\\equiv \\exists x\\,\\neg P(x) \\qquad\\qquad \\neg \\exists x\\,P(x)\\equiv \\forall x\\,\\neg P(x)$$\n\nApplied repeatedly, a negation walks through a whole prefix flipping every quantifier:\n\n$$\\neg\\,\\forall x\\,\\exists y\\,\\forall z\\; P(x,y,z) \\;\\equiv\\; \\exists x\\,\\forall y\\,\\exists z\\;\\neg P(x,y,z)$$\n\nRemember to negate the matrix correctly too: $\\neg(A(x)\\to B(x)) \\equiv A(x)\\wedge\\neg B(x)$, so the negation of \"all students are clever\" is \"some student is not clever\" — $\\exists x(A(x)\\wedge\\neg B(x))$ — **not** \"all students are not clever\"."
+    },
+    {
+     "t": "md",
+     "text": "## Nested quantifiers and why order matters\n\nWith two variables the order of unlike quantifiers changes the meaning.\n\n$$\\forall x\\,\\exists y\\,P(x,y) \\quad\\text{vs}\\quad \\exists y\\,\\forall x\\,P(x,y)$$\n\nThe first says: for each $x$ you may choose a *different* $y$. The second says: one single $y$ works for *every* $x$. The second is strictly stronger, and the only valid one-way implication is\n\n$$\\exists y\\,\\forall x\\,P(x,y)\\;\\Rightarrow\\;\\forall x\\,\\exists y\\,P(x,y)$$\n\nConcretely, over the integers with $P(x,y): x + y = 0$, the statement $\\forall x\\exists y\\,(x+y=0)$ is true (take $y = -x$), while $\\exists y\\forall x\\,(x+y=0)$ is false (no single $y$ cancels every $x$).\n\nLike quantifiers commute freely: $\\forall x \\forall y \\equiv \\forall y \\forall x$ and $\\exists x \\exists y \\equiv \\exists y \\exists x$.\n\nDistribution over connectives is also asymmetric — worth a boxed summary:\n\n$$\\forall x(P(x)\\wedge Q(x))\\equiv \\forall x P(x)\\wedge\\forall x Q(x) \\qquad \\exists x(P(x)\\vee Q(x))\\equiv \\exists x P(x)\\vee \\exists x Q(x)$$\n\nbut only one-way implications hold for the mismatched pairs:\n\n$$\\forall x P(x)\\vee\\forall x Q(x)\\;\\Rightarrow\\;\\forall x(P(x)\\vee Q(x)),\\qquad \\exists x(P(x)\\wedge Q(x))\\;\\Rightarrow\\;\\exists x P(x)\\wedge\\exists x Q(x)$$\n\nand neither converse holds. Test with $P(x) = $ \"$x$ is even\", $Q(x) = $ \"$x$ is odd\" over the integers: $\\forall x(P\\vee Q)$ is true but $\\forall xP \\vee \\forall xQ$ is false; $\\exists xP \\wedge \\exists xQ$ is true but $\\exists x(P\\wedge Q)$ is false."
+    },
+    {
+     "t": "cal",
+     "kind": "mnemonic",
+     "title": "$\\forall$ goes with $\\to$, $\\exists$ goes with $\\wedge$",
+     "text": "Four lines cover most translation questions on any domain:\n\n| English | Symbols |\n|---|---|\n| All A are B | $\\forall x(A(x)\\to B(x))$ |\n| No A is B | $\\forall x(A(x)\\to\\neg B(x))$, equivalently $\\neg\\exists x(A(x)\\wedge B(x))$ |\n| Some A is B | $\\exists x(A(x)\\wedge B(x))$ |\n| Some A is not B | $\\exists x(A(x)\\wedge\\neg B(x))$ |\n\nThe diagonals are negations of each other: \"All A are B\" negates to \"Some A is not B\", and \"No A is B\" negates to \"Some A is B\"."
+    },
+    {
+     "t": "md",
+     "text": "## Rules of inference\n\nAn **argument** is a list of premises followed by a conclusion. It is **valid** when the conclusion is true in every interpretation in which all premises are true — equivalently when $(P_1 \\wedge \\cdots \\wedge P_n)\\to C$ is a tautology. Validity is about form, not about whether the premises happen to be true.\n\nThe standard rules for propositional logic:\n\n| Rule | Form |\n|---|---|\n| Modus ponens | $p,\\; p\\to q \\;\\vdash\\; q$ |\n| Modus tollens | $\\neg q,\\; p \\to q \\;\\vdash\\; \\neg p$ |\n| Hypothetical syllogism | $p \\to q,\\; q\\to r \\;\\vdash\\; p \\to r$ |\n| Disjunctive syllogism | $p \\vee q,\\; \\neg p \\;\\vdash\\; q$ |\n| Addition | $p \\;\\vdash\\; p \\vee q$ |\n| Simplification | $p \\wedge q \\;\\vdash\\; p$ |\n| Conjunction | $p,\\; q \\;\\vdash\\; p \\wedge q$ |\n| Resolution | $p \\vee q,\\; \\neg p \\vee r \\;\\vdash\\; q \\vee r$ |\n| Constructive dilemma | $(p\\to q)\\wedge(r\\to s),\\; p \\vee r \\;\\vdash\\; q \\vee s$ |\n| Destructive dilemma | $(p\\to q)\\wedge(r\\to s),\\; \\neg q\\vee\\neg s \\;\\vdash\\; \\neg p \\vee \\neg r$ |\n\nThe two fallacies that are offered as distractors:\n\n- **Affirming the consequent**: from $p \\to q$ and $q$ conclude $p$. Invalid.\n- **Denying the antecedent**: from $p \\to q$ and $\\neg p$ conclude $\\neg q$. Invalid.\n\nFor quantified arguments add four more: **universal instantiation** ($\\forall x P(x) \\vdash P(c)$ for any $c$), **universal generalisation** ($P(c)$ for arbitrary $c$ $\\vdash \\forall x P(x)$), **existential instantiation** ($\\exists x P(x)\\vdash P(c)$ for a *new* name $c$) and **existential generalisation** ($P(c)\\vdash\\exists x P(x)$). The restriction on existential instantiation — the witness must be a fresh constant not used elsewhere — is what stops the bogus derivation of $\\exists x P(x), \\exists x Q(x) \\vdash \\exists x(P(x)\\wedge Q(x))$."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — a formal validity proof",
+     "text": "Premises: (1) If it rains, the match is cancelled. (2) If the match is cancelled, the stadium stays empty. (3) The stadium is not empty. (4) It rains or the referee is late. Conclusion: the referee is late.\n\nLet $R$ = it rains, $C$ = match cancelled, $E$ = stadium empty, $L$ = referee late.\n\n| Step | Statement | Justification |\n|---|---|---|\n| 1 | $R \\to C$ | premise |\n| 2 | $C \\to E$ | premise |\n| 3 | $\\neg E$ | premise |\n| 4 | $R \\vee L$ | premise |\n| 5 | $R \\to E$ | hypothetical syllogism, 1 and 2 |\n| 6 | $\\neg R$ | modus tollens, 5 and 3 |\n| 7 | $L$ | disjunctive syllogism, 4 and 6 |\n\nThe argument is valid. Note where each rule bit: step 5 chains the two implications, step 6 runs the chain backwards from the denied consequent, step 7 eliminates the false disjunct.\n\n**A contrasting invalid argument.** Premises $p \\to q$ and $q$; conclusion $p$. Take $p = F, q = T$: premise 1 is $F \\to T = T$, premise 2 is $T$, conclusion is $F$. One row with true premises and a false conclusion is enough to kill validity. That single row is the whole method — to *disprove* validity you never need a full table, only one counterexample row, and the fastest way to find it is to set the conclusion false and try to satisfy the premises."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.1-1",
+     "q": "Which of the following is logically equivalent to $\\neg(p \\to q)$?",
+     "opts": [
+      "$\\neg p \\to \\neg q$",
+      "$p \\wedge \\neg q$",
+      "$\\neg p \\vee q$",
+      "$q \\to p$"
+     ],
+     "ans": 1,
+     "exp": "$p\\to q \\equiv \\neg p \\vee q$, so $\\neg(p\\to q)\\equiv \\neg(\\neg p \\vee q)\\equiv p \\wedge \\neg q$ by De Morgan. Option C is $p \\to q$ itself, option D is the converse, option A is the inverse — none of them is a negation. Remember that the negation of an implication is never an implication: it is a conjunction."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.1-2",
+     "q": "The negation of $\\forall x\\,\\exists y\\,(P(x) \\wedge \\neg Q(y))$ is",
+     "opts": [
+      "$\\exists x\\,\\forall y\\,(\\neg P(x)\\vee Q(y))$",
+      "$\\exists x\\,\\exists y\\,(\\neg P(x)\\wedge Q(y))$",
+      "$\\forall x\\,\\exists y\\,(\\neg P(x)\\vee Q(y))$",
+      "$\\exists x\\,\\forall y\\,(\\neg P(x)\\wedge Q(y))$"
+     ],
+     "ans": 0,
+     "exp": "Push the negation through the prefix, flipping each quantifier: $\\forall x$ becomes $\\exists x$, $\\exists y$ becomes $\\forall y$. Then negate the matrix with De Morgan: $\\neg(P(x)\\wedge\\neg Q(y)) \\equiv \\neg P(x)\\vee Q(y)$. Both steps must happen; options B and D flip the quantifiers but botch De Morgan, and option C forgets to flip at all."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.1-3",
+     "q": "A formula in three variables is true in exactly 5 of its 8 rows. How many clauses does its PCNF contain?",
+     "opts": [
+      "5",
+      "3",
+      "8",
+      "2"
+     ],
+     "ans": 1,
+     "exp": "PDNF collects minterms of the **true** rows; PCNF collects maxterms of the **false** rows. With 5 true rows there are $8-5=3$ false rows, so the PCNF has 3 maxterms and the PDNF has 5 minterms. The two counts always add to $2^n$."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Falsify the conclusion first",
+     "body": "To test validity of an argument, assume the conclusion is **false** and try to make every premise true. If you succeed you have a counterexample row and the argument is invalid; if you are forced into a contradiction the argument is valid. This replaces a $2^n$-row table with a few lines of forced reasoning."
+    },
+    {
+     "title": "Count rows instead of drawing tables",
+     "body": "$p\\to q$ is false in exactly 1 of 4 rows; $p \\vee q$ false in 1; $p\\wedge q$ true in 1; $p \\leftrightarrow q$ true in 2. For a formula built as a chain of implications, count the rows that make it false rather than the rows that make it true — there are usually far fewer. $(p\\to q)\\wedge(q\\to r)$ has 4 false rows, found instantly as 'q true r false' (2 rows) plus 'p true q false' (2 rows), with no overlap."
+    },
+    {
+     "title": "PDNF and PCNF are complementary index sets",
+     "body": "Build one truth table, list the true-row indices as minterms and you are done: the maxterms are every index you did **not** write. And $\\neg F$ simply swaps the two lists. Never build a second table."
+    },
+    {
+     "title": "Only the contrapositive survives",
+     "body": "For any $p \\to q$: contrapositive $\\neg q\\to\\neg p$ is equivalent; converse $q\\to p$ and inverse $\\neg p \\to \\neg q$ are equivalent to each other but not to the original. Two equivalence classes, two members each — draw that box and every converse/inverse question answers itself."
+    },
+    {
+     "title": "Read $\\forall\\exists$ versus $\\exists\\forall$ as 'per-$x$' versus 'one for all'",
+     "body": "Whenever unlike quantifiers are swapped, ask whether the witness is allowed to depend on the outer variable. $\\exists y\\forall x$ demands a single universal witness and therefore implies $\\forall x \\exists y$, never the other way round. Test candidates with $P(x,y): x+y=0$ over $\\mathbb{Z}$, which separates the two instantly."
+    }
+   ],
+   "traps": [
+    {
+     "title": "$\\neg(p\\to q)$ is not $\\neg p \\to \\neg q$",
+     "body": "The negation of an implication is a **conjunction**, $p \\wedge \\neg q$. Candidates who write $\\neg p \\to \\neg q$ have produced the inverse, which is not even the negation's shape — it is still an implication, hence true whenever $p$ is true, exactly where the negation should be considering things. The same trap appears inside quantifiers: $\\neg\\forall x(A(x)\\to B(x)) \\equiv \\exists x(A(x)\\wedge\\neg B(x))$."
+    },
+    {
+     "title": "'All A are B' uses $\\to$, 'Some A are B' uses $\\wedge$",
+     "body": "Swapping them is the most common translation error. $\\forall x(A(x)\\wedge B(x))$ asserts that everything in the domain is both, which is far too strong; $\\exists x(A(x)\\to B(x))$ is satisfied by any object that is not an $A$ at all, which is far too weak — over a domain containing one non-A it is true regardless of $B$."
+    },
+    {
+     "title": "Maxterms use the opposite convention to minterms",
+     "body": "In the minterm for a row you write the variable when it is **true**; in the maxterm you write the variable when it is **false**. Row $(p,q,r)=(1,0,0)$ gives minterm $p\\wedge\\neg q\\wedge\\neg r$ but maxterm $\\neg p \\vee q \\vee r$. Half of all PCNF errors come from carrying the minterm convention across."
+    },
+    {
+     "title": "A valid argument can have a false conclusion",
+     "body": "Validity says only that *if* the premises hold *then* the conclusion holds. An argument with false premises and a false conclusion can still be perfectly valid, and an argument with true premises and a true conclusion can be invalid (affirming the consequent with $p=F$, $q=T$ is the standard example). Exam options that say 'the argument is invalid because the conclusion is false' are always wrong."
+    }
+   ]
+  },
+  {
+   "id": "1.2",
+   "title": "Sets and Relations",
+   "summary": "Set identities, properties of relations, matrix and digraph representation, closures and Warshall, equivalence relations, POSETs, Hasse diagrams and lattices.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## Sets, and the operations you must be fluent in\n\nA **set** is an unordered collection of distinct objects. Two sets are equal when they contain the same elements; $\\{1,2,2,3\\} = \\{3,2,1\\}$. The **power set** $\\mathcal{P}(A)$ is the set of all subsets of $A$, and $|\\mathcal{P}(A)| = 2^{|A|}$ — including $\\varnothing$ and $A$ itself. The **Cartesian product** $A \\times B$ is the set of ordered pairs, with $|A\\times B| = |A|\\cdot|B|$.\n\nThe operations:\n\n$$A\\cup B,\\quad A \\cap B,\\quad A - B = A \\cap \\bar B,\\quad \\bar A = U - A,\\quad A \\oplus B = (A-B)\\cup(B-A)$$\n\nThe last is the **symmetric difference**: elements in exactly one of the two sets. It equals $(A\\cup B)-(A\\cap B)$, and it behaves like XOR — it is associative and commutative, $A \\oplus A = \\varnothing$, and $A \\oplus \\varnothing = A$.\n\nThe identities mirror the logical equivalences of topic 1.1 exactly, because $\\cup$ is $\\vee$, $\\cap$ is $\\wedge$ and complement is $\\neg$ acting on membership predicates:\n\n| Name | Identity |\n|---|---|\n| Idempotent | $A \\cup A = A$, $A \\cap A = A$ |\n| Domination | $A \\cup U = U$, $A \\cap \\varnothing = \\varnothing$ |\n| Distributive | $A\\cap(B\\cup C) = (A\\cap B)\\cup(A \\cap C)$, and dually |\n| De Morgan | $\\overline{A\\cup B} = \\bar A \\cap \\bar B$, $\\overline{A \\cap B} = \\bar A \\cup \\bar B$ |\n| Absorption | $A \\cup (A \\cap B) = A$, $A \\cap (A\\cup B)=A$ |\n| Complement | $A \\cup \\bar A = U$, $A \\cap \\bar A = \\varnothing$ |\n\nTwo facts that get tested as \"which is always true\": $A \\subseteq B \\iff A \\cap B = A \\iff A \\cup B = B \\iff A - B = \\varnothing \\iff \\bar B \\subseteq \\bar A$. All five say the same thing. And the empty set is a subset of every set, so $\\varnothing \\subseteq A$ always, while $\\varnothing \\in A$ only if you put it there."
+    },
+    {
+     "t": "md",
+     "text": "## Relations and their properties\n\nA **binary relation** from $A$ to $B$ is any subset $R \\subseteq A \\times B$. When $A = B$ we speak of a relation *on* $A$. Since $|A \\times A| = n^2$ for $|A| = n$, there are $2^{n^2}$ relations on an $n$-element set.\n\nThe five properties, stated so that the quantifier structure is visible:\n\n| Property | Definition |\n|---|---|\n| Reflexive | $\\forall a \\in A:\\ (a,a)\\in R$ |\n| Irreflexive | $\\forall a \\in A:\\ (a,a)\\notin R$ |\n| Symmetric | $\\forall a,b:\\ (a,b)\\in R \\Rightarrow (b,a)\\in R$ |\n| Antisymmetric | $\\forall a,b:\\ (a,b)\\in R \\wedge (b,a)\\in R \\Rightarrow a = b$ |\n| Asymmetric | $\\forall a,b:\\ (a,b)\\in R \\Rightarrow (b,a)\\notin R$ |\n| Transitive | $\\forall a,b,c:\\ (a,b)\\in R \\wedge (b,c)\\in R \\Rightarrow (a,c)\\in R$ |\n\nReflexive and irreflexive are **not** complementary — a relation containing $(a,a)$ but not $(b,b)$ is neither. The same for symmetric and antisymmetric: the relation $\\{(1,1),(2,2)\\}$ on $\\{1,2\\}$ is both, and $\\{(1,2),(2,1),(1,3)\\}$ is neither. Asymmetric is exactly *antisymmetric and irreflexive*.\n\nComposition: $R \\circ S$ (apply $S$ then $R$, in the usual right-to-left convention) contains $(a,c)$ whenever some $b$ has $(a,b)\\in S$ and $(b,c)\\in R$. Powers are $R^1 = R$ and $R^{n+1} = R \\circ R^n$. **$R$ is transitive if and only if $R^2 \\subseteq R$**, and more generally iff $R^n \\subseteq R$ for all $n$."
+    },
+    {
+     "t": "cal",
+     "kind": "formula",
+     "title": "Counting relations with a given property on $|A| = n$",
+     "text": "The diagonal has $n$ cells and the off-diagonal has $n^2 - n$ cells, which split into $\\binom{n}{2}=n(n-1)/2$ unordered pairs.\n\n| Property | Count | Reasoning |\n|---|---|---|\n| All relations | $2^{n^2}$ | every cell free |\n| Reflexive | $2^{n^2-n}$ | diagonal forced to 1 |\n| Irreflexive | $2^{n^2-n}$ | diagonal forced to 0 |\n| Symmetric | $2^{n(n+1)/2}$ | $n$ diagonal cells + one choice per unordered pair |\n| Antisymmetric | $2^n\\cdot 3^{n(n-1)/2}$ | diagonal free; each unordered pair has 3 legal states |\n| Asymmetric | $3^{n(n-1)/2}$ | diagonal forced to 0 |\n| Reflexive and symmetric | $2^{n(n-1)/2}$ | |\n| Reflexive and antisymmetric | $3^{n(n-1)/2}$ | |\n| Equivalence relations | $B_n$ (Bell number) | one per partition |\n\nFor $n = 3$: $2^9 = 512$ relations, $2^6 = 64$ reflexive, $2^6 = 64$ symmetric, $2^3\\cdot3^3 = 216$ antisymmetric, and $B_3 = 5$ equivalence relations. There is **no closed formula for the number of transitive relations** — if an option offers one, it is wrong."
+    },
+    {
+     "t": "md",
+     "text": "## Matrix and digraph representation\n\nRepresent $R$ on $A = \\{a_1,\\dots,a_n\\}$ by the $n \\times n$ boolean matrix $M_R$ with $m_{ij} = 1$ iff $(a_i,a_j)\\in R$. Then:\n\n- $R$ reflexive $\\iff$ every diagonal entry is 1.\n- $R$ irreflexive $\\iff$ every diagonal entry is 0.\n- $R$ symmetric $\\iff$ $M_R = M_R^{\\mathsf T}$.\n- $R$ antisymmetric $\\iff$ $m_{ij} = m_{ji} = 1$ only when $i = j$.\n- $R$ transitive $\\iff$ $M_R \\odot M_R \\le M_R$ entrywise, where $\\odot$ is boolean matrix product (AND for multiply, OR for add).\n\nMatrices compose: $M_{S\\circ R} = M_R \\odot M_S$ and $M_{R^n} = M_R^{[n]}$. Union is entrywise OR, intersection entrywise AND.\n\nThe **digraph** of $R$ draws one vertex per element and an arc $a_i \\to a_j$ for each pair. Reading properties off the picture: reflexive means a self-loop at every vertex; symmetric means every arc has a twin in the opposite direction (drawn as an undirected edge); antisymmetric means no pair of opposite arcs between distinct vertices; transitive means every directed path of length 2 is shortcut by a direct arc."
+    },
+    {
+     "t": "md",
+     "text": "## Closures\n\nThe **closure** of $R$ with respect to a property is the smallest relation containing $R$ that has the property. It exists whenever the property is preserved under intersection, which is true for reflexivity, symmetry and transitivity — but **not** for antisymmetry, so there is no antisymmetric closure.\n\n$$r(R) = R \\cup \\Delta, \\qquad \\Delta = \\{(a,a) : a \\in A\\}$$\n$$s(R) = R \\cup R^{-1}, \\qquad R^{-1}=\\{(b,a):(a,b)\\in R\\}$$\n$$t(R) = R^{+} = R \\cup R^2 \\cup R^3 \\cup \\cdots \\cup R^{n}$$\n\nFor the transitive closure the union stops at $R^n$ where $n = |A|$, because any path between two vertices can be shortened to one that repeats no vertex, hence has length at most $n$ (at most $n-1$ if the endpoints differ). The **reflexive transitive closure** is $R^* = R^+ \\cup \\Delta = \\Delta \\cup R \\cup \\cdots \\cup R^{n-1}$.\n\nThe order of composing closures matters in one direction only: $ts(R) \\supseteq st(R)$ in general, and the reflexive-symmetric-transitive closure, taken in that order, is the smallest equivalence relation containing $R$. Taking transitive closure before symmetric can fail to be transitive, so the safe order is $t(s(r(R)))$."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — transitive closure by Warshall's algorithm",
+     "text": "Let $A = \\{a,b,c,d\\}$ with $R = \\{(a,b),(b,c),(c,a),(c,d)\\}$. The initial matrix, rows and columns in the order $a,b,c,d$:\n\n$$W^{(0)} = \\begin{pmatrix}0&1&0&0\\\\0&0&1&0\\\\1&0&0&1\\\\0&0&0&0\\end{pmatrix}$$\n\nWarshall's rule: for each intermediate vertex $k$ in turn, set\n$$w_{ij} \\leftarrow w_{ij} \\vee (w_{ik} \\wedge w_{kj})$$\nwhich reads \"if you can get from $i$ to $k$ and from $k$ to $j$ using only the vertices considered so far, then you can get from $i$ to $j$.\"\n\n**$k = a$** (column $a$ has a 1 in row $c$; row $a$ has a 1 in column $b$). So set $w_{cb} = 1$.\n$$W^{(1)} = \\begin{pmatrix}0&1&0&0\\\\0&0&1&0\\\\1&1&0&1\\\\0&0&0&0\\end{pmatrix}$$\n\n**$k = b$** (column $b$ has 1s in rows $a$ and $c$; row $b$ has a 1 in column $c$). Set $w_{ac}=1$ and $w_{cc}=1$.\n$$W^{(2)} = \\begin{pmatrix}0&1&1&0\\\\0&0&1&0\\\\1&1&1&1\\\\0&0&0&0\\end{pmatrix}$$\n\n**$k = c$** (column $c$ has 1s in rows $a,b,c$; row $c$ has 1s in columns $a,b,c,d$). OR row $c$ into rows $a$, $b$ and $c$.\n$$W^{(3)} = \\begin{pmatrix}1&1&1&1\\\\1&1&1&1\\\\1&1&1&1\\\\0&0&0&0\\end{pmatrix}$$\n\n**$k = d$** (column $d$ has 1s but row $d$ is all zeros, so nothing changes).\n$$W^{(4)} = W^{(3)} = R^{+}$$\n\nSo $R^+$ says $a,b,c$ all reach each other and $d$, and $d$ reaches nothing — correct, since $a\\to b \\to c \\to a$ is a cycle and $c \\to d$ is a sink.\n\nThe inner loop runs $n^3$ times, so Warshall costs $\\Theta(n^3)$ time and $\\Theta(n^2)$ space. Doing it by repeated boolean multiplication $R\\cup R^2\\cup\\cdots\\cup R^n$ costs $\\Theta(n^4)$ with the schoolbook product, which is why Warshall is the standard answer.\n\n**Practical shortcut for hand computation:** at step $k$, look only at column $k$. For every row $i$ with a 1 in column $k$, OR row $k$ into row $i$. Rows without a 1 in column $k$ cannot change."
+    },
+    {
+     "t": "md",
+     "text": "## Equivalence relations and partitions\n\n$R$ is an **equivalence relation** if it is reflexive, symmetric and transitive. Its **equivalence classes** are $[a] = \\{x : (a,x)\\in R\\}$, and the fundamental theorem is:\n\n> The equivalence classes of an equivalence relation on $A$ form a **partition** of $A$, and conversely every partition of $A$ induces exactly one equivalence relation (relate two elements iff they lie in the same block).\n\nSo equivalence relations on an $n$-set are in bijection with partitions of that set, and their number is the **Bell number** $B_n$: $B_1=1, B_2=2, B_3=5, B_4=15, B_5=52$, with recurrence $B_{n+1}=\\sum_{k=0}^{n}\\binom{n}{k}B_k$. The number of equivalence relations with exactly $k$ classes is the Stirling number of the second kind $S(n,k)$, and $B_n = \\sum_k S(n,k)$.\n\nTwo classes are either identical or disjoint; never partially overlapping. That is why \"the union of two equivalence relations is an equivalence relation\" is **false** in general — the union usually breaks transitivity — while the **intersection of two equivalence relations is always an equivalence relation**.\n\nCongruence modulo $m$ is the standard example: $a \\equiv b \\pmod m$ has exactly $m$ classes, the residue classes $[0],[1],\\dots,[m-1]$."
+    },
+    {
+     "t": "md",
+     "text": "## Partial orders, Hasse diagrams and lattices\n\nA **partial order** is reflexive, antisymmetric and transitive; the pair $(A,\\preceq)$ is a **POSET**. If additionally every two elements are comparable it is a **total (linear) order**, otherwise some pairs are incomparable. A **strict** order drops reflexivity and becomes irreflexive plus transitive (hence asymmetric).\n\nStandard examples: $(\\mathbb{Z},\\le)$ is total; $(\\mathcal{P}(S),\\subseteq)$ is partial; $(\\mathbb{Z}^+, \\mid)$ — divisibility — is partial; and $D_n$, the divisors of $n$ under divisibility, is the workhorse of exam questions.\n\nA **Hasse diagram** removes everything forced: drop all self-loops (reflexivity), drop every edge implied by transitivity, and drop arrowheads by drawing larger elements higher. What remains are the **covering** relations: $a \\lessdot b$ when $a \\prec b$ and nothing lies strictly between.\n\nTerminology on a POSET $(A,\\preceq)$ with a subset $B$:\n\n- **Maximal** element: nothing is strictly above it. **Maximum (greatest)**: above everything. A maximum is unique if it exists; maximal elements may be many.\n- **Upper bound** of $B$: an element above every member of $B$. **Least upper bound (supremum, join, $\\vee$)**: the smallest such, if it exists.\n- Dually **minimal/minimum**, **lower bound**, **greatest lower bound (infimum, meet, $\\wedge$)**.\n\nA **lattice** is a POSET in which *every pair* of elements has both a join and a meet. A **complete lattice** requires them for every subset; every finite lattice is complete. Further named kinds:\n\n- **Bounded**: has a least element $0$ and a greatest element $1$. Every finite lattice is bounded.\n- **Distributive**: $a\\wedge(b\\vee c) = (a\\wedge b)\\vee(a\\wedge c)$ and dually. A lattice is distributive **iff it contains neither $M_3$ (the diamond) nor $N_5$ (the pentagon) as a sublattice**.\n- **Complemented**: bounded and every $a$ has some $b$ with $a\\vee b = 1$, $a \\wedge b = 0$.\n- **Boolean algebra**: complemented **and** distributive; then complements are unique. Every finite Boolean algebra has $2^n$ elements and is isomorphic to $(\\mathcal{P}(S),\\subseteq)$ for $|S| = n$.\n\nA useful concrete family: $D_n$ under divisibility is a lattice with $a \\vee b = \\operatorname{lcm}(a,b)$ and $a\\wedge b=\\gcd(a,b)$. It is a **Boolean algebra exactly when $n$ is square-free** (a product of distinct primes) — so $D_{30}$ with 8 elements is Boolean, while $D_{12}$ is a lattice but not complemented (the element 2 has no complement) and $D_{20}$ likewise."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — reading a POSET off a Hasse diagram",
+     "text": "Take $D_{36}$, the divisors of 36 ordered by divisibility: $\\{1,2,3,4,6,9,12,18,36\\}$, nine elements.\n\nCovering relations (each element covers those obtained by removing one prime factor): $1 \\lessdot 2$, $1\\lessdot 3$, $2\\lessdot 4$, $2\\lessdot 6$, $3\\lessdot 6$, $3\\lessdot 9$, $4\\lessdot 12$, $6 \\lessdot 12$, $6\\lessdot 18$, $9\\lessdot 18$, $12\\lessdot 36$, $18\\lessdot 36$. The Hasse diagram is a $3\\times3$ grid tilted on its corner, with 1 at the bottom and 36 at the top.\n\n- Minimum is 1, maximum is 36; so the POSET is **bounded**, and these are the only minimal and maximal elements.\n- $4 \\vee 6 = \\operatorname{lcm}(4,6)=12$; $4 \\wedge 6 = \\gcd(4,6)=2$. Every pair has both, so $D_{36}$ is a **lattice**.\n- Is it complemented? A complement of 6 would need $\\operatorname{lcm}(6,x)=36$ and $\\gcd(6,x)=1$. The only divisor coprime to 6 is 1, and $\\operatorname{lcm}(6,1)=6\\ne36$. So **6 has no complement** and $D_{36}$ is not a Boolean algebra — consistent with $36 = 2^2\\cdot3^2$ not being square-free.\n- Is it distributive? Yes: every divisor lattice $D_n$ is distributive, because lcm and gcd distribute over each other exponent by exponent. So $D_{36}$ is a distributive, bounded, non-complemented lattice — exactly the combination the exam likes to ask about.\n\nCompare $D_{30} = \\{1,2,3,5,6,10,15,30\\}$, a cube: 8 elements, every element $d$ has complement $30/d$, and it is isomorphic to $(\\mathcal{P}(\\{2,3,5\\}),\\subseteq)$ — a Boolean algebra.\n\n**Counting chains and antichains.** In $D_{36}$ the longest chain is $1 \\mid 2\\mid 4\\mid 12\\mid 36$, of length 5 (four covering steps), so the height is 4. The largest antichain — a set of mutually incomparable elements — is $\\{4,6,9\\}$, of size 3. By Dilworth's theorem the POSET can be covered by 3 chains, and indeed $\\{1,2,4,12,36\\},\\{3,6,18\\},\\{9\\}$ works."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.2-1",
+     "q": "How many relations on a 3-element set are both reflexive and symmetric?",
+     "opts": [
+      "8",
+      "64",
+      "216",
+      "512"
+     ],
+     "ans": 0,
+     "exp": "Reflexivity fixes all 3 diagonal cells to 1. Symmetry means the $\\binom{3}{2}=3$ unordered off-diagonal pairs each get one free choice. So the count is $2^{3} = 8$, matching the formula $2^{n(n-1)/2}$. The value 64 is reflexive-only or symmetric-only, 216 is antisymmetric, 512 is all relations."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.2-2",
+     "q": "Let $R$ be a relation on a set of $n$ elements. The transitive closure $R^+$ equals $R\\cup R^2\\cup\\cdots\\cup R^k$ where the smallest $k$ guaranteed to work is",
+     "opts": [
+      "$2$",
+      "$n-1$",
+      "$n$",
+      "$n^2$"
+     ],
+     "ans": 2,
+     "exp": "Any path from $x$ to $y$ in the digraph can be shortened until no vertex repeats, so it uses at most $n$ vertices and therefore at most $n-1$ edges when $x \\ne y$. But a path from $x$ back to itself may need $n$ edges, so $k=n$ is the safe bound. Warshall computes the same closure in $\\Theta(n^3)$ without forming the powers at all."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.2-3",
+     "q": "Which of $D_{12}$, $D_{30}$ (divisors under divisibility) are Boolean algebras?",
+     "opts": [
+      "both",
+      "only $D_{12}$",
+      "only $D_{30}$",
+      "neither"
+     ],
+     "ans": 2,
+     "exp": "$D_n$ is a Boolean algebra exactly when $n$ is square-free. $30=2\\cdot3\\cdot5$ is square-free, so $D_{30}$ has 8 elements and each divisor $d$ has complement $30/d$. $12 = 2^2\\cdot 3$ is not: the element 2 needs an $x$ with $\\gcd(2,x)=1$ and $\\operatorname{lcm}(2,x)=12$, and no divisor of 12 satisfies both. $D_{12}$ is still a distributive lattice, just not complemented."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Split the matrix into diagonal and pair-cells to count relations",
+     "body": "Every counting question reduces to: $n$ diagonal cells and $n(n-1)/2$ unordered off-diagonal pairs. Decide how many states each group may take — diagonal 1 or 2, pair 1, 2, 3 or 4 — and multiply. Antisymmetric = $2^n\\cdot3^{n(n-1)/2}$ falls straight out (diagonal free, each pair may be empty, forward, or backward)."
+    },
+    {
+     "title": "Warshall by rows, not by cells",
+     "body": "At step $k$, scan column $k$; for every row $i$ containing a 1 there, replace row $i$ by row $i$ OR row $k$. That is $n$ row-OR operations per step instead of $n^2$ individual tests, and it is much harder to make a mistake by hand."
+    },
+    {
+     "title": "$D_n$ answers most lattice questions",
+     "body": "Divisor lattices are always distributive; they are Boolean exactly when $n$ is square-free; join is lcm and meet is gcd; the number of elements is $\\prod(e_i+1)$ from the factorisation $n=\\prod p_i^{e_i}$; and the Hasse diagram of $D_{p^aq^b}$ is an $(a{+}1)\\times(b{+}1)$ grid. With those four facts you can answer without drawing anything."
+    },
+    {
+     "title": "Intersections preserve properties, unions usually do not",
+     "body": "The intersection of two reflexive / symmetric / transitive / equivalence / partial-order relations is again of the same kind. The union preserves reflexivity and symmetry but almost never transitivity. If an option says 'the union of two equivalence relations is an equivalence relation', it is wrong — the counterexample is $\\{(1,2),(2,1)\\}$-classes merged against $\\{(2,3),(3,2)\\}$-classes, where $(1,3)$ is missing."
+    },
+    {
+     "title": "Equivalence relations = partitions, so count partitions",
+     "body": "Never enumerate relations. The number of equivalence relations on $n$ elements is the Bell number $B_n$ = 1, 2, 5, 15, 52 for $n=1..5$, and the number with exactly $k$ classes is $S(n,k)$. For $n = 4$ the class-size patterns are $4$, $3{+}1$, $2{+}2$, $2{+}1{+}1$, $1{+}1{+}1{+}1$ with counts $1, 4, 3, 6, 1$, summing to 15."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Symmetric and antisymmetric are not opposites",
+     "body": "A relation can be both (any subset of the diagonal, including $\\varnothing$) or neither. Likewise reflexive and irreflexive are not complementary — a relation with some but not all self-loops is neither. Questions are built on exactly these middle cases, so always test both definitions separately rather than assuming one rules out the other."
+    },
+    {
+     "title": "The empty relation is transitive, symmetric and antisymmetric",
+     "body": "All three conditions are implications with no witnesses, so they hold vacuously. The empty relation fails only reflexivity, and even that only when the underlying set is non-empty — on $\\varnothing$ the empty relation is an equivalence relation and a partial order. Vacuous truth is the point of the question."
+    },
+    {
+     "title": "Maximal is not maximum",
+     "body": "A POSET can have several maximal elements and no maximum. In the divisors of 12 excluding 12 itself, both 4 and 6 are maximal, yet there is no greatest element. Similarly 'least upper bound of $B$' need not lie in $B$, and may not exist at all — which is precisely what stops some POSETs from being lattices."
+    },
+    {
+     "title": "Antisymmetry does not forbid $(a,b)$ and $(b,a)$ when $a=b$",
+     "body": "The definition says that if both directions hold then the elements are equal, so self-loops are always fine. Candidates often declare a relation non-antisymmetric because the matrix has a symmetric-looking diagonal. Check only pairs with $i \\ne j$."
+    }
+   ]
+  },
+  {
+   "id": "1.3",
+   "title": "Counting, Induction and Discrete Probability",
+   "summary": "Sum and product rules, permutations and combinations, pigeonhole, inclusion-exclusion, derangements, binomial identities, induction, and Bayes' theorem.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## The two rules everything is built from\n\n**Sum rule.** If a task can be done in $n_1$ ways *or* in $n_2$ ways and the two sets of ways are disjoint, the total is $n_1 + n_2$. The disjointness matters — if they overlap you must use inclusion-exclusion instead.\n\n**Product rule.** If a task splits into a sequence of independent stages with $n_1, n_2, \\dots, n_k$ choices, the total is $n_1 n_2 \\cdots n_k$. \"Independent\" here means the *number* of choices at each stage is the same whatever happened earlier, not that the choices themselves are unrelated.\n\nFrom these two, the four basic selection counts. Choosing $r$ objects from $n$:\n\n| | Order matters | Order does not |\n|---|---|---|\n| **No repetition** | $P(n,r) = \\dfrac{n!}{(n-r)!}$ | $C(n,r) = \\dbinom{n}{r} = \\dfrac{n!}{r!(n-r)!}$ |\n| **Repetition allowed** | $n^r$ | $\\dbinom{n+r-1}{r}$ |\n\nThe bottom-right entry is **combinations with repetition**, and it is the same as the number of non-negative integer solutions of $x_1 + x_2 + \\cdots + x_n = r$ — the \"stars and bars\" count, where $r$ stars are separated by $n-1$ bars, giving $\\binom{n+r-1}{n-1} = \\binom{n+r-1}{r}$.\n\nTwo variants used constantly:\n\n- **Permutations of a multiset**: $n$ objects with repeats $n_1, n_2,\\dots$ arrange in $\\dfrac{n!}{n_1!\\,n_2!\\cdots}$ ways. MISSISSIPPI has $\\dfrac{11!}{4!\\,4!\\,2!\\,1!} = 34650$ arrangements.\n- **Circular permutations**: $n$ distinct objects around a circle in $(n-1)!$ ways, because rotations are the same arrangement; divide by 2 more if reflections are also identified (necklaces), giving $(n-1)!/2$ for $n \\ge 3$."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — constrained counting",
+     "text": "**(a)** How many non-negative integer solutions has $x_1+x_2+x_3+x_4 = 20$ with every $x_i \\ge 2$?\n\nSubstitute $y_i = x_i - 2 \\ge 0$. Then $y_1+y_2+y_3+y_4 = 20 - 8 = 12$, and the stars-and-bars count is\n$$\\binom{12 + 4 - 1}{4-1} = \\binom{15}{3} = \\frac{15\\cdot14\\cdot13}{6} = 455.$$\n\n**(b)** In how many ways can the letters of ARRANGE be ordered so that the two R's are never adjacent?\n\nARRANGE has 7 letters with A twice and R twice, so $7!/(2!\\,2!) = 5040/4 = 1260$ total arrangements. Glue the two R's into one block: 6 objects with A twice, giving $6!/2! = 360$ arrangements with the R's together. Answer $1260 - 360 = 900$.\n\n**(c)** A committee of 5 is chosen from 10 men and 7 women, with at least 3 women. Count it.\n\nSplit by the number of women: exactly 3 gives $\\binom{7}{3}\\binom{10}{2}=35\\cdot45=1575$; exactly 4 gives $\\binom{7}{4}\\binom{10}{1}=35\\cdot10=350$; exactly 5 gives $\\binom{7}{5}=21$. Total $1575+350+21 = 1946$. The sum rule applies because the three cases are disjoint — a very common slip is to \"choose 3 women first, then any 2 from the rest\", which gives $\\binom{7}{3}\\binom{14}{2}=35\\cdot91=3185$ and double-counts every committee with 4 or 5 women."
+    },
+    {
+     "t": "md",
+     "text": "## The pigeonhole principle\n\n**Simple form.** If $n+1$ objects are placed into $n$ boxes, some box holds at least two objects.\n\n**Generalised form.** If $N$ objects are placed into $k$ boxes, some box holds at least $\\left\\lceil N/k \\right\\rceil$ objects. Turned around: to *guarantee* that some box holds $r$ objects you need $N \\ge k(r-1)+1$.\n\nThat inverted form is what exam questions actually ask, and it is the same shape as the deadlock-free resource count: fill every box with $r-1$, then add one more.\n\nThe classic applications, each of which has appeared in some form:\n\n- Among any 13 people two share a birth month ($k=12$, $r=2$). To force **four** sharing a month you need $12\\cdot3+1 = 37$ people.\n- A drawer holds red and blue socks. Three of the same colour requires $2\\cdot2+1 = 5$ draws.\n- Among any 11 numbers chosen from $\\{1,\\dots,20\\}$, one divides another. Write each $n$ as $2^k\\cdot m$ with $m$ odd; there are only 10 odd numbers in the range, so two chosen numbers share the same $m$ and the one with the smaller $k$ divides the other.\n- Among any $n+1$ numbers from $\\{1,\\dots,2n\\}$, two are consecutive and therefore coprime — pair the range into the $n$ blocks $\\{1,2\\},\\{3,4\\},\\dots$\n- In any group of 6 people there are 3 mutual acquaintances or 3 mutual strangers. Fix a person $A$; of the other 5, by pigeonhole at least $\\lceil 5/2\\rceil = 3$ are all acquaintances of $A$ or all strangers to $A$; then look at the edges among those three. This is the Ramsey number $R(3,3)=6$.\n- Any sequence of $n^2+1$ distinct reals contains a monotone subsequence of length $n+1$ (Erdős–Szekeres)."
+    },
+    {
+     "t": "md",
+     "text": "## Inclusion-exclusion and derangements\n\nFor two and three sets:\n$$|A \\cup B| = |A|+|B|-|A\\cap B|$$\n$$|A\\cup B\\cup C| = |A|+|B|+|C|-|A\\cap B|-|A\\cap C|-|B\\cap C|+|A\\cap B\\cap C|$$\n\nIn general the signs alternate by the size of the intersection:\n$$\\left|\\bigcup_{i=1}^{n}A_i\\right| = \\sum_{\\varnothing \\ne S\\subseteq[n]}(-1)^{|S|+1}\\left|\\bigcap_{i\\in S}A_i\\right|$$\n\nTwo standard consequences:\n\n**Onto (surjective) functions** from an $m$-set to an $n$-set:\n$$\\sum_{k=0}^{n}(-1)^k\\binom{n}{k}(n-k)^m = n!\\,S(m,n)$$\nFor $m=5, n=3$: $3^5 - 3\\cdot2^5 + 3\\cdot1^5 = 243-96+3=150$.\n\n**Derangements** — permutations with no fixed point:\n$$D_n = n!\\sum_{k=0}^{n}\\frac{(-1)^k}{k!} = n!\\left(1-\\frac{1}{1!}+\\frac{1}{2!}-\\cdots\\right)$$\nwith the much faster recurrences\n$$D_n = (n-1)(D_{n-1}+D_{n-2}), \\qquad D_n = nD_{n-1} + (-1)^n$$\nand the values $D_1=0,\\ D_2=1,\\ D_3=2,\\ D_4=9,\\ D_5=44,\\ D_6=265$. The probability that a random permutation is a derangement tends to $1/e \\approx 0.3679$, and is already $44/120 = 0.3667$ at $n=5$ — so \"roughly 37%\" is a safe sanity check.\n\nThe number of permutations of $n$ objects with **exactly $r$ fixed points** is $\\binom{n}{r}D_{n-r}$."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — inclusion-exclusion on divisibility",
+     "text": "How many integers in $\\{1,2,\\dots,1000\\}$ are divisible by none of 2, 3 or 5?\n\nLet $A$, $B$, $C$ be the multiples of 2, 3, 5 respectively.\n\n$$|A| = \\left\\lfloor \\tfrac{1000}{2}\\right\\rfloor = 500,\\quad |B| = \\left\\lfloor\\tfrac{1000}{3}\\right\\rfloor=333,\\quad |C| = \\left\\lfloor\\tfrac{1000}{5}\\right\\rfloor=200$$\n$$|A\\cap B| = \\left\\lfloor\\tfrac{1000}{6}\\right\\rfloor=166,\\quad |A\\cap C|=\\left\\lfloor\\tfrac{1000}{10}\\right\\rfloor=100,\\quad |B\\cap C|=\\left\\lfloor\\tfrac{1000}{15}\\right\\rfloor=66$$\n$$|A\\cap B\\cap C| = \\left\\lfloor\\tfrac{1000}{30}\\right\\rfloor=33$$\n\n$$|A\\cup B\\cup C| = (500+333+200)-(166+100+66)+33 = 1033-332+33 = 734$$\n\nSo $1000 - 734 = \\mathbf{266}$ integers are divisible by none of them.\n\nCross-check with Euler's totient idea: the density of numbers coprime to 30 is $\\tfrac12\\cdot\\tfrac23\\cdot\\tfrac45 = \\tfrac{8}{30}$, and $1000\\cdot\\tfrac{8}{30}=266.67$, so 266 or 267 — the floor effects account for the difference, and 266 is right because $1000 = 33\\cdot30+10$ and only $\\{1,7\\}$ of the residues $\\{1,7,11,13,17,19,23,29\\}$ are $\\le 10$, giving $33\\cdot8+2 = 266$. Two independent routes agreeing is the standard way to be sure."
+    },
+    {
+     "t": "md",
+     "text": "## Binomial identities\n\n$(x+y)^n = \\sum_{k=0}^{n}\\binom{n}{k}x^{n-k}y^k$, so the coefficient of $x^{n-k}y^k$ is $\\binom{n}{k}$ and the general term is $T_{k+1}$.\n\n| Identity | Statement | Reading |\n|---|---|---|\n| Symmetry | $\\binom{n}{k}=\\binom{n}{n-k}$ | choosing what to leave out |\n| Pascal | $\\binom{n}{k}=\\binom{n-1}{k-1}+\\binom{n-1}{k}$ | element in or out |\n| Row sum | $\\sum_k\\binom{n}{k}=2^n$ | all subsets |\n| Alternating sum | $\\sum_k(-1)^k\\binom{n}{k}=0$ for $n\\ge1$ | equally many even and odd subsets |\n| Weighted sum | $\\sum_k k\\binom{n}{k}=n2^{n-1}$ | pick a subset and a leader |\n| Vandermonde | $\\sum_k\\binom{m}{k}\\binom{n}{r-k}=\\binom{m+n}{r}$ | split the pool in two |\n| Hockey stick | $\\sum_{i=r}^{n}\\binom{i}{r}=\\binom{n+1}{r+1}$ | classify by largest element |\n| Square sum | $\\sum_k\\binom{n}{k}^2=\\binom{2n}{n}$ | Vandermonde with $m=n=r$ |\n\nCheck hockey stick with small numbers: $\\binom22+\\binom32+\\binom42+\\binom52+\\binom62 = 1+3+6+10+15=35=\\binom73$. Correct.\n\nThe **multinomial** generalisation counts arrangements of a multiset and coefficients in $(x_1+\\cdots+x_m)^n$:\n$$\\binom{n}{n_1,n_2,\\dots,n_m}=\\frac{n!}{n_1!n_2!\\cdots n_m!}, \\qquad \\sum \\binom{n}{n_1,\\dots,n_m} = m^n$$"
+    },
+    {
+     "t": "md",
+     "text": "## Mathematical and strong induction\n\n**Weak (ordinary) induction** to prove $P(n)$ for all $n \\ge n_0$: show the **basis** $P(n_0)$, then the **inductive step** $P(k)\\Rightarrow P(k+1)$ for arbitrary $k\\ge n_0$. The assumption $P(k)$ is the *inductive hypothesis*.\n\n**Strong induction** assumes $P(n_0)\\wedge P(n_0+1)\\wedge\\cdots\\wedge P(k)$ to prove $P(k+1)$. It is logically equivalent in power to weak induction, but it is the right tool when $P(k+1)$ depends on a much earlier case — recursions that split a problem in half, or the fundamental theorem of arithmetic, or the postage-stamp problems.\n\n**The well-ordering principle** — every non-empty set of positive integers has a least element — is again equivalent, and gives the \"minimal counterexample\" style of proof.\n\nA concrete strong-induction example. Claim: every integer $n \\ge 8$ can be written as $3a + 5b$ with $a,b\\ge 0$.\n*Basis:* $8 = 3+5$, $9 = 3\\cdot3$, $10 = 5\\cdot2$. Three bases are needed because the step reaches back three.\n*Step:* for $k \\ge 11$, by the hypothesis $k - 3 \\ge 8$ is representable, say $k-3 = 3a+5b$; then $k = 3(a+1)+5b$. Done.\n\nThe failure mode to watch for is a step that is valid only for large $k$ while the basis was checked at a small one. Proving $2^n > n^2$ needs basis $n = 5$ (since $2^4 = 16 = 4^2$ fails the strict inequality and $2^3 = 8 < 9$), and the step $2^{k+1} = 2\\cdot 2^k > 2k^2 \\ge (k+1)^2$ requires $k^2 \\ge 2k+1$, i.e. $k \\ge 3$ — so the gap between \"step works\" and \"basis holds\" must be checked explicitly."
+    },
+    {
+     "t": "md",
+     "text": "## Discrete probability\n\nFor a finite **equiprobable** sample space $S$, $P(E) = |E|/|S|$. In general $P$ assigns non-negative numbers summing to 1. Then:\n\n$$P(\\bar E) = 1 - P(E), \\qquad P(A\\cup B) = P(A)+P(B)-P(A\\cap B)$$\n\n$A$ and $B$ are **mutually exclusive** if $A\\cap B=\\varnothing$, and **independent** if $P(A\\cap B)=P(A)P(B)$. These are different and, for events of non-zero probability, incompatible: mutually exclusive events with $P>0$ are necessarily *dependent*, because knowing one occurred forces the other not to.\n\n**Conditional probability**:\n$$P(A\\mid B) = \\frac{P(A\\cap B)}{P(B)}, \\quad P(B)>0 \\qquad\\Longrightarrow\\qquad P(A\\cap B) = P(B)P(A\\mid B)$$\n\n**Total probability**: if $B_1,\\dots,B_n$ partition the sample space,\n$$P(A) = \\sum_{i}P(B_i)P(A\\mid B_i)$$\n\n**Bayes' theorem** inverts the conditioning:\n$$P(B_j\\mid A) = \\frac{P(B_j)P(A\\mid B_j)}{\\sum_i P(B_i)P(A\\mid B_i)}$$\n\nExpectation and variance of a discrete random variable:\n$$E[X] = \\sum_x x\\,P(X=x), \\qquad \\operatorname{Var}(X)=E[X^2]-(E[X])^2$$\nLinearity $E[X+Y]=E[X]+E[Y]$ holds **always**, even for dependent variables — that is the single most useful fact in the topic. Variance adds only for independent variables.\n\nStandard distributions: **binomial** $P(X=k)=\\binom{n}{k}p^kq^{n-k}$ with mean $np$ and variance $npq$; **geometric** $P(X=k)=q^{k-1}p$ with mean $1/p$; **Poisson** $P(X=k)=e^{-\\lambda}\\lambda^k/k!$ with mean and variance both $\\lambda$."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — Bayes' theorem with numbers",
+     "text": "**(a) The medical test.** A disease affects 1% of a population. A test detects it in 99% of sufferers (sensitivity) and correctly clears 95% of healthy people (specificity). Someone tests positive. What is the probability they have the disease?\n\nLet $D$ = has disease, $+$ = tests positive. $P(D)=0.01$, $P(+\\mid D)=0.99$, $P(+\\mid \\bar D)=1-0.95=0.05$.\n\n$$P(+) = 0.01(0.99) + 0.99(0.05) = 0.0099 + 0.0495 = 0.0594$$\n$$P(D\\mid +) = \\frac{0.0099}{0.0594} = \\frac{99}{594} = \\frac{1}{6} \\approx 0.167$$\n\nOnly **one in six** positives is a true case, even with a 99% accurate test, because the healthy group is 99 times larger and contributes five times as many positives as the sick group. This base-rate effect is the reason the question is asked.\n\n**(b) Three machines.** Machines A, B, C make 50%, 30% and 20% of the output, with defect rates 3%, 4% and 5%. A randomly drawn item is defective. Which machine most likely made it?\n\n$$P(\\text{def}) = 0.5(0.03)+0.3(0.04)+0.2(0.05) = 0.015+0.012+0.010 = 0.037$$\n$$P(A\\mid \\text{def}) = \\frac{0.015}{0.037}=\\frac{15}{37},\\quad P(B\\mid\\text{def})=\\frac{12}{37},\\quad P(C\\mid\\text{def})=\\frac{10}{37}$$\n\nThe three add to 1, which is the check you should always do. A is the most likely source despite having the *lowest* defect rate, because it makes the most items.\n\n**(c) Conditional counting on dice.** Two fair dice are rolled. Given that the sum exceeds 8, what is the probability that at least one die shows 6?\n\nSums above 8 come from $(3,6),(4,5),(4,6),(5,4),(5,5),(5,6),(6,3),(6,4),(6,5),(6,6)$ — 10 outcomes. Of those, the ones containing a 6 are all except $(4,5),(5,4),(5,5)$, so 7. Hence $P = 7/10$. Conditioning shrinks the sample space to 10 equally likely outcomes; you never need the unconditional probabilities at all."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.3-1",
+     "q": "How many people are needed to guarantee that at least 4 of them were born in the same month?",
+     "opts": [
+      "37",
+      "36",
+      "48",
+      "13"
+     ],
+     "ans": 0,
+     "exp": "Generalised pigeonhole in its inverted form: to force a box to hold $r$ objects with $k$ boxes you need $k(r-1)+1$. Here $k=12$, $r=4$, so $12\\cdot 3 + 1 = 37$. With 36 people it is possible for every month to have exactly 3."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.3-2",
+     "q": "In how many ways can 5 identical balls be placed into 3 distinct boxes?",
+     "opts": [
+      "243",
+      "21",
+      "125",
+      "10"
+     ],
+     "ans": 1,
+     "exp": "Identical balls into distinct boxes is combinations with repetition, i.e. non-negative solutions of $x_1+x_2+x_3=5$: $\\binom{5+3-1}{3-1}=\\binom{7}{2}=21$. The value 243 is $3^5$, which counts *distinct* balls into distinct boxes; 125 is $5^3$, the reversed assignment; 10 would be $\\binom{5}{2}$."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.3-3",
+     "q": "Five letters are placed at random into five addressed envelopes. What is the probability that no letter reaches its correct envelope?",
+     "opts": [
+      "$1/5$",
+      "$44/120$",
+      "$1/120$",
+      "$9/120$"
+     ],
+     "ans": 1,
+     "exp": "This is the derangement probability $D_5/5!$. Using $D_n=(n-1)(D_{n-1}+D_{n-2})$: $D_4 = 3(2+1)=9$ and $D_5 = 4(9+2)=44$. So the answer is $44/120 \\approx 0.367$, close to $1/e$ as expected. The option $9/120$ uses $D_4$ by mistake."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Guarantee questions are always $k(r-1)+1$",
+     "body": "Any pigeonhole question phrased with 'guarantee', 'must', 'at least' or 'worst case' is asking you to fill every box to one below the target and add one. Identify $k$ (number of categories) and $r$ (target count) and write $k(r-1)+1$ without thinking further. If instead it asks 'what is the most that some box must contain' given $N$ objects, the answer is $\\lceil N/k\\rceil$."
+    },
+    {
+     "title": "Derange by recurrence, never by the series",
+     "body": "$D_n=(n-1)(D_{n-1}+D_{n-2})$ starting from $D_1=0,D_2=1$ gives 0, 1, 2, 9, 44, 265, 1854 in seconds. The alternative $D_n = nD_{n-1}+(-1)^n$ is even faster if you have the previous value. And $D_n/n! \\approx 0.368$ always, which immediately eliminates any option that is not near 37%."
+    },
+    {
+     "title": "Split by cases and check for double counting",
+     "body": "'At least $k$ of type X' questions must be split into exactly $k$, exactly $k+1$, ... and summed. The tempting shortcut 'choose $k$ of type X, then fill the rest freely' always overcounts, because the same committee arises from several choices of the distinguished $k$. If your answer is suspiciously large, this is why."
+    },
+    {
+     "title": "Use linearity of expectation before anything else",
+     "body": "$E[X+Y]=E[X]+E[Y]$ needs no independence. To find the expected number of fixed points of a random permutation, write $X=\\sum X_i$ with $X_i$ the indicator that $i$ is fixed; each has $E[X_i]=1/n$, so $E[X]=1$ regardless of $n$. Problems asking for an expected count almost always yield to indicator variables in one line."
+    },
+    {
+     "title": "Bayes as a $2\\times2$ table of raw counts",
+     "body": "Take a population of 10,000 instead of working with probabilities. For 1% prevalence and 99%/95% accuracy: 100 sick (99 positive), 9900 healthy (495 positive), total 594 positives of which 99 are real — $99/594 = 1/6$ instantly, with no fractions and no algebra."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Mutually exclusive is not independent",
+     "body": "Events with $P(A),P(B)>0$ and $A \\cap B = \\varnothing$ satisfy $P(A\\cap B)=0 \\ne P(A)P(B)$, so disjoint events are *dependent*. The two words are often offered as if interchangeable. Independence is about $P(A\\mid B)=P(A)$; disjointness is about the events never co-occurring, which is maximal dependence."
+    },
+    {
+     "title": "$P(A\\mid B)$ versus $P(B\\mid A)$",
+     "body": "The prosecutor's fallacy. $P(\\text{positive}\\mid\\text{diseased})=0.99$ says almost nothing about $P(\\text{diseased}\\mid\\text{positive})$, which was $1/6$ in the worked example. Whenever a question gives an accuracy rate and asks about a person who tested positive, it is testing exactly this inversion, and the base rate is the deciding number."
+    },
+    {
+     "title": "Identical versus distinct objects, identical versus distinct boxes",
+     "body": "Four different formulas hide behind 'balls into boxes'. Distinct balls, distinct boxes: $k^n$. Identical balls, distinct boxes: $\\binom{n+k-1}{k-1}$. Distinct balls, identical boxes: $\\sum_j S(n,j)$ over the allowed number of non-empty boxes. Identical balls, identical boxes: partitions of $n$ into at most $k$ parts. Read the wording before choosing."
+    },
+    {
+     "title": "Circular arrangements divide by $n$, not by $n!$",
+     "body": "Seating $n$ people around a round table gives $(n-1)!$, because only the $n$ rotations are identified. Dividing by $n!$ would wrongly identify all arrangements. If the seats are numbered, or the table has a distinguished head, rotations are no longer equivalent and the answer returns to $n!$."
+    }
+   ]
+  },
+  {
+   "id": "1.4",
+   "title": "Group Theory and Algebraic Structures",
+   "summary": "Groups, subgroups, cyclic groups, Lagrange, cosets, normal subgroups, homomorphisms, rings, integral domains and fields.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## The ladder of algebraic structures\n\nAn **algebraic structure** is a set with one or more operations satisfying stated axioms. The exam asks you to place a given example on this ladder, so learn the ladder as a list of one added axiom at a time.\n\nWith a single binary operation $*$ on a set $S$:\n\n| Structure | Axioms |\n|---|---|\n| **Groupoid / magma** | closure only |\n| **Semigroup** | closure, associativity |\n| **Monoid** | semigroup + identity element $e$ |\n| **Group** | monoid + every element has an inverse |\n| **Abelian group** | group + commutativity |\n\nExamples to keep in mind: $(\\mathbb{N},+)$ is a semigroup but not a monoid if $0\\notin\\mathbb{N}$, and a monoid if $0$ is included; $(\\mathbb{Z},+)$ is an abelian group; $(\\mathbb{Z},\\times)$ is a monoid but not a group (only $\\pm1$ are invertible); the set of $n\\times n$ real matrices under multiplication is a monoid, and restricting to non-singular matrices gives the group $GL_n(\\mathbb{R})$, which is non-abelian for $n \\ge 2$.\n\nBasic consequences of the group axioms: the identity is unique; each inverse is unique; $(ab)^{-1}=b^{-1}a^{-1}$ (the order reverses); and both **cancellation laws** hold, $ab = ac \\Rightarrow b=c$. Cancellation is exactly what makes every row and column of a group's Cayley table a permutation of the elements — a **Latin square**. That gives a fast table test, though a Latin square alone does not prove associativity."
+    },
+    {
+     "t": "md",
+     "text": "## Order, subgroups and cyclic groups\n\nThe **order of a group** $|G|$ is its number of elements. The **order of an element** $a$, written $o(a)$, is the least $n>0$ with $a^n=e$ (or $na = 0$ in additive notation); in a finite group it always exists.\n\n$H \\subseteq G$ is a **subgroup** if it is itself a group under the same operation. The one-step test: $H$ is a subgroup iff $H\\ne\\varnothing$ and $ab^{-1}\\in H$ for all $a,b\\in H$. For a **finite** subset, closure alone suffices.\n\nA group is **cyclic** if $G=\\langle a\\rangle = \\{a^k\\}$ for some **generator** $a$. The complete theory is small and heavily examined:\n\n- Every cyclic group is abelian. The converse is false — the Klein four-group is abelian, not cyclic.\n- Infinite cyclic groups are isomorphic to $(\\mathbb{Z},+)$; finite ones of order $n$ to $(\\mathbb{Z}_n,+)$.\n- In $\\mathbb{Z}_n$, the element $k$ generates iff $\\gcd(k,n)=1$, so the **number of generators is $\\varphi(n)$**.\n- $o(a^k) = \\dfrac{n}{\\gcd(n,k)}$ when $o(a)=n$.\n- Every subgroup of a cyclic group is cyclic, and a cyclic group of order $n$ has **exactly one subgroup of order $d$ for each divisor $d$ of $n$** — so the number of subgroups is $\\tau(n)$, the number of divisors.\n- Every group of prime order is cyclic, and has no proper non-trivial subgroups.\n\nConcretely $\\mathbb{Z}_{12}$ has $\\varphi(12)=4$ generators $\\{1,5,7,11\\}$ and $\\tau(12)=6$ subgroups, one for each of $1,2,3,4,6,12$.\n\nThe **unit group** $U(n)$ — the integers mod $n$ coprime to $n$, under multiplication — is the other family to know. $|U(n)| = \\varphi(n)$, and $U(n)$ is cyclic exactly when $n$ is $1,2,4,p^k$ or $2p^k$ for odd prime $p$. So $U(10)=\\{1,3,7,9\\}$ is cyclic (3 generates: $3,9,7,1$), while $U(8)=\\{1,3,5,7\\}$ and $U(12)=\\{1,5,7,11\\}$ are not — every non-identity element squares to 1, making both isomorphic to the **Klein four-group** $V_4$."
+    },
+    {
+     "t": "md",
+     "text": "## Cosets and Lagrange's theorem\n\nFor $H \\le G$ and $a\\in G$, the **left coset** is $aH=\\{ah : h\\in H\\}$ and the **right coset** is $Ha$. Key facts:\n\n- Every coset has exactly $|H|$ elements (the map $h\\mapsto ah$ is a bijection).\n- Two cosets are either equal or disjoint, and they partition $G$. So \"being in the same left coset\" is an equivalence relation, with $aH=bH \\iff b^{-1}a\\in H$.\n- $H$ itself is the coset containing $e$; a coset is a subgroup **only** when it equals $H$.\n\nCounting the blocks of the partition gives **Lagrange's theorem**:\n$$|G| = [G:H]\\cdot|H| \\qquad\\text{hence}\\qquad |H| \\text{ divides } |G|$$\nwhere $[G:H]$ is the **index**, the number of distinct left cosets.\n\nThree corollaries that get asked directly:\n\n1. $o(a)$ divides $|G|$ for every $a$, since $o(a)=|\\langle a\\rangle|$.\n2. $a^{|G|}=e$ for every $a$. Specialising to $U(n)$ gives Euler's theorem $a^{\\varphi(n)}\\equiv1 \\pmod n$, and to $U(p)$ gives Fermat's little theorem.\n3. A group of prime order is cyclic and generated by any non-identity element.\n\n**The converse of Lagrange is false.** $d \\mid |G|$ does not guarantee a subgroup of order $d$: the alternating group $A_4$ has order 12 but no subgroup of order 6. Partial converses do hold — **Cauchy's theorem** gives an element (hence a subgroup) of order $p$ for every prime $p$ dividing $|G|$, and **Sylow's first theorem** gives a subgroup of order $p^k$ for every prime power $p^k$ dividing $|G|$. The converse *is* true for cyclic and more generally abelian groups."
+    },
+    {
+     "t": "md",
+     "text": "## Permutation groups and $S_3$\n\n$S_n$, the **symmetric group**, is the group of all bijections of an $n$-element set under composition; $|S_n| = n!$, and it is non-abelian for $n\\ge3$. Every permutation factors into disjoint cycles, and its **order is the lcm of the cycle lengths**. A permutation is **even** or **odd** according to the parity of the number of transpositions it decomposes into; the even ones form the **alternating group** $A_n$ of order $n!/2$ — a normal subgroup of index 2.\n\n**Cayley's theorem** says every group of order $n$ is isomorphic to a subgroup of $S_n$, which is why permutation groups matter beyond their own sake.\n\n$S_3$ is the smallest non-abelian group, and almost every algebra question that needs a concrete non-abelian example uses it. Writing $r$ for the 3-cycle $(1\\,2\\,3)$ and $s$ for the transposition $(1\\,2)$:\n$$S_3 = \\{e,\\ r,\\ r^2,\\ s,\\ rs,\\ r^2s\\}, \\qquad r^3=e,\\quad s^2=e,\\quad sr = r^2 s$$\n\nIts subgroup lattice: the trivial subgroup, **three** subgroups of order 2 (one per transposition), **one** of order 3 ($A_3=\\{e,r,r^2\\}$), and $S_3$ itself — six subgroups in all. Of these only $\\{e\\}$, $A_3$ and $S_3$ are normal; the order-2 subgroups are not, because $[S_3:\\langle s\\rangle] = 3 \\neq 2$ and conjugating $s$ by $r$ moves it to a different transposition. This single example simultaneously shows that subgroups need not be normal and that a group whose every proper subgroup is cyclic need not itself be cyclic."
+    },
+    {
+     "t": "md",
+     "text": "## Normal subgroups, quotient groups and homomorphisms\n\n$N \\le G$ is **normal**, written $N \\trianglelefteq G$, if any of these equivalent conditions holds:\n$$gN = Ng \\ \\forall g, \\qquad gNg^{-1} = N \\ \\forall g, \\qquad gng^{-1}\\in N \\ \\forall g\\in G, n\\in N$$\n\nNormality is exactly the condition under which the cosets can be multiplied consistently by $(aN)(bN)=abN$, producing the **quotient group** $G/N$ of order $|G|/|N|$. Every subgroup of an abelian group is normal; so is every subgroup of index 2; so are $\\{e\\}$ and $G$ (a group with no others is **simple**).\n\nA **homomorphism** $f:G\\to G'$ satisfies $f(ab)=f(a)f(b)$. It automatically sends $e\\mapsto e'$ and $a^{-1}\\mapsto f(a)^{-1}$. Its **kernel** $\\ker f = \\{a : f(a)=e'\\}$ is a normal subgroup of $G$, and its **image** is a subgroup of $G'$.\n\n- $f$ is injective $\\iff \\ker f = \\{e\\}$ — the standard one-line test.\n- **Monomorphism** = injective, **epimorphism** = surjective, **isomorphism** = bijective homomorphism, **endomorphism** = homomorphism $G\\to G$, **automorphism** = isomorphism $G\\to G$.\n- The automorphisms of $G$ form a group $\\operatorname{Aut}(G)$ under composition, and $\\operatorname{Aut}(\\mathbb{Z}_n)\\cong U(n)$, of order $\\varphi(n)$.\n\n**First isomorphism theorem**: $G/\\ker f \\cong \\operatorname{im} f$. Combined with Lagrange this pins down a lot: since $|{\\operatorname{im}f}|$ divides both $|G|$ and $|G'|$, the number of homomorphisms $\\mathbb{Z}_m\\to\\mathbb{Z}_n$ is exactly $\\gcd(m,n)$ — a generator must map to an element whose order divides $m$, and $\\mathbb{Z}_n$ has $\\gcd(m,n)$ such elements.\n\nIsomorphic groups share every structural property: order, abelian-ness, the multiset of element orders, the subgroup lattice. To prove two groups are *not* isomorphic, find one such invariant that differs — $\\mathbb{Z}_4$ and $V_4$ both have order 4 and are both abelian, but $\\mathbb{Z}_4$ has an element of order 4 and $V_4$ does not."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — cosets, quotient and Lagrange in $S_3$ and $\\mathbb{Z}_{12}$",
+     "text": "**(a) Cosets of $A_3$ in $S_3$.** $A_3 = \\{e,r,r^2\\}$ has order 3, so $[S_3:A_3]=6/3=2$ and there are exactly two cosets: $A_3$ itself and $sA_3 = \\{s, sr, sr^2\\}$, the three transpositions. Since the index is 2, $A_3$ is normal, and $S_3/A_3$ is the group of order 2 — the even/odd sign group, isomorphic to $\\mathbb{Z}_2$.\n\n**(b) A non-normal subgroup.** Take $H=\\{e,s\\}$ with $s=(1\\,2)$. Left cosets: $eH=\\{e,s\\}$, $rH = \\{r, rs\\}$, $r^2H=\\{r^2,r^2s\\}$. Right cosets: $He=\\{e,s\\}$, $Hr=\\{r, sr\\}=\\{r, r^2s\\}$. So $rH \\ne Hr$ and $H$ is **not normal**; $S_3/H$ is not a group, only a set of three cosets. Note that Lagrange still holds — $|H|=2$ divides 6 — normality is a separate question.\n\n**(c) Subgroups of $\\mathbb{Z}_{12}$.** Divisors of 12 are $1,2,3,4,6,12$, so there are exactly 6 subgroups:\n$$\\langle 0\\rangle,\\ \\langle 6\\rangle=\\{0,6\\},\\ \\langle4\\rangle=\\{0,4,8\\},\\ \\langle3\\rangle=\\{0,3,6,9\\},\\ \\langle2\\rangle=\\{0,2,4,6,8,10\\},\\ \\langle1\\rangle=\\mathbb{Z}_{12}$$\nGenerators of the whole group are the $\\varphi(12)=4$ elements $\\{1,5,7,11\\}$. The order of the element 8 is $12/\\gcd(12,8)=12/4=3$, and indeed $8,16\\equiv4,24\\equiv0$.\n\n**(d) A quotient computed.** $\\mathbb{Z}_{12}/\\langle4\\rangle$ has order $12/3=4$. Its elements are the cosets $\\{0,4,8\\},\\{1,5,9\\},\\{2,6,10\\},\\{3,7,11\\}$, and adding representatives mod 12 reproduces addition mod 4, so $\\mathbb{Z}_{12}/\\langle 4\\rangle\\cong\\mathbb{Z}_4$. In general $\\mathbb{Z}_n/\\langle d\\rangle \\cong \\mathbb{Z}_d$ when $d\\mid n$.\n\n**(e) Counting homomorphisms.** How many homomorphisms $\\mathbb{Z}_{12}\\to\\mathbb{Z}_{18}$ are there? A homomorphism is determined by the image $a$ of the generator 1, and needs $12a\\equiv0\\pmod{18}$, i.e. $18 \\mid 12a$, i.e. $3\\mid 2a$, i.e. $3\\mid a$. The multiples of 3 in $\\mathbb{Z}_{18}$ number 6, matching $\\gcd(12,18)=6$."
+    },
+    {
+     "t": "md",
+     "text": "## Rings, integral domains and fields\n\nA **ring** $(R,+,\\cdot)$ has: $(R,+)$ an abelian group; $\\cdot$ associative; and distributivity of $\\cdot$ over $+$ on both sides. Add options and you climb another ladder:\n\n| Structure | Extra requirement |\n|---|---|\n| Ring with unity | multiplicative identity $1 \\ne 0$ |\n| Commutative ring | $ab = ba$ |\n| **Integral domain** | commutative, with unity, **no zero divisors** |\n| **Division ring (skew field)** | unity, every non-zero element invertible |\n| **Field** | commutative division ring |\n\nA **zero divisor** is a non-zero $a$ with $ab = 0$ for some non-zero $b$. In $\\mathbb{Z}_6$, $2\\cdot3=0$, so 2 and 3 are zero divisors and $\\mathbb{Z}_6$ is not an integral domain. The clean criterion:\n\n$$\\mathbb{Z}_n \\text{ is an integral domain} \\iff \\mathbb{Z}_n \\text{ is a field} \\iff n \\text{ is prime}$$\n\nThe forward implications are general: **every field is an integral domain**, and **every finite integral domain is a field**. The infinite case separates them — $\\mathbb{Z}$ is an integral domain that is not a field, since 2 has no inverse. The cancellation law $ab=ac,\\ a\\ne0 \\Rightarrow b=c$ holds exactly in integral domains, and its failure is what zero divisors break.\n\nThe **characteristic** of a ring is the least $n>0$ with $n\\cdot 1 = 0$, or 0 if none exists. For an integral domain the characteristic is 0 or prime. Every **finite field** has order $p^n$ for a prime $p$ and some $n \\ge 1$, and for each such order there is exactly one field up to isomorphism, written $GF(p^n)$. So fields of order 4, 8, 9, 25 exist; fields of order 6, 10, 12 do not.\n\nIdeals play the role that normal subgroups play for groups: $I\\subseteq R$ is an **ideal** if it is an additive subgroup and $rI\\subseteq I \\supseteq Ir$ for all $r\\in R$. Then $R/I$ is a ring, and $R/I$ is a field iff $I$ is a **maximal** ideal, an integral domain iff $I$ is **prime**. In $\\mathbb{Z}$ the ideals are exactly $n\\mathbb{Z}$, and $n\\mathbb{Z}$ is maximal iff $n$ is prime — recovering the $\\mathbb{Z}_p$ statement above."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — identifying small groups",
+     "text": "**(a) Every group of order 4.** By Lagrange, each element's order divides 4, so orders are 1, 2 or 4. Two cases:\n\n- Some element has order 4. Then $G=\\langle a\\rangle\\cong\\mathbb{Z}_4$.\n- No element has order 4, so every non-identity element has order 2. Then $x^2=e$ for all $x$, which forces commutativity ($xy = (xy)^{-1}=y^{-1}x^{-1}=yx$), and $G\\cong V_4$, the Klein four-group.\n\nSo there are exactly **two** groups of order 4, both abelian. The same argument style gives: exactly one group of each prime order; two groups of order 6 ($\\mathbb{Z}_6$ and $S_3$); five of order 8.\n\n**(b) Classify $U(8)$, $U(10)$ and $U(12)$.** All three have $\\varphi(n)=4$ elements, so each is $\\mathbb{Z}_4$ or $V_4$; the deciding test is whether any element has order 4.\n\n- $U(8)=\\{1,3,5,7\\}$: $3^2=9\\equiv1$, $5^2=25\\equiv1$, $7^2=49\\equiv1$. Every non-identity element has order 2, so $U(8)\\cong V_4$.\n- $U(10)=\\{1,3,7,9\\}$: $3^1=3,\\ 3^2=9,\\ 3^3=27\\equiv7,\\ 3^4=81\\equiv1$. The element 3 has order 4, so $U(10)\\cong\\mathbb{Z}_4$, generated by 3 (and also by 7).\n- $U(12)=\\{1,5,7,11\\}$: $5^2=25\\equiv1$, $7^2=49\\equiv1$, $11^2=121\\equiv1$. So $U(12)\\cong V_4$.\n\nThis matches the general rule that $U(n)$ is cyclic only for $n = 1,2,4,p^k,2p^k$: $10 = 2\\cdot5$ qualifies, while $8=2^3$ and $12=2^2\\cdot3$ do not.\n\n**(c) Orders of elements in $S_3$.** Writing permutations in cycle notation, $S_3$ contains the identity (order 1), three transpositions $(1\\,2),(1\\,3),(2\\,3)$ (order 2, since the lcm of cycle lengths is 2), and two 3-cycles $(1\\,2\\,3),(1\\,3\\,2)$ (order 3). The multiset of orders is $\\{1,2,2,2,3,3\\}$.\n\nCompare $\\mathbb{Z}_6$, the other group of order 6: its element orders are $\\{1,6,3,2,3,6\\}$. Since $\\mathbb{Z}_6$ has elements of order 6 and $S_3$ has none, the two are not isomorphic — which is the whole classification of order-6 groups in one line.\n\n**(d) Verify Lagrange numerically in $S_3$.** Subgroup orders present are 1, 2, 3, 6 — all divisors of 6. The divisor 6 has one subgroup, 3 has one, 2 has three, 1 has one. Note that the *number* of subgroups of a given order is not determined by Lagrange; only the possible orders are. And $a^{6}=e$ for every $a\\in S_3$: a transposition gives $(a^2)^3=e$ and a 3-cycle gives $(a^3)^2=e$."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.4-1",
+     "q": "How many generators does the cyclic group $\\mathbb{Z}_{20}$ have, and how many subgroups?",
+     "opts": [
+      "8 generators, 6 subgroups",
+      "10 generators, 5 subgroups",
+      "8 generators, 5 subgroups",
+      "4 generators, 6 subgroups"
+     ],
+     "ans": 0,
+     "exp": "Generators are the elements coprime to 20, so $\\varphi(20)=20(1-\\tfrac12)(1-\\tfrac15)=8$. Subgroups correspond one-to-one with divisors of 20, namely $1,2,4,5,10,20$, so there are $\\tau(20)=6$ of them. Both counts come straight from the factorisation $20=2^2\\cdot5$."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.4-2",
+     "q": "Which statement is FALSE?",
+     "opts": [
+      "Every field is an integral domain",
+      "Every finite integral domain is a field",
+      "Every integral domain is a field",
+      "$\\mathbb{Z}_n$ is a field iff $n$ is prime"
+     ],
+     "ans": 2,
+     "exp": "$\\mathbb{Z}$ is the standard counterexample: it is commutative with unity and has no zero divisors, so it is an integral domain, but 2 has no multiplicative inverse in $\\mathbb{Z}$, so it is not a field. The other three statements are all true — the finiteness in option B is what forces invertibility, via the injectivity of $x\\mapsto ax$ on a finite set."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.4-3",
+     "q": "How many subgroups does $S_3$ have, and how many of them are normal?",
+     "opts": [
+      "6 subgroups, 3 normal",
+      "4 subgroups, 2 normal",
+      "6 subgroups, 6 normal",
+      "5 subgroups, 3 normal"
+     ],
+     "ans": 0,
+     "exp": "The subgroups are $\\{e\\}$, the three order-2 subgroups generated by the three transpositions, $A_3=\\{e,(123),(132)\\}$, and $S_3$ itself: six in total. Only $\\{e\\}$, $A_3$ (index 2, hence automatically normal) and $S_3$ are normal; conjugating one transposition by a 3-cycle produces a different transposition, so the order-2 subgroups are not."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "$o(a^k)=n/\\gcd(n,k)$ settles orders instantly",
+     "body": "In a cyclic group of order $n$, the order of $a^k$ is $n/\\gcd(n,k)$. So in $\\mathbb{Z}_{30}$ the element 12 has order $30/\\gcd(30,12)=30/6=5$. The same formula tells you the generators (those with $\\gcd=1$) and the size of $\\langle a^k\\rangle$, all without listing elements."
+    },
+    {
+     "title": "Generators $=\\varphi(n)$, subgroups $=\\tau(n)$",
+     "body": "For a cyclic group of order $n$, write $n=\\prod p_i^{e_i}$. Then the number of generators is $\\varphi(n)=\\prod p_i^{e_i-1}(p_i-1)$ and the number of subgroups is $\\tau(n)=\\prod(e_i+1)$. Two products from one factorisation answers a whole family of questions."
+    },
+    {
+     "title": "Index 2 implies normal",
+     "body": "Any subgroup of index 2 is normal, because there are only two cosets and the non-$H$ one must be the complement of $H$ on both sides. That gives $A_n \\trianglelefteq S_n$ for free, and it is the quickest way to spot a normal subgroup without computing conjugates."
+    },
+    {
+     "title": "Kill isomorphism claims with element orders",
+     "body": "Two finite groups are isomorphic only if their multisets of element orders match. $\\mathbb{Z}_4$ has orders $\\{1,2,4,4\\}$ while $V_4$ has $\\{1,2,2,2\\}$, so they are not isomorphic; $U(10)$ has an element of order 4 while $U(8)$ does not, so $U(10)\\cong\\mathbb{Z}_4$ and $U(8)\\cong V_4$. This is faster and safer than hunting for an explicit map."
+    },
+    {
+     "title": "Homomorphism counts are gcds",
+     "body": "The number of group homomorphisms $\\mathbb{Z}_m\\to\\mathbb{Z}_n$ is $\\gcd(m,n)$, because the image of the generator must have order dividing $m$ and $\\mathbb{Z}_n$ contains exactly $\\gcd(m,n)$ such elements. The number of *onto* ones is $\\varphi(n)$ if $n \\mid m$ and 0 otherwise."
+    }
+   ],
+   "traps": [
+    {
+     "title": "The converse of Lagrange is false",
+     "body": "$d \\mid |G|$ does not produce a subgroup of order $d$. The standard counterexample is $A_4$: order 12, but no subgroup of order 6. What is true is Cauchy's theorem (a subgroup of order $p$ exists for every prime $p\\mid|G|$) and Sylow's theorem (for prime powers). Options claiming a subgroup 'for every divisor' are correct only for cyclic or abelian groups."
+    },
+    {
+     "title": "Abelian does not mean cyclic",
+     "body": "Cyclic $\\Rightarrow$ abelian, never the reverse. $V_4$, $U(8)$ and $U(12)$ are all abelian of order 4 with no element of order 4. Similarly 'every proper subgroup is cyclic' does not make $G$ cyclic — $S_3$ is the counterexample."
+    },
+    {
+     "title": "Not every subgroup is normal, and cosets are not subgroups",
+     "body": "$\\{e,(1\\,2)\\}\\le S_3$ has $rH \\ne Hr$. And apart from $H$ itself, no coset $aH$ contains the identity, so no other coset is a subgroup. Both facts are the basis of 'which of the following are true' items about quotients: $G/H$ is defined only when $H$ is normal."
+    },
+    {
+     "title": "A field is more than a ring with unity",
+     "body": "$\\mathbb{Z}_6$ is a commutative ring with unity, yet $2\\cdot3=0$ makes it fail the no-zero-divisor test, so it is neither an integral domain nor a field. Check $\\gcd$ conditions: $\\mathbb{Z}_n$ is a field precisely when $n$ is prime, and finite fields exist only in prime-power orders — there is no field with 6, 10 or 12 elements."
+    }
+   ]
+  },
+  {
+   "id": "1.5",
+   "title": "Graph Theory",
+   "summary": "Degrees and handshaking, isomorphism, Euler and Hamiltonian traversals, planarity, colouring, trees, spanning trees and cut-sets.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## Vocabulary and the handshaking lemma\n\nA **graph** $G=(V,E)$ is a set of vertices with a set of edges joining pairs of them. It is **simple** if it has no loops and no parallel edges; unless a question says otherwise, assume simple. The **degree** $\\deg(v)$ counts edges at $v$, with a loop counting twice.\n\nThe one identity everything else leans on is the **handshaking lemma**:\n$$\\sum_{v\\in V}\\deg(v) = 2|E|$$\nEach edge contributes 1 to each of its two endpoints. Two immediate consequences: the sum of degrees is always even, and therefore **the number of odd-degree vertices is even**. A $k$-regular graph on $n$ vertices has $nk/2$ edges, so $nk$ must be even — there is no 3-regular graph on 5 vertices.\n\nFor directed graphs, $\\sum \\deg^{+}(v)=\\sum\\deg^{-}(v)=|E|$.\n\nStandard families and their counts:\n\n| Graph | Vertices | Edges | Notes |\n|---|---|---|---|\n| $K_n$ | $n$ | $\\binom{n}{2}=\\frac{n(n-1)}{2}$ | complete, $(n-1)$-regular |\n| $K_{m,n}$ | $m+n$ | $mn$ | complete bipartite |\n| $C_n$ | $n$ | $n$ | cycle, 2-regular |\n| $W_n$ (wheel) | $n+1$ | $2n$ | cycle plus hub |\n| $Q_n$ (hypercube) | $2^n$ | $n2^{n-1}$ | $n$-regular, bipartite |\n| $P_n$ (path) | $n$ | $n-1$ | |\n\nA simple graph on $n$ vertices has at most $\\binom n2$ edges, and the number of **labelled** simple graphs on $n$ vertices is $2^{\\binom n2}$. A graph with $n$ vertices and $k$ components has at least $n-k$ edges and at most $\\frac{(n-k)(n-k+1)}{2}$ — the maximum comes from making one component complete on $n-k+1$ vertices and leaving the rest isolated."
+    },
+    {
+     "t": "md",
+     "text": "## Isomorphism\n\nTwo graphs are **isomorphic** when a bijection of vertices preserves adjacency. There is no known efficient complete test, so the exam gives you small graphs and expects you to use **invariants**: quantities preserved by isomorphism. If any invariant differs, the graphs are not isomorphic; if all your invariants agree, you still have to produce a mapping to be sure.\n\nThe useful invariants, in the order you should try them:\n\n1. Number of vertices and number of edges.\n2. The **degree sequence** — the sorted list of degrees.\n3. Number of components; connectivity.\n4. **Girth** (length of the shortest cycle) and the number of cycles of each length.\n5. Degree sequences of neighbours — whether the degree-3 vertices are adjacent to each other, and so on.\n6. Bipartiteness, planarity, chromatic number.\n\nEqual degree sequences are **necessary but not sufficient**. The standard counterexample is $C_3 \\cup C_3$ versus $C_6$: both are 2-regular on 6 vertices with 6 edges, but one is disconnected and the other has girth 6.\n\nA related count: the **complement** $\\bar G$ has the same vertices and exactly the edges $G$ lacks, so $|E(G)|+|E(\\bar G)|=\\binom n2$, and $G\\cong\\bar G$ (a **self-complementary** graph) requires $\\binom n2$ to be even, forcing $n\\equiv 0$ or $1 \\pmod 4$. The smallest non-trivial self-complementary graphs are $P_4$ and $C_5$."
+    },
+    {
+     "t": "md",
+     "text": "## Euler and Hamiltonian traversals\n\nThese two sound similar and have completely different theories. Learn them as a contrast.\n\n**Eulerian** — uses every *edge* exactly once.\n\n- A connected graph has an **Euler circuit** (closed) iff **every vertex has even degree**.\n- It has an **Euler path** (open) iff exactly **two** vertices have odd degree, and the path must start at one and end at the other.\n- Since the number of odd vertices is always even, \"exactly one odd vertex\" is impossible and \"three odd vertices\" is impossible.\n- Directed version: an Euler circuit exists iff the graph is connected when directions are ignored, every vertex is on a cycle, and $\\deg^{+}(v)=\\deg^{-}(v)$ for all $v$. For an Euler path, one vertex may have $\\deg^{+}-\\deg^{-}=1$ and another $-1$.\n\nKönigsberg has four vertices of degrees 5, 3, 3, 3 — four odd vertices, so neither a circuit nor a path exists.\n\n$K_n$ has an Euler circuit exactly when $n$ is odd (every degree is $n-1$). $K_{m,n}$ has one exactly when $m$ and $n$ are both even.\n\n**Hamiltonian** — visits every *vertex* exactly once. There is **no known simple characterisation**; deciding it is NP-complete. What exists are sufficient conditions, all of which say \"enough edges\":\n\n- **Dirac (1952)**: if $n\\ge3$ and $\\deg(v)\\ge n/2$ for every $v$, the graph is Hamiltonian.\n- **Ore (1960)**: if $n\\ge3$ and $\\deg(u)+\\deg(v)\\ge n$ for every pair of *non-adjacent* $u,v$, the graph is Hamiltonian. Ore implies Dirac.\n\nBoth are sufficient, never necessary: $C_{10}$ is Hamiltonian with every degree 2, far below $n/2$. Necessary conditions are negative: a Hamiltonian graph has no cut vertex, and removing any $k$ vertices leaves at most $k$ components. The **Petersen graph** (10 vertices, 15 edges, 3-regular) is the standard example of a graph that is vertex-transitive, has a Hamiltonian *path*, but no Hamiltonian *circuit*.\n\n$K_n$ is Hamiltonian for $n\\ge3$ and contains $(n-1)!/2$ distinct Hamiltonian circuits. $K_{m,n}$ is Hamiltonian iff $m=n\\ge2$."
+    },
+    {
+     "t": "lab",
+     "lab": "graphalgo",
+     "title": "Try it — traversals and spanning trees",
+     "note": "Build a small graph and step through BFS, DFS, and the minimum spanning tree algorithms."
+    },
+    {
+     "t": "md",
+     "text": "## Planarity and Euler's formula\n\nA graph is **planar** if it can be drawn in the plane with no edge crossings. For a *connected* planar graph drawn without crossings,\n$$v - e + f = 2$$\nwhere $f$ counts faces including the unbounded outer one. For a planar graph with $k$ components, $v-e+f = 1+k$.\n\nThe counting corollaries do the real work. Every face of a simple planar graph is bounded by at least 3 edges, and each edge borders at most 2 faces, so $2e \\ge 3f$; substituting into Euler's formula:\n\n$$e \\le 3v-6 \\quad (v\\ge3), \\qquad e \\le 2v-4 \\quad \\text{if the graph is triangle-free (e.g. bipartite)}$$\n\nBoth are **necessary, not sufficient** — passing the test does not prove planarity, but failing it proves non-planarity, which is exactly how the exam uses them.\n\n- $K_5$: $v=5$, $e=10$, and $3v-6=9 < 10$. Non-planar.\n- $K_{3,3}$: $v=6$, $e=9$, bipartite so the bound is $2v-4=8<9$. Non-planar. (The weaker bound $3v-6=12$ would have passed, which is why you must use the triangle-free version for bipartite graphs.)\n- $K_4$: $e=6 \\le 3(4)-6=6$. Planar, and indeed drawable.\n\n**Kuratowski's theorem** gives the exact characterisation: a graph is planar **iff it contains no subgraph homeomorphic to $K_5$ or $K_{3,3}$** (homeomorphic meaning obtainable by subdividing edges with degree-2 vertices). The Wagner form uses minors instead of subdivisions. Every planar graph has a vertex of degree at most 5, since otherwise $2e \\ge 6v$ contradicts $e\\le 3v-6$.\n\n$K_n$ is planar iff $n\\le4$; $K_{m,n}$ is planar iff $\\min(m,n)\\le2$. The Petersen graph is non-planar (it contains a $K_{3,3}$ subdivision), and the number of edges alone does not reveal it: $v=10, e=15 \\le 3(10)-6=24$."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — Euler's formula and planarity tests",
+     "text": "**(a)** A connected planar simple graph has 20 vertices, each of degree 3. How many edges and faces?\n\nHandshaking: $2e = \\sum\\deg = 20\\times3 = 60$, so $e = 30$. Euler: $f = 2 - v + e = 2 - 20 + 30 = 12$. Check the bound: $3v-6 = 54 \\ge 30$, consistent. This graph is the dodecahedron, with 12 pentagonal faces — and indeed $2e = 60 = 5f = 60$, matching \"every face has 5 sides\".\n\n**(b)** Is a connected planar simple graph with 7 vertices and 16 edges possible?\n\n$3v-6 = 3(7)-6 = 15 < 16$. **No.** The bound is violated, so no planar drawing exists whatever the structure.\n\n**(c)** A connected planar bipartite graph has 12 edges and every face bounded by 4 edges. Find $v$ and $f$.\n\nBipartite with all faces of size 4 gives $2e = 4f$, so $f = 24/4 = 6$. Euler: $v = 2 - f + e = 2 - 6 + 12 = 8$. Check the bipartite bound: $e = 12 \\le 2v-4 = 12$. It is exactly tight, which is the signature of a quadrangulation — the cube graph $Q_3$.\n\n**(d)** Show $K_{3,3}$ is non-planar in two ways.\n\n*Counting:* it is bipartite, so any planar drawing would need $e \\le 2v-4 = 8$, but $e=9$. Contradiction.\n*Faces:* if it were planar, $f = 2-6+9=5$; every face would need at least 4 edges (no triangles in a bipartite graph), so $2e \\ge 4f$ gives $18 \\ge 20$, false."
+    },
+    {
+     "t": "md",
+     "text": "## Colouring\n\nA **proper colouring** assigns colours to vertices so that adjacent vertices differ. The **chromatic number** $\\chi(G)$ is the fewest colours needed.\n\nBounds and exact values:\n\n- $\\chi(K_n) = n$; $\\chi(C_n) = 2$ if $n$ is even, 3 if $n$ is odd; $\\chi(T) = 2$ for any tree with at least one edge; $\\chi(K_{m,n})=2$.\n- $\\chi(G) \\ge \\omega(G)$, the size of the largest clique — a clique of size $k$ forces $k$ colours.\n- $\\chi(G) \\le \\Delta(G)+1$ where $\\Delta$ is the maximum degree (greedy colouring achieves this).\n- **Brooks' theorem**: $\\chi(G)\\le\\Delta(G)$ unless $G$ is a complete graph or an odd cycle.\n- $\\chi(G)\\ge n/\\alpha(G)$ where $\\alpha$ is the independence number, since each colour class is independent.\n- **Four colour theorem**: every planar graph has $\\chi \\le 4$. Every planar graph is 5-colourable by an easy argument (minimum degree $\\le 5$); the drop to 4 is the hard theorem.\n\n**Bipartite test.** $G$ is bipartite $\\iff \\chi(G)\\le2 \\iff G$ has **no odd cycle**. Algorithmically, 2-colour by BFS: assign the root colour 0 and alternate by level; if any edge joins two vertices of the same level parity, an odd cycle exists and the graph is not bipartite. This runs in $O(v+e)$.\n\n**Chromatic polynomial** $P(G,k)$ counts proper colourings with at most $k$ colours; $\\chi(G)$ is the least $k$ with $P(G,k)>0$.\n\n$$P(K_n,k)=k(k-1)\\cdots(k-n+1), \\qquad P(T,k)=k(k-1)^{n-1} \\text{ for any tree},$$\n$$P(C_n,k)=(k-1)^n+(-1)^n(k-1)$$\n\nDeletion-contraction: $P(G,k)=P(G-e,k)-P(G/e,k)$. Two checks: $P(C_4,3)=2^4+2=18$, and $P(C_5,2)=1^5-1=0$, correctly reporting that an odd cycle cannot be 2-coloured.\n\n**Edge colouring** and the chromatic index $\\chi'(G)$: Vizing's theorem gives $\\Delta \\le \\chi' \\le \\Delta+1$ for every simple graph. **Region/face colouring** of a planar graph is the same as vertex colouring of its dual."
+    },
+    {
+     "t": "md",
+     "text": "## Trees\n\nA **tree** is a connected acyclic graph. For a graph on $n$ vertices, any two of the following imply the third and characterise a tree: connected, acyclic, $n-1$ edges. Further equivalents: there is a **unique path** between every pair of vertices; removing any edge disconnects it; adding any new edge creates **exactly one** cycle. A **forest** with $k$ components has $n-k$ edges. Every tree with $n\\ge2$ has at least two leaves.\n\n**Counting trees.**\n\n- **Cayley's formula**: the number of labelled trees on $n$ vertices is $n^{n-2}$. So 1, 1, 3, 16, 125 for $n=1..5$. Equivalently, $K_n$ has $n^{n-2}$ spanning trees.\n- The number of labelled trees with prescribed degrees $d_1,\\dots,d_n$ is the multinomial $\\dfrac{(n-2)!}{\\prod (d_i-1)!}$; summing it over all degree sequences recovers $n^{n-2}$.\n- $K_{m,n}$ has $m^{n-1}n^{m-1}$ spanning trees.\n- **Kirchhoff's matrix-tree theorem**: the number of spanning trees of any connected graph is the determinant of the Laplacian $L = D - A$ with any one row and the matching column deleted (every such cofactor gives the same value).\n- The number of *unlabelled* trees has no closed form — 1, 1, 1, 2, 3, 6, 11 for $n=1..7$.\n\n**Rooted and $m$-ary trees.** A full $m$-ary tree with $i$ internal nodes has $mi+1$ vertices and $(m-1)i+1$ leaves. A full binary tree with $i$ internal nodes has $i+1$ leaves and $2i+1$ nodes. An $m$-ary tree of height $h$ has at most $m^h$ leaves, so $h \\ge \\lceil \\log_m \\ell\\rceil$ for $\\ell$ leaves.\n\n**Prefix codes.** A code is a **prefix code** if no codeword is a prefix of another; then the encoded stream decodes uniquely left to right with no delimiters. Prefix codes correspond exactly to binary trees with codewords at the leaves, reading 0 for a left branch and 1 for a right one. **Kraft's inequality** $\\sum 2^{-\\ell_i}\\le1$ is necessary and sufficient for a binary prefix code with lengths $\\ell_i$ to exist. **Huffman's algorithm** builds the optimal one: repeatedly merge the two least-frequent symbols into a node whose weight is their sum.\n\n**Traversals** of a binary tree: **preorder** (root, left, right), **inorder** (left, root, right), **postorder** (left, right, root). Inorder on a binary search tree yields sorted output; preorder or postorder together with inorder determine the tree uniquely, but preorder plus postorder do not."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — spanning trees, Huffman and cut-sets",
+     "text": "**(a) Counting spanning trees.** Let $G$ have vertices $a,b,c,d,e$ and edges $ab, ac, bc, bd, cd, de$. The Laplacian is\n\n$$L=\\begin{pmatrix}2&-1&-1&0&0\\\\-1&3&-1&-1&0\\\\-1&-1&3&-1&0\\\\0&-1&-1&3&-1\\\\0&0&0&-1&1\\end{pmatrix}$$\n\nDelete the last row and column and take the determinant of the remaining $4\\times4$ matrix; it evaluates to **8**. A structural check confirms it: edge $de$ is a **bridge**, so it lies in every spanning tree, and the rest of the problem is counting spanning trees of the graph $\\{a,b,c,d\\}$ with edges $ab,ac,bc,bd,cd$. That graph is $K_4$ minus the edge $ad$. $K_4$ has $4^{4-2}=16$ spanning trees, each with 3 edges, so the 16 trees use $48$ edge-slots spread evenly over 6 edges — every edge lies in exactly 8 of them. Deleting one edge therefore leaves $16-8=8$ spanning trees. Matching values.\n\n**(b) Huffman coding.** Symbols with frequencies $A{:}45,\\ D{:}16,\\ B{:}13,\\ C{:}12,\\ E{:}9,\\ F{:}5$ (total 100).\n\nMerge $F(5)+E(9)=14$. Merge $C(12)+B(13)=25$. Merge $14+D(16)=30$. Merge $25+30=55$. Merge $A(45)+55=100$.\n\nReading the tree gives lengths $A=1$, $B=C=D=3$, $E=F=4$. Total bits\n$$45(1)+13(3)+12(3)+16(3)+9(4)+5(4) = 45+39+36+48+36+20 = \\mathbf{224}$$\nagainst $100\\times3=300$ bits for a fixed-length 3-bit code — a 25% saving. Average codeword length is 2.24 bits. Note that the *lengths* are determined but the specific codewords are not: swapping 0 and 1 at any node gives an equally optimal code.\n\n**(c) Cut-sets.** A **cut-set** of a connected graph is a minimal set of edges whose removal disconnects it. In the graph of part (a), $\\{de\\}$ is a cut-set of size 1 — a bridge — so the **edge connectivity** $\\lambda(G)=1$. The vertex $d$ is a cut vertex, so the **vertex connectivity** $\\kappa(G)=1$ too. The general inequality is\n$$\\kappa(G)\\le\\lambda(G)\\le\\delta(G)$$\nwhere $\\delta$ is the minimum degree. Here $\\delta = 1$ (vertex $e$), so all three equal 1. Every cut-set of a connected graph shares at least one edge with every spanning tree, and the edges *not* in a spanning tree form its cotree; a **fundamental cut-set** is obtained by deleting one tree edge and collecting all edges that reconnect the two halves."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.5-1",
+     "q": "A connected simple planar graph has 10 vertices and 25 edges. How many faces does it have?",
+     "opts": [
+      "17",
+      "15",
+      "Not possible — such a graph is not planar",
+      "12"
+     ],
+     "ans": 2,
+     "exp": "Check the bound before using Euler's formula. For a simple planar graph with $v\\ge3$, $e\\le 3v-6 = 3(10)-6 = 24$. Here $e=25>24$, so no planar drawing exists and the question's premise is false. Blindly computing $f = 2-10+25 = 17$ is the intended mistake."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.5-2",
+     "q": "Which of these graphs has an Euler path but no Euler circuit?",
+     "opts": [
+      "$K_4$",
+      "$K_5$",
+      "$K_{2,3}$",
+      "$C_6$"
+     ],
+     "ans": 2,
+     "exp": "$K_{2,3}$ has two vertices of degree 3 and three of degree 2 — exactly two odd vertices, so an Euler path exists but no circuit. $K_4$ has four vertices of degree 3 (four odd vertices: neither). $K_5$ is 4-regular and $C_6$ is 2-regular, so both have Euler circuits."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.5-3",
+     "q": "How many labelled trees are there on 5 vertices?",
+     "opts": [
+      "120",
+      "125",
+      "16",
+      "625"
+     ],
+     "ans": 1,
+     "exp": "Cayley's formula gives $n^{n-2} = 5^3 = 125$. The value 16 is the answer for $n=4$, and 625 is $5^4$, the count for $n=6$ shifted. Equivalently, $K_5$ has 125 spanning trees."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.5-4",
+     "q": "$G$ is a simple graph with maximum degree 4 that is neither complete nor an odd cycle. What is the best upper bound on $\\chi(G)$ that is guaranteed?",
+     "opts": [
+      "3",
+      "4",
+      "5",
+      "8"
+     ],
+     "ans": 1,
+     "exp": "The greedy bound gives $\\chi \\le \\Delta+1 = 5$, but Brooks' theorem strengthens it to $\\chi\\le\\Delta = 4$ for every connected graph that is not complete and not an odd cycle. Those two exceptions are precisely the graphs that need $\\Delta+1$, and the question excludes them."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Test planarity by counting before drawing",
+     "body": "Compute $3v-6$ (or $2v-4$ if the graph is bipartite or triangle-free) and compare with $e$. If $e$ exceeds it, the graph is non-planar and you are done in one line. If it does not, the test is inconclusive — planarity still has to be argued, usually by finding a $K_5$ or $K_{3,3}$ subdivision."
+    },
+    {
+     "title": "Count odd-degree vertices first for any traversal question",
+     "body": "Zero odd vertices means an Euler circuit; exactly two means an Euler path between them; anything else means neither. You never need to try to trace a route. And because the count of odd vertices is always even, any option claiming one or three odd vertices is self-contradictory."
+    },
+    {
+     "title": "Degree sequence rules out isomorphism but never proves it",
+     "body": "Sort the degrees first — if the lists differ you are finished. If they match, move to the next invariant: number of components, girth, or the degrees of neighbours of the highest-degree vertex. $C_3\\cup C_3$ and $C_6$ share the sequence $(2,2,2,2,2,2)$ and are not isomorphic."
+    },
+    {
+     "title": "Handshaking answers 'how many edges/vertices' questions instantly",
+     "body": "$2e = \\sum\\deg$. A $k$-regular graph on $n$ vertices has $nk/2$ edges, and $nk$ must be even or the graph cannot exist. Combined with Euler's formula $f = 2-v+e$, almost every planar counting question is two lines of arithmetic."
+    },
+    {
+     "title": "Tree facts come in one bundle",
+     "body": "$n$ vertices, $n-1$ edges, unique paths, $\\chi = 2$, $P(T,k)=k(k-1)^{n-1}$, adding an edge makes exactly one cycle, deleting one disconnects. Labelled trees number $n^{n-2}$; full binary trees with $i$ internal nodes have $i+1$ leaves. Reciting this list solves most tree questions without any construction."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Euler is about edges, Hamiltonian is about vertices",
+     "body": "An Euler circuit uses every edge once; a Hamiltonian circuit visits every vertex once. They are independent — $K_5$ has both, $K_4$ has a Hamiltonian circuit but no Euler circuit, and a graph can have an Euler circuit with no Hamiltonian one. Also, Euler has a clean degree criterion while Hamiltonicity has none; anything offered as 'the condition for a Hamiltonian circuit' is at best sufficient."
+    },
+    {
+     "title": "Dirac and Ore are sufficient only",
+     "body": "A graph failing $\\deg(v)\\ge n/2$ may still be Hamiltonian — $C_{100}$ is. Options phrased as 'the graph is not Hamiltonian because some vertex has degree less than $n/2$' are always wrong. The same asymmetry applies to $e \\le 3v-6$: failing it disproves planarity, but passing it proves nothing."
+    },
+    {
+     "title": "Use $2v-4$, not $3v-6$, for bipartite graphs",
+     "body": "$K_{3,3}$ satisfies $e = 9 \\le 3v-6 = 12$ and still is not planar. A bipartite graph has no triangles, so each face needs at least 4 edges and the correct bound is $e\\le 2v-4$, which $K_{3,3}$ violates. Choosing the wrong bound is the most common planarity error."
+    },
+    {
+     "title": "Equal chromatic number does not mean isomorphic, and $\\chi = \\Delta+1$ is rare",
+     "body": "Only complete graphs and odd cycles actually need $\\Delta+1$ colours (Brooks). Assuming $\\chi=\\Delta+1$ generally overestimates. Conversely $\\chi \\ge \\omega$ can be strict — the 5-cycle has $\\omega = 2$ but $\\chi=3$ — so a graph with no triangle may still need three colours."
+    }
+   ]
+  },
+  {
+   "id": "1.6",
+   "title": "Boolean Algebra",
+   "summary": "Boolean functions, SOP and POS canonical forms, counting functions, duality, and simplification by laws and by K-map.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## What a Boolean algebra is\n\nA **Boolean algebra** is a set $B$ with two binary operations $+$ (OR) and $\\cdot$ (AND), a unary complement $'$, and two distinguished elements 0 and 1, satisfying the Huntington postulates: both operations are commutative and associative, each distributes over the other, 0 is the identity for $+$ and 1 for $\\cdot$, and every element has a complement with $x + x' = 1$ and $x\\cdot x' = 0$.\n\nNotice that **both** distributive laws hold. That is the one place where Boolean algebra differs from ordinary arithmetic: $x + yz = (x+y)(x+z)$ is true here and false over the reals. It is the identity most often missed.\n\nIn the language of topic 1.2, a Boolean algebra is exactly a **complemented distributive lattice**, with $+$ as join, $\\cdot$ as meet, 0 as the bottom and 1 as the top. Every finite Boolean algebra has $2^n$ elements and is isomorphic to the power set of an $n$-element set, so there is no Boolean algebra with 6 or 12 elements.\n\nThe identities, arranged in dual pairs:\n\n| | | |\n|---|---|---|\n| Identity | $x+0=x$ | $x\\cdot1=x$ |\n| Null | $x+1=1$ | $x\\cdot 0=0$ |\n| Idempotent | $x+x=x$ | $x\\cdot x=x$ |\n| Complement | $x+x'=1$ | $x\\cdot x'=0$ |\n| Involution | $(x')'=x$ | |\n| Absorption | $x+xy=x$ | $x(x+y)=x$ |\n| Redundancy | $x+x'y=x+y$ | $x(x'+y)=xy$ |\n| De Morgan | $(x+y)'=x'y'$ | $(xy)'=x'+y'$ |\n| Consensus | $xy+x'z+yz=xy+x'z$ | $(x+y)(x'+z)(y+z)=(x+y)(x'+z)$ |\n\nThe **redundancy** and **consensus** laws are the two that shorten expressions the fastest and are also the two most often forgotten. Consensus says the term $yz$ is implied by the other two — if $yz=1$ then one of $xy$, $x'z$ must already be 1, whatever $x$ is."
+    },
+    {
+     "t": "cal",
+     "kind": "note",
+     "title": "The duality principle",
+     "text": "Every Boolean identity remains true if you simultaneously swap $+\\leftrightarrow\\cdot$ and $0\\leftrightarrow1$, leaving variables and their complements unchanged. That is why the table above comes in pairs — you only have to remember one column.\n\nThe **dual** $f^d$ of a function is obtained this way; it is *not* the complement. For $f = x + y'z$, the dual is $f^d = x(y'+z)$, while the complement is $f' = x'(y+z')= x'y + x'z'$. The connection between them is\n$$f'(x_1,\\dots,x_n) = f^d(x_1',\\dots,x_n')$$\ni.e. the complement equals the dual with every variable complemented, which is exactly what iterated De Morgan does.\n\nA function is **self-dual** if $f^d = f$, equivalently $f(x_1',\\dots,x_n') = f'(x_1,\\dots,x_n)$: complementing all inputs complements the output. The truth table of a self-dual function is determined by half its rows, so the number of self-dual functions of $n$ variables is $2^{2^{n-1}}$ — 2 for $n=1$, 4 for $n=2$, 16 for $n=3$. The 3-variable majority function is the standard example."
+    },
+    {
+     "t": "md",
+     "text": "## Canonical forms and counting functions\n\nA **minterm** of $n$ variables is a product containing each variable exactly once, complemented or not; a **maxterm** is the corresponding sum. There are $2^n$ of each, indexed $0$ to $2^n-1$ by reading the assignment as binary with the first variable as the most significant bit — and with the crucial convention difference:\n\n- In minterm $m_i$, a variable appears **uncomplemented when its bit is 1**.\n- In maxterm $M_i$, a variable appears **uncomplemented when its bit is 0**.\n\nHence $m_i' = M_i$ and $M_i' = m_i$.\n\nEvery Boolean function has a unique **canonical SOP** (sum of minterms of the rows where $f=1$) and a unique **canonical POS** (product of maxterms of the rows where $f=0$). The two index sets are complementary, so\n$$f = \\sum m(S) = \\prod M(\\overline S), \\qquad f' = \\sum m(\\overline S) = \\prod M(S)$$\nKnowing one gives all four for free.\n\n**Counting.** A function of $n$ variables is fixed by its truth table, which has $2^n$ rows each holding one bit. So:\n\n$$\\text{number of Boolean functions of } n \\text{ variables} = 2^{2^n}$$\n\nThat is 4 for $n=1$, **16 for $n=2$**, **256 for $n=3$** and 65536 for $n=4$. The count of *distinct SOP expressions* is far larger, since many expressions denote the same function; the count of *functions* is what is asked.\n\nRelated counts worth carrying:\n\n- Functions of $n$ variables that are 1 in exactly $k$ rows: $\\binom{2^n}{k}$.\n- Self-dual functions: $2^{2^{n-1}}$.\n- Functions not depending on a particular variable: $2^{2^{n-1}}$ (the truth table is determined by the other $n-1$ variables).\n- **Functionally complete** sets — enough to express every function — include $\\{\\text{AND},\\text{NOT}\\}$, $\\{\\text{OR},\\text{NOT}\\}$, $\\{\\text{NAND}\\}$ alone and $\\{\\text{NOR}\\}$ alone. $\\{\\text{AND},\\text{OR}\\}$ is *not* complete, because without complementation you cannot produce $x'$; nor is $\\{\\text{XOR},\\text{AND}\\}$ without a constant 1."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — canonical forms both ways",
+     "text": "Let $F(A,B,C) = A + B'C$.\n\nExpand to minterms by multiplying each term by the missing variables in the form $(X+X')$:\n$$A = A(B+B')(C+C') = ABC + ABC' + AB'C + AB'C' = m_7+m_6+m_5+m_4$$\n$$B'C = (A+A')B'C = AB'C + A'B'C = m_5 + m_1$$\nUnion of indices: $\\{1,4,5,6,7\\}$, so\n$$F = \\sum m(1,4,5,6,7)$$\nThe duplicate $m_5$ absorbs by idempotence — that is expected, not an error.\n\nThe complementary indices are $\\{0,2,3\\}$, so\n$$F = \\prod M(0,2,3)$$\nWriting them out with the maxterm convention (variable uncomplemented where the bit is 0): row 0 is $(A,B,C)=(0,0,0)$ giving $(A+B+C)$; row 2 is $(0,1,0)$ giving $(A+B'+C)$; row 3 is $(0,1,1)$ giving $(A+B'+C')$.\n\n$$F = (A+B+C)(A+B'+C)(A+B'+C')$$\n\nAnd immediately $F' = \\sum m(0,2,3) = \\prod M(1,4,5,6,7)$.\n\n**Verification by algebra.** Simplify the POS back: $(A+B'+C)(A+B'+C') = A+B'+CC' = A+B'$ by the distributive law over $+$. Then $(A+B+C)(A+B') = A + (B+C)B' = A + B'C$ using $B B' = 0$ and redundancy. That returns the original $A+B'C$, so the expansion is right. Doing this check costs three lines and catches sign errors in the maxterm convention, which are the usual failure."
+    },
+    {
+     "t": "md",
+     "text": "## Simplification by the laws\n\nMinimisation means finding an equivalent expression with the fewest terms, and among those the fewest literals. Working by algebra, the moves that pay off, in order:\n\n1. **Factor** a common variable out of two terms, then look for $X+X'=1$.\n2. **Absorption** $x + xy = x$ — delete the longer term entirely.\n3. **Redundancy** $x + x'y = x+y$ — delete a complemented literal.\n4. **Consensus** $xy+x'z+yz = xy+x'z$ — delete the term that mentions neither $x$ nor $x'$.\n5. **Expand then re-group**: adding a duplicate copy of a term ($x = x + x$) so that it can pair with two different neighbours. This is legitimate and sometimes necessary.\n\nWorked in one line each:\n$$AB + A B' = A(B+B') = A$$\n$$A + A'BC = A + BC \\quad \\text{(redundancy)}$$\n$$AB + A'C + BCD = AB + A'C \\quad \\text{(consensus, with } BC \\text{ absorbing } BCD)$$\n$$(A+B)(A+B') = A + BB' = A \\quad \\text{(dual of the first)}$$\n\nThe weakness of algebraic simplification is that you can never be sure you have finished. The K-map removes that doubt for small numbers of variables."
+    },
+    {
+     "t": "md",
+     "text": "## The Karnaugh map\n\nA **K-map** is the truth table redrawn so that physically adjacent cells differ in exactly one variable. The row and column labels therefore follow **Gray code** order — $00, 01, 11, 10$ — not binary counting order. Getting that ordering wrong invalidates every subsequent step, and it is the single most common mistake in the topic.\n\nThe four-variable layout, with $AB$ down the side and $CD$ across:\n\n| $AB\\backslash CD$ | 00 | 01 | 11 | 10 |\n|---|---|---|---|---|\n| **00** | $m_0$ | $m_1$ | $m_3$ | $m_2$ |\n| **01** | $m_4$ | $m_5$ | $m_7$ | $m_6$ |\n| **11** | $m_{12}$ | $m_{13}$ | $m_{15}$ | $m_{14}$ |\n| **10** | $m_8$ | $m_9$ | $m_{11}$ | $m_{10}$ |\n\nThe map wraps around in both directions: column 00 is adjacent to column 10, and row 00 to row 10. The four corners $m_0, m_2, m_8, m_{10}$ form a legal group of four.\n\nThe procedure:\n\n1. Mark 1s at the minterms of $f$, and X at the don't-cares.\n2. Form **groups** of $1,2,4,8,\\dots$ adjacent cells — always a power of two, always rectangular including wrap-around.\n3. Make every group **as large as possible**; a maximal group is a **prime implicant**. A group of size $2^k$ on an $n$-variable map yields a term with $n-k$ literals: the variables that are constant across the group.\n4. Any 1 covered by only one prime implicant makes that implicant **essential**; all essential prime implicants must be in the answer.\n5. Cover the remaining 1s with as few further prime implicants as possible. Groups may overlap; every 1 must be covered at least once.\n6. Don't-cares may be included when they enlarge a group and must be ignored otherwise — never form a group made only of don't-cares.\n\nFor **POS** minimisation, group the **0s** instead. Each group of 0s gives a sum term in which a variable appears complemented when it is constant at 1 across the group — the maxterm convention again. Equivalently, minimise $f'$ as an SOP and complement the result with De Morgan, which is what most people find safer."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — K-map minimisation, SOP and POS, with don't-cares",
+     "text": "**(a)** Minimise $F(A,B,C,D)=\\sum m(0,1,2,5,8,9,10)$.\n\nPlacing the 1s:\n\n| $AB\\backslash CD$ | 00 | 01 | 11 | 10 |\n|---|---|---|---|---|\n| **00** | **1** (0) | **1** (1) | 0 (3) | **1** (2) |\n| **01** | 0 (4) | **1** (5) | 0 (7) | 0 (6) |\n| **11** | 0 (12) | 0 (13) | 0 (15) | 0 (14) |\n| **10** | **1** (8) | **1** (9) | 0 (11) | **1** (10) |\n\nGroups of four, using the top-bottom wrap:\n\n- $\\{0,1,8,9\\}$ — rows 00 and 10, columns 00 and 01. $A$ varies, $B=0$, $C=0$, $D$ varies, giving $B'C'$.\n- $\\{0,2,8,10\\}$ — rows 00 and 10, columns 00 and 10. $B=0$, $D=0$, giving $B'D'$.\n- Minterm 5 is left. Its largest group is the pair $\\{1,5\\}$: $A=0$, $C=0$, $D=1$, giving $A'C'D$.\n\nEvery one of the three is essential: $m_9$ lies only in $B'C'$, $m_2$ only in $B'D'$, and $m_5$ only in $A'C'D$. So the minimal SOP is\n$$F = B'C' + B'D' + A'C'D$$\nthree terms, eight literals.\n\n**(b) POS for the same function.** The zeros are $\\{3,4,6,7,11,12,13,14,15\\}$. Minimising those as an SOP for $F'$ gives the groups $\\{12,13,14,15\\}=AB$, $\\{4,6,12,14\\}=BD'$ and $\\{3,7,11,15\\}=CD$, so\n$$F' = AB + BD' + CD$$\nand by De Morgan\n$$F = (A'+B')(B'+D)(C'+D')$$\nThree sum terms against three product terms here, but that is a coincidence; in general SOP and POS minimal forms differ in size and you should compute the one the question asks for.\n\n**(c) Don't-cares.** Minimise $F(A,B,C,D)=\\sum m(1,3,7,11,15)+d(0,2,5)$.\n\nWithout the don't-cares the best cover is $CD$ (covering 3, 7, 11, 15) plus $A'B'D$ (covering 1 and 3) — two terms, six literals. Using the don't-cares, $m_1$ can join $\\{0,1,2,3\\}$, the whole top row, which is the group $A'B'$ — two literals instead of three. The don't-care at 5 is not needed and is simply left as 0.\n\n$$F = CD + A'B'$$\ntwo terms, four literals. Including $d_0$ and $d_2$ costs nothing because the circuit's behaviour on those inputs is unspecified, and it saves two literals."
+    },
+    {
+     "t": "lab",
+     "lab": "kmap",
+     "title": "Try it — Karnaugh map",
+     "note": "Toggle minterms and don't-cares and watch the prime implicants and the minimal SOP update."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.6-1",
+     "q": "How many distinct Boolean functions of 3 variables are there?",
+     "opts": [
+      "8",
+      "64",
+      "256",
+      "512"
+     ],
+     "ans": 2,
+     "exp": "A function of $n$ variables is one bit per truth-table row, and there are $2^n$ rows, so the count is $2^{2^n}$. For $n=3$ that is $2^8 = 256$. The value 8 is the number of minterms, 64 would be $2^6$, and 512 is $2^9$ — the number of *relations* on a 3-set, a different question entirely."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.6-2",
+     "q": "In a 4-variable K-map, a group of 8 adjacent cells produces a product term with how many literals?",
+     "opts": [
+      "3",
+      "2",
+      "1",
+      "4"
+     ],
+     "ans": 2,
+     "exp": "A group of $2^k$ cells eliminates $k$ variables, leaving $n-k$ literals. Here $n=4$ and $2^k = 8$ gives $k=3$, so $4-3 = 1$ literal. A group of 4 leaves 2 literals, a pair leaves 3, and a single cell leaves all 4."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.6-3",
+     "q": "The dual of $F = x + y'z$ is",
+     "opts": [
+      "$x'(y+z')$",
+      "$x(y'+z)$",
+      "$x'y + x'z'$",
+      "$x + y'+z$"
+     ],
+     "ans": 1,
+     "exp": "The dual swaps $+$ with $\\cdot$ and 0 with 1, leaving every literal exactly as it is — complements are not touched. So $x + y'z$ becomes $x\\cdot(y'+z)$. Option A and C are attempts at the complement, which additionally negates every variable: $F' = x'(y+z')$."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Gray code the axes before writing a single 1",
+     "body": "Label the K-map rows and columns 00, 01, 11, 10 — never 00, 01, 10, 11. Then write the minterm index in every cell first and check that horizontally adjacent indices differ in one bit. Two minutes spent on the grid prevents the error that silently ruins the whole answer."
+    },
+    {
+     "title": "Size of group tells you the number of literals",
+     "body": "On an $n$-variable map a group of $2^k$ cells gives a term of $n-k$ literals. So on a 4-variable map: 1 cell gives 4 literals, 2 gives 3, 4 gives 2, 8 gives 1, 16 gives the constant 1. If a question asks only 'how many literals in the minimal expression', count group sizes and stop."
+    },
+    {
+     "title": "For POS, minimise the complement and De Morgan it",
+     "body": "Grouping zeros directly with the reversed literal convention is error-prone. Instead read the zeros as the minterms of $F'$, minimise $F'$ as an ordinary SOP with the usual rules, then apply De Morgan once to the whole result. The conventions never get mixed up this way."
+    },
+    {
+     "title": "Find essential prime implicants by looking for lonely 1s",
+     "body": "Scan for any 1 that belongs to exactly one maximal group; that group is essential and must appear. Ticking off the essentials first usually finishes the cover immediately, and it tells you when the minimal form is *not* unique — the leftover 1s with two equally good options."
+    },
+    {
+     "title": "Complement = dual with variables complemented",
+     "body": "$f' (x) = f^d(x')$. So to complement any expression, apply the dual transformation (swap $+$ and $\\cdot$) and then bar every literal. This replaces repeated De Morgan steps with one mechanical pass, and it makes 'dual versus complement' multiple-choice items trivial."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Dual is not complement",
+     "body": "The dual leaves literals alone; the complement negates them. $(x+y'z)^d = x(y'+z)$ but $(x+y'z)' = x'(y+z')$. Options in an exam routinely offer both, and they differ in exactly the bars on the variables."
+    },
+    {
+     "title": "Minterm and maxterm conventions are mirror images",
+     "body": "For row $(A,B,C)=(1,0,0)$ the minterm is $AB'C'$ but the maxterm is $A'+B+C$. In a minterm, a 1 bit means an uncomplemented variable; in a maxterm, a 0 bit does. Carrying one convention into the other is the classic $\\prod M$ error, and it survives all the way to the final answer without looking wrong."
+    },
+    {
+     "title": "Don't-cares are opportunities, not obligations",
+     "body": "Include a don't-care only when it enlarges a group you need. A group consisting entirely of don't-cares is illegal — it contributes a term that covers no required 1 and only adds gates. Equally, a don't-care left uncovered costs nothing."
+    },
+    {
+     "title": "$x + yz = (x+y)(x+z)$ is valid here",
+     "body": "Boolean algebra has *both* distributive laws, unlike arithmetic. Candidates who reject this identity as 'wrong by analogy with numbers' lose the fastest route through POS manipulations. Check it on a truth table once and then use it freely."
+    }
+   ]
+  },
+  {
+   "id": "1.7",
+   "title": "Optimization: LP, Transportation, Assignment, PERT-CPM",
+   "summary": "LP standard form and the graphical method, simplex and dual simplex, duality and sensitivity, integer programming, transportation and assignment algorithms, and network scheduling.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## Linear programming: model and standard form\n\nA **linear programming problem** optimises a linear objective subject to linear constraints and non-negativity. The general shape:\n\n$$\\text{Max } Z = \\sum_j c_j x_j \\quad\\text{subject to}\\quad \\sum_j a_{ij}x_j \\le b_i,\\quad x_j \\ge 0$$\n\nVocabulary that questions test directly:\n\n- **Feasible region** — the set satisfying all constraints. It is always a **convex** set, possibly empty or unbounded, and it is a polyhedron.\n- **Extreme point (corner point)** — a feasible point that is not a convex combination of two other feasible points.\n- **Fundamental theorem of LP** — if an optimal solution exists, at least one optimal solution occurs at an extreme point. If two extreme points are both optimal, every point on the segment joining them is optimal (**multiple optima**).\n- **Basic solution** — with $m$ constraints and $n$ variables ($n>m$), set $n-m$ variables to zero and solve for the rest. A basic solution with all variables $\\ge 0$ is a **basic feasible solution**, and these correspond exactly to the extreme points. There are at most $\\binom{n}{m}$ of them.\n- **Degeneracy** — a basic feasible solution with a basic variable at zero. It can cause the simplex method to cycle.\n\n**Standard form** for the simplex method requires: maximisation, all constraints as equations, all right-hand sides non-negative, all variables non-negative. Convert as follows.\n\n| Situation | Conversion |\n|---|---|\n| Minimise $Z$ | Maximise $-Z$; the optimal $Z$ is the negative of the answer |\n| $\\le b_i$ | add a **slack** $s_i\\ge0$ |\n| $\\ge b_i$ | subtract a **surplus** $s_i\\ge0$, then add an **artificial** $A_i$ |\n| $= b_i$ | add an **artificial** $A_i$ |\n| $b_i<0$ | multiply the row by $-1$ (and flip the inequality) |\n| $x_j$ unrestricted in sign | write $x_j = x_j^{+}-x_j^{-}$ with both new variables $\\ge 0$ |\n\nArtificial variables are penalised out of the solution either by the **Big-M method** (give them cost $-M$ in a maximisation) or by the **two-phase method** (Phase I minimises the sum of artificials; if that minimum is positive, the original problem is **infeasible**)."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — the graphical method",
+     "text": "Maximise $Z = 3x + 5y$ subject to $x \\le 4$, $2y \\le 12$, $3x+2y\\le18$, $x,y\\ge0$.\n\nPlot the three boundary lines $x = 4$, $y = 6$ and $3x+2y=18$. The feasible region is bounded by them and the axes, and its corner points are found by solving pairs of equations:\n\n| Corner | Where it comes from | $Z = 3x+5y$ |\n|---|---|---|\n| $(0,0)$ | both axes | 0 |\n| $(4,0)$ | $x=4$, $y=0$ | 12 |\n| $(4,3)$ | $x=4$ and $3x+2y=18 \\Rightarrow 2y = 6$ | $12+15=27$ |\n| $(2,6)$ | $y=6$ and $3x+2y=18 \\Rightarrow 3x=6$ | $6+30=\\mathbf{36}$ |\n| $(0,6)$ | $y=6$, $x=0$ | 30 |\n\nThe maximum is $Z = 36$ at $(x,y)=(2,6)$. Check feasibility: $x=2\\le4$; $2y=12\\le12$ (binding); $3(2)+2(6)=18\\le18$ (binding). Two constraints bind and one, $x\\le4$, is slack by 2 units.\n\n**Reading the answer off the geometry.** The objective gradient is $(3,5)$; sliding the line $3x+5y = k$ outward, the last corner it touches is $(2,6)$. If the objective had been $Z = 3x+2y$, the level lines would be parallel to the constraint $3x+2y=18$ and the whole edge from $(4,3)$ to $(2,6)$ would be optimal — the multiple-optima case, recognised by an objective whose coefficients are proportional to a binding constraint's.\n\nTwo degenerate outcomes to name: if the feasible region is unbounded in the improving direction the LP is **unbounded**; if no point satisfies all constraints it is **infeasible**. The graphical method handles at most two variables, which is why simplex exists."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — the simplex method, its dual, and sensitivity",
+     "text": "Maximise $Z = 5x_1 + 4x_2$ subject to $6x_1+4x_2\\le24$, $x_1+2x_2\\le6$, $x_1,x_2\\ge0$.\n\nAdd slacks $s_1,s_2$. Initial tableau, with the $z$-row written as $Z - 5x_1 - 4x_2 = 0$:\n\n| Basis | $x_1$ | $x_2$ | $s_1$ | $s_2$ | RHS |\n|---|---|---|---|---|---|\n| $z$ | $-5$ | $-4$ | 0 | 0 | 0 |\n| $s_1$ | 6 | 4 | 1 | 0 | 24 |\n| $s_2$ | 1 | 2 | 0 | 1 | 6 |\n\n**Iteration 1.** The most negative $z$-row entry is $-5$, so $x_1$ enters. Ratios $24/6=4$ and $6/1=6$; the minimum is 4, so $s_1$ leaves and the pivot is 6.\n\nDivide the pivot row by 6: $x_1 + \\tfrac23 x_2 + \\tfrac16 s_1 = 4$. Eliminate $x_1$ elsewhere.\n\n| Basis | $x_1$ | $x_2$ | $s_1$ | $s_2$ | RHS |\n|---|---|---|---|---|---|\n| $z$ | 0 | $-\\tfrac23$ | $\\tfrac56$ | 0 | 20 |\n| $x_1$ | 1 | $\\tfrac23$ | $\\tfrac16$ | 0 | 4 |\n| $s_2$ | 0 | $\\tfrac43$ | $-\\tfrac16$ | 1 | 2 |\n\n**Iteration 2.** $x_2$ enters ($-\\tfrac23$). Ratios $4/(2/3)=6$ and $2/(4/3)=1.5$; $s_2$ leaves, pivot $\\tfrac43$.\n\n| Basis | $x_1$ | $x_2$ | $s_1$ | $s_2$ | RHS |\n|---|---|---|---|---|---|\n| $z$ | 0 | 0 | $\\tfrac34$ | $\\tfrac12$ | 21 |\n| $x_1$ | 1 | 0 | $\\tfrac14$ | $-\\tfrac12$ | 3 |\n| $x_2$ | 0 | 1 | $-\\tfrac18$ | $\\tfrac34$ | $\\tfrac32$ |\n\nNo negative entries remain in the $z$-row, so this is optimal: $x_1 = 3$, $x_2 = 1.5$, $Z = 21$. Check: $6(3)+4(1.5)=18+6=24$ and $3+3=6$ — both constraints bind, as expected when both slacks left the basis.\n\n**The dual.** Every LP has a dual; for the symmetric max form above it is\n\n$$\\text{Min } W = 24y_1 + 6y_2 \\quad\\text{s.t.}\\quad 6y_1+y_2\\ge5,\\quad 4y_1+2y_2\\ge4,\\quad y_1,y_2\\ge0$$\n\nThe optimal dual values are read straight off the final $z$-row under the slack columns: $y_1 = \\tfrac34$, $y_2 = \\tfrac12$. Then $W = 24(\\tfrac34)+6(\\tfrac12) = 18+3 = 21 = Z$, confirming **strong duality**. Both dual constraints hold with equality — $6(\\tfrac34)+\\tfrac12 = 5$ and $4(\\tfrac34)+2(\\tfrac12)=4$ — which is **complementary slackness**: since $x_1,x_2>0$, the corresponding dual constraints must be tight.\n\n**Sensitivity on $b_1$.** The columns of $s_1,s_2$ in the final tableau form $B^{-1}=\\begin{pmatrix}\\tfrac14&-\\tfrac12\\\\[2pt]-\\tfrac18&\\tfrac34\\end{pmatrix}$. Changing $b_1$ from 24 to $24+\\Delta$ gives\n$$x_B = B^{-1}\\begin{pmatrix}24+\\Delta\\\\6\\end{pmatrix}=\\begin{pmatrix}3+\\Delta/4\\\\ 1.5-\\Delta/8\\end{pmatrix}$$\nBoth must stay non-negative: $\\Delta\\ge-12$ and $\\Delta\\le12$, so $b_1$ may range over $[12,36]$ with the basis unchanged. Within that range each extra unit of resource 1 is worth $y_1 = \\tfrac34$, the **shadow price**. At $b_1=36$: $x_1=6,\\ x_2=0,\\ Z=30 = 21+\\tfrac34(12)$. Correct. Beyond 36 the basis changes and the shadow price drops — shadow prices are valid only inside the computed range, which is precisely what sensitivity analysis reports."
+    },
+    {
+     "t": "md",
+     "text": "## Duality theory in full\n\nReading off the dual of a maximisation problem with $\\le$ constraints:\n\n| Primal (max) | Dual (min) |\n|---|---|\n| $m$ constraints | $m$ variables |\n| $n$ variables | $n$ constraints |\n| objective coefficients $c$ | right-hand sides $c$ |\n| right-hand sides $b$ | objective coefficients $b$ |\n| constraint matrix $A$ | $A^{\\mathsf T}$ |\n| $i$-th constraint $\\le$ | $y_i \\ge 0$ |\n| $i$-th constraint $=$ | $y_i$ unrestricted |\n| $x_j \\ge 0$ | $j$-th dual constraint $\\ge$ |\n| $x_j$ unrestricted | $j$-th dual constraint $=$ |\n\nThe theorems:\n\n- **Weak duality**: for any feasible primal $x$ and feasible dual $y$, $c^{\\mathsf T}x \\le b^{\\mathsf T}y$. So any dual feasible solution bounds the primal optimum from above.\n- **Strong duality**: if either problem has a finite optimum, so does the other and the two optima are equal.\n- **Complementary slackness**: at optimality, $x_j>0 \\Rightarrow$ the $j$-th dual constraint is tight, and $y_i>0\\Rightarrow$ the $i$-th primal constraint is tight. Contrapositively, a constraint with positive slack has zero shadow price.\n- If the primal is **unbounded**, the dual is **infeasible** (and vice versa). Both can be infeasible simultaneously, so \"unbounded primal $\\Rightarrow$ infeasible dual\" is one-way.\n- The dual of the dual is the primal.\n\n**Dual simplex** is the algorithm to use when a starting basis is *dual feasible* (the $z$-row already has the right signs) but *primal infeasible* (some RHS is negative). It reverses the simplex rules:\n\n1. **Leaving variable first**: the row with the most negative RHS.\n2. **Entering variable by ratio test on the $z$-row**: among the columns with a **negative** coefficient in the pivot row, choose the smallest $\\left|\\dfrac{z_j-c_j}{a_{rj}}\\right|$.\n3. Pivot as usual. Stop when all RHS values are non-negative — the solution is then both primal and dual feasible, hence optimal.\n\nIf a row has a negative RHS but no negative entries, the problem is **infeasible**. Dual simplex is what makes re-optimisation cheap after a constraint is added or a right-hand side tightened, which is its real-world use."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — dual simplex",
+     "text": "Minimise $Z = 3x_1+2x_2$ subject to $x_1+x_2\\ge2$, $3x_1+x_2\\ge3$, $x_1,x_2\\ge0$.\n\nMultiply both constraints by $-1$ and add slacks so the basis is $\\{s_1,s_2\\}$:\n$$-x_1-x_2+s_1=-2, \\qquad -3x_1-x_2+s_2=-3$$\n\nBecause the objective is a minimisation with non-negative costs, the $z$-row entries $c_j - z_j = (3, 2, 0, 0)$ are already non-negative: dual feasible, primal infeasible.\n\n| Basis | $x_1$ | $x_2$ | $s_1$ | $s_2$ | RHS |\n|---|---|---|---|---|---|\n| $z$ | 3 | 2 | 0 | 0 | 0 |\n| $s_1$ | $-1$ | $-1$ | 1 | 0 | $-2$ |\n| $s_2$ | $-3$ | $-1$ | 0 | 1 | $-3$ |\n\n**Iteration 1.** Most negative RHS is $-3$, so $s_2$ leaves. Negative entries in that row: $x_1$ with $-3$, $x_2$ with $-1$. Ratios $|3/(-3)|=1$ and $|2/(-1)|=2$; the minimum picks $x_1$ to enter. Pivot on $-3$.\n\n| Basis | $x_1$ | $x_2$ | $s_1$ | $s_2$ | RHS |\n|---|---|---|---|---|---|\n| $z$ | 0 | 1 | 0 | 1 | $-3$ |\n| $s_1$ | 0 | $-\\tfrac23$ | 1 | $-\\tfrac13$ | $-1$ |\n| $x_1$ | 1 | $\\tfrac13$ | 0 | $-\\tfrac13$ | 1 |\n\n**Iteration 2.** RHS $-1$ in row $s_1$, so $s_1$ leaves. Negative entries: $x_2$ with $-\\tfrac23$, $s_2$ with $-\\tfrac13$. Ratios $|1/(-\\tfrac23)|=1.5$ and $|1/(-\\tfrac13)|=3$; $x_2$ enters. Pivot on $-\\tfrac23$.\n\n| Basis | $x_1$ | $x_2$ | $s_1$ | $s_2$ | RHS |\n|---|---|---|---|---|---|\n| $z$ | 0 | 0 | $\\tfrac32$ | $\\tfrac12$ | $-4.5$ |\n| $x_2$ | 0 | 1 | $-\\tfrac32$ | $\\tfrac12$ | $\\tfrac32$ |\n| $x_1$ | 1 | 0 | $\\tfrac12$ | $-\\tfrac12$ | $\\tfrac12$ |\n\nAll RHS values are now non-negative, so the solution is optimal: $x_1 = \\tfrac12$, $x_2=\\tfrac32$, $Z = 3(\\tfrac12)+2(\\tfrac32)=1.5+3=4.5$.\n\nVerify against the corner points of the feasible region: the extreme points are $(0,3)$ with $Z=6$, $(\\tfrac12,\\tfrac32)$ with $Z=4.5$, and $(2,0)$ with $Z=6$. The minimum is indeed 4.5. Both constraints bind at the optimum: $\\tfrac12+\\tfrac32=2$ and $3(\\tfrac12)+\\tfrac32=3$."
+    },
+    {
+     "t": "md",
+     "text": "## Integer programming\n\nAn **integer linear program (ILP)** adds the requirement that some or all variables be integers — all of them for a pure ILP, some for a **mixed** ILP, and 0/1 for a **binary** or **zero-one** program. The LP obtained by dropping integrality is the **LP relaxation**.\n\nFacts that carry most of the marks:\n\n- The LP relaxation's optimum **bounds** the ILP optimum: for a maximisation, $Z_{\\text{ILP}}\\le Z_{\\text{LP}}$. So the relaxation gives an upper bound, and rounding gives a lower bound if it is feasible.\n- **Rounding the LP solution can be infeasible or badly suboptimal.** It is not a valid method, only a heuristic.\n- ILP is NP-hard; LP is solvable in polynomial time (ellipsoid, interior point). The simplex method is exponential in the worst case but fast in practice.\n- If the constraint matrix is **totally unimodular** and $b$ is integral, every basic feasible solution is already integral, so the LP relaxation solves the ILP exactly. Transportation and assignment problems have this property, which is why their LP solutions come out in whole units automatically.\n\nThe two exact solution approaches:\n\n**Branch and bound.** Solve the relaxation. If a variable $x_j$ comes out fractional at value $f$, branch into two subproblems with $x_j \\le \\lfloor f\\rfloor$ and $x_j\\ge\\lceil f\\rceil$. Keep the best integer solution found so far as the **incumbent**; prune any node whose relaxation bound is worse than the incumbent, or whose relaxation is infeasible.\n\n**Cutting planes (Gomory).** Solve the relaxation, then add a valid inequality — a cut — that removes the fractional optimum without removing any integer feasible point, and re-optimise, usually with the dual simplex since the new constraint makes the current basis primal infeasible. Repeat until integral."
+    },
+    {
+     "t": "md",
+     "text": "## The transportation problem\n\n$m$ sources with supplies $a_i$, $n$ destinations with demands $b_j$, cost $c_{ij}$ per unit shipped. Minimise total cost subject to shipping exactly the supply out of each source and exactly the demand into each destination.\n\nThe problem is **balanced** when $\\sum a_i = \\sum b_j$. If supply exceeds demand, add a **dummy destination** with zero costs; if demand exceeds supply, add a **dummy source**. A balanced $m\\times n$ problem has $m+n$ constraints of which only $m+n-1$ are independent, so a non-degenerate basic feasible solution has exactly $m+n-1$ occupied cells. If fewer are occupied the solution is **degenerate** and you must place an $\\varepsilon$ (an infinitesimal allocation) in an unoccupied cell chosen so that no closed loop is formed, before you can run MODI.\n\nThree ways to get an initial basic feasible solution:\n\n**North-West corner rule.** Start at the top-left cell, allocate the largest amount the row and column allow, cross out the exhausted row or column, and move on. Ignores costs completely, so it is fast but usually far from optimal.\n\n**Least-cost (matrix minima) method.** Repeatedly pick the cell with the lowest unit cost anywhere remaining, allocate the maximum possible, cross out the exhausted line. Breaks ties arbitrarily.\n\n**Vogel's approximation method (VAM).** For each remaining row and each remaining column compute the **penalty** — the difference between its two smallest costs, the cost of *not* using the cheapest cell. Select the row or column with the largest penalty, allocate as much as possible to its cheapest cell, cross out the exhausted line, recompute penalties. VAM usually gives an initial solution that is optimal or nearly so, which is why the exam almost always asks for it.\n\n**MODI (modified distribution / $u$-$v$ method)** then tests and improves:\n\n1. For every occupied cell solve $u_i + v_j = c_{ij}$, setting one $u$ (conventionally the one in the row with most allocations, or simply $u_1$) to 0.\n2. For every unoccupied cell compute the **opportunity cost** $d_{ij}=c_{ij}-u_i-v_j$.\n3. If all $d_{ij}\\ge0$ the solution is **optimal**. Otherwise choose the most negative $d_{ij}$ as the entering cell.\n4. Trace the unique **closed loop** from the entering cell through occupied cells, turning only at occupied cells, with horizontal and vertical moves alternating. Label the entering cell $+$ and alternate $-,+,\\dots$ around the loop.\n5. Let $\\theta$ be the smallest allocation on a $-$ cell. Add $\\theta$ to every $+$ cell and subtract it from every $-$ cell. The $-$ cell that reaches zero leaves the basis. The cost falls by $|d_{ij}|\\times\\theta$.\n6. Repeat."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — transportation, all three initial methods then MODI",
+     "text": "Supplies $S_1=300$, $S_2=400$, $S_3=500$; demands $D_1=250$, $D_2=350$, $D_3=400$, $D_4=200$. Total supply $=$ total demand $=1200$, so the problem is balanced. Costs:\n\n| | $D_1$ | $D_2$ | $D_3$ | $D_4$ | Supply |\n|---|---|---|---|---|---|\n| $S_1$ | 3 | 1 | 7 | 4 | 300 |\n| $S_2$ | 2 | 6 | 5 | 9 | 400 |\n| $S_3$ | 8 | 3 | 3 | 2 | 500 |\n| Demand | 250 | 350 | 400 | 200 | |\n\n**North-west corner.** $x_{11}=250$ (kills $D_1$, leaves $S_1$ with 50); $x_{12}=50$ (kills $S_1$, leaves $D_2$ with 300); $x_{22}=300$ (kills $D_2$, leaves $S_2$ with 100); $x_{23}=100$ (kills $S_2$, leaves $D_3$ with 300); $x_{33}=300$ (kills $D_3$); $x_{34}=200$.\n$$Z = 250(3)+50(1)+300(6)+100(5)+300(3)+200(2) = 750+50+1800+500+900+400 = 4400$$\nSix occupied cells $=m+n-1=3+4-1=6$, so it is non-degenerate.\n\n**Least-cost method.** Cheapest cell is $(S_1,D_2)$ at 1: allocate 300, $S_1$ done, $D_2$ has 50 left. Next cheapest is 2, tied at $(S_2,D_1)$ and $(S_3,D_4)$: take $(S_2,D_1)=250$, then $(S_3,D_4)=200$. Next is 3 at $(S_3,D_2)$: allocate 50, $D_2$ done. Then $(S_3,D_3)=250$ exhausts $S_3$, and $(S_2,D_3)=150$ finishes.\n$$Z = 300(1)+250(2)+200(2)+50(3)+250(3)+150(5)=300+500+400+150+750+750 = 2850$$\n\n**Vogel's approximation.** Initial penalties — rows $S_1: 3-1=2$, $S_2: 5-2=3$, $S_3: 3-2=1$; columns $D_1: 3-2=1$, $D_2: 3-1=2$, $D_3: 5-3=2$, $D_4: 4-2=2$. Largest penalty is 3 in row $S_2$; its cheapest cell is $(S_2,D_1)$ at 2, so allocate $\\min(400,250)=250$ and delete $D_1$.\nRecompute: $S_1: 4-1=3$, $S_2: 6-5=1$, $S_3: 3-2=1$; $D_2: 3-1=2$, $D_3: 5-3=2$, $D_4: 4-2=2$. Largest is 3 in $S_1$; cheapest cell $(S_1,D_2)$ at 1, allocate 300, delete $S_1$, leaving $D_2$ with 50.\nRecompute: $S_2: 6-5=1$, $S_3: 3-2=1$; $D_2: 6-3=3$, $D_3: 5-3=2$, $D_4: 9-2=7$. Largest is 7 in $D_4$; cheapest there is $(S_3,D_4)$ at 2, allocate 200, delete $D_4$.\nRecompute: $D_2: 6-3=3$, $D_3: 5-3=2$, rows both small. Largest is 3 in $D_2$; cheapest $(S_3,D_2)$ at 3, allocate 50, delete $D_2$. Only $D_3$ remains: $(S_3,D_3)=250$ and $(S_2,D_3)=150$.\n$$Z = 250(2)+300(1)+200(2)+50(3)+250(3)+150(5) = 2850$$\nSame allocation as least-cost here, and — as MODI will confirm — already optimal. That is typical of VAM.\n\n**MODI, starting deliberately from the poor north-west solution** so the improvement steps are visible. Occupied cells: $(1,1),(1,2),(2,2),(2,3),(3,3),(3,4)$.\n\n*Iteration 1.* Set $u_1=0$. From $(1,1)$: $v_1=3$. From $(1,2)$: $v_2=1$. From $(2,2)$: $u_2=6-1=5$. From $(2,3)$: $v_3=5-5=0$. From $(3,3)$: $u_3=3-0=3$. From $(3,4)$: $v_4=2-3=-1$.\nOpportunity costs $d_{ij}=c_{ij}-u_i-v_j$ on the empty cells:\n$d_{13}=7-0-0=7$; $d_{14}=4-0+1=5$; $d_{21}=2-5-3=\\mathbf{-6}$; $d_{24}=9-5+1=5$; $d_{31}=8-3-3=2$; $d_{32}=3-3-1=-1$.\nMost negative is $d_{21}=-6$, so $(S_2,D_1)$ enters. Loop: $(2,1)^{+}\\to(2,2)^{-}\\to(1,2)^{+}\\to(1,1)^{-}\\to$ back. The $-$ cells hold 300 and 250, so $\\theta=250$ and $(1,1)$ leaves.\nNew allocations: $x_{12}=300$, $x_{21}=250$, $x_{22}=50$, $x_{23}=100$, $x_{33}=300$, $x_{34}=200$. Cost drops by $6\\times250=1500$ to $\\mathbf{2900}$.\n\n*Iteration 2.* Set $u_1=0$: from $(1,2)$, $v_2=1$; from $(2,2)$, $u_2=5$; from $(2,1)$, $v_1=2-5=-3$; from $(2,3)$, $v_3=0$; from $(3,3)$, $u_3=3$; from $(3,4)$, $v_4=-1$.\nEmpty cells: $d_{11}=3-0+3=6$; $d_{13}=7$; $d_{14}=5$; $d_{24}=9-5+1=5$; $d_{31}=8-3+3=8$; $d_{32}=3-3-1=\\mathbf{-1}$.\n$(S_3,D_2)$ enters. Loop: $(3,2)^{+}\\to(3,3)^{-}\\to(2,3)^{+}\\to(2,2)^{-}\\to$ back. The $-$ cells hold 300 and 50, so $\\theta=50$ and $(2,2)$ leaves.\nNew allocations: $x_{12}=300$, $x_{21}=250$, $x_{23}=150$, $x_{32}=50$, $x_{33}=250$, $x_{34}=200$. Cost drops by $1\\times50=50$ to $\\mathbf{2850}$.\n\n*Iteration 3.* $u_1=0 \\Rightarrow v_2=1$; $(3,2)\\Rightarrow u_3=2$; $(3,3)\\Rightarrow v_3=1$; $(3,4)\\Rightarrow v_4=0$; $(2,3)\\Rightarrow u_2=4$; $(2,1)\\Rightarrow v_1=-2$.\nEmpty cells: $d_{11}=3-0+2=5$; $d_{13}=7-0-1=6$; $d_{14}=4-0-0=4$; $d_{22}=6-4-1=1$; $d_{24}=9-4-0=5$; $d_{31}=8-2+2=8$. **All non-negative, so the solution is optimal at $Z=2850$** — exactly what VAM produced in one pass.\n\nFinal shipping plan: $S_1\\to D_2$: 300; $S_2\\to D_1$: 250; $S_2\\to D_3$: 150; $S_3\\to D_2$: 50; $S_3\\to D_3$: 250; $S_3\\to D_4$: 200."
+    },
+    {
+     "t": "md",
+     "text": "## The assignment problem and the Hungarian method\n\nThe assignment problem is the special transportation problem in which $m=n$ and every supply and demand equals 1: assign $n$ workers to $n$ jobs, one each, minimising total cost. A brute-force search would examine $n!$ assignments; the **Hungarian method** solves it in $O(n^3)$.\n\nThe algorithm, for a **square** cost matrix (pad with a dummy row or column of zeros if it is not square, and convert a maximisation by subtracting every entry from the largest entry):\n\n1. **Row reduction** — subtract the smallest entry of each row from that row.\n2. **Column reduction** — subtract the smallest entry of each column from that column.\n3. **Cover all zeros with the minimum number of horizontal and vertical lines.**\n4. If the number of lines equals $n$, an optimal assignment exists among the zeros; find it. Otherwise go to step 5.\n5. Let $\\theta$ be the smallest **uncovered** entry. Subtract $\\theta$ from every uncovered entry and add $\\theta$ to every entry covered **twice** (at a line intersection). Entries covered once are unchanged. Return to step 3.\n6. Read the optimal cost from the **original** matrix, not the reduced one.\n\nWhy it works: adding a constant to a whole row or column changes every complete assignment's cost by the same amount, so the optimal assignment is unchanged; the reductions drive costs down to zero without changing which assignment is best, and by König's theorem the minimum number of covering lines equals the maximum number of independent zeros."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — the Hungarian method",
+     "text": "Assign four workers to four jobs to minimise cost:\n\n| | $J_1$ | $J_2$ | $J_3$ | $J_4$ |\n|---|---|---|---|---|\n| $W_1$ | 10 | 19 | 8 | 15 |\n| $W_2$ | 10 | 18 | 7 | 17 |\n| $W_3$ | 13 | 16 | 9 | 14 |\n| $W_4$ | 12 | 19 | 8 | 18 |\n\n**Step 1 — row reduction.** Row minima are 8, 7, 9, 8.\n\n$$\\begin{pmatrix}2&11&0&7\\\\3&11&0&10\\\\4&7&0&5\\\\4&11&0&10\\end{pmatrix}$$\n\n**Step 2 — column reduction.** Column minima are 2, 7, 0, 5.\n\n$$\\begin{pmatrix}0&4&0&2\\\\1&4&0&5\\\\2&0&0&0\\\\2&4&0&5\\end{pmatrix}$$\n\n**Step 3 — cover the zeros.** Column $J_3$ covers four zeros; row $W_1$ covers the zero at $(W_1,J_1)$; row $W_3$ covers the zeros at $(W_3,J_2)$ and $(W_3,J_4)$. Three lines — fewer than 4, so not yet optimal.\n\n**Step 5.** Uncovered entries are rows $W_2, W_4$ crossed with columns $J_1,J_2,J_4$: values $1,4,5$ and $2,4,5$. The smallest is $\\theta=1$. Subtract 1 from all six, add 1 at the two double-covered cells $(W_1,J_3)$ and $(W_3,J_3)$.\n\n$$\\begin{pmatrix}0&4&1&2\\\\0&3&0&4\\\\2&0&1&0\\\\1&3&0&4\\end{pmatrix}$$\n\n**Cover again.** Column $J_1$ covers $(W_1,J_1),(W_2,J_1)$; column $J_3$ covers $(W_2,J_3),(W_4,J_3)$; row $W_3$ covers $(W_3,J_2),(W_3,J_4)$. Still three lines.\n\n**Step 5 again.** Uncovered cells are rows $W_1,W_2,W_4$ crossed with columns $J_2,J_4$: $4,2;\\ 3,4;\\ 3,4$. Smallest is $\\theta=2$. Subtract 2 from those six, add 2 at $(W_3,J_1)$ and $(W_3,J_3)$.\n\n$$\\begin{pmatrix}0&2&1&0\\\\0&1&0&2\\\\4&0&3&0\\\\1&1&0&2\\end{pmatrix}$$\n\n**Cover.** Now four lines are needed, so an optimal assignment exists. Find it by starting with rows or columns containing a single zero: row $W_4$ has one zero, at $J_3$ — assign $W_4\\to J_3$ and strike out column $J_3$. Row $W_2$ then has only $J_1$ — assign $W_2\\to J_1$, strike out column $J_1$. Row $W_3$ has zeros at $J_2$ and $J_4$; row $W_1$ now has only $J_4$ — assign $W_1\\to J_4$, leaving $W_3\\to J_2$.\n\n$$W_1\\to J_4,\\quad W_2\\to J_1,\\quad W_3\\to J_2,\\quad W_4\\to J_3$$\n\nCost from the **original** matrix: $15+10+16+8 = \\mathbf{49}$.\n\nVerification by exhaustive check of all $4!=24$ assignments confirms 49 is the unique minimum.\n\nA useful running check: the total amount subtracted so far is a valid lower bound on the optimal cost. The row minima give $8+7+9+8=32$ and the column minima give $2+7+0+5=14$, so after the two reductions the bound is 46. Each $\\theta$ step raises it by $\\theta\\times(n-\\text{lines used})$: the first by $1\\times(4-3)=1$ and the second by $2\\times(4-3)=2$. That brings the bound to $46+1+2=49$, which equals the assignment cost — confirming optimality without enumerating anything."
+    },
+    {
+     "t": "md",
+     "text": "## PERT and CPM\n\nBoth are network scheduling techniques on an **activity-on-arrow** (or activity-on-node) diagram. The historical split: **CPM** assumes deterministic activity durations and focuses on the time-cost trade-off; **PERT** assumes probabilistic durations and focuses on the probability of meeting a deadline. Modern practice merges them, and exam questions use the names loosely.\n\n**Forward pass** computes earliest event times: $E_1=0$ and $E_j = \\max_i (E_i + t_{ij})$ over all activities entering event $j$. **Backward pass** computes latest event times: $L_n = E_n$ and $L_i = \\min_j (L_j - t_{ij})$.\n\nFor an activity $(i,j)$ with duration $t$:\n\n$$\\text{Total float} = L_j - E_i - t$$\n$$\\text{Free float} = E_j - E_i - t$$\n$$\\text{Independent float} = \\max(0,\\ E_j - L_i - t)$$\n\nTotal float is the delay possible without delaying the project; free float is the delay possible without delaying any *successor's* earliest start; independent float is what remains when all predecessors finish as late as possible and all successors start as early as possible. Always $\\text{IF}\\le\\text{FF}\\le\\text{TF}$.\n\nThe **critical path** is the longest path through the network; equivalently the chain of activities with zero total float. Its length is the project duration. A network may have several critical paths, and every one of them must be shortened to shorten the project.\n\n**PERT's three time estimates** — optimistic $a$, most likely $m$, pessimistic $b$ — give a beta-distributed duration with\n\n$$t_e = \\frac{a+4m+b}{6}, \\qquad \\sigma = \\frac{b-a}{6}, \\qquad \\sigma^2 = \\left(\\frac{b-a}{6}\\right)^2$$\n\nThe project duration is taken as normally distributed (central limit theorem) with mean equal to the sum of $t_e$ along the critical path and variance equal to the **sum of the variances along the critical path** — variances add, standard deviations do not. Then\n$$Z = \\frac{T_{\\text{due}} - T_{\\text{expected}}}{\\sigma_{\\text{project}}}$$\nand the probability of finishing by $T_{\\text{due}}$ is read from the standard normal table.\n\n**Crashing** (CPM time-cost trade-off). Each activity has a normal time/cost and a crash time/cost, with\n$$\\text{cost slope} = \\frac{\\text{crash cost}-\\text{normal cost}}{\\text{normal time}-\\text{crash time}}$$\nthe price of buying one day. Crash the cheapest activity **on the critical path**, one day at a time, re-identifying the critical path after every step because it can change. When several paths are simultaneously critical you must crash one activity on each, so compare the *combined* slope against the daily indirect cost. Stop when the cheapest further reduction costs more than the indirect cost it saves — that point is the **optimum project duration**, and the total cost curve is U-shaped around it."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — critical path, floats, PERT probability and crashing",
+     "text": "A project has seven activities on events 1 to 6:\n\n| Activity | Arrow | Duration |\n|---|---|---|\n| A | 1–2 | 4 |\n| B | 1–3 | 6 |\n| C | 2–4 | 5 |\n| D | 3–4 | 3 |\n| E | 3–5 | 7 |\n| F | 4–6 | 4 |\n| G | 5–6 | 2 |\n\n**Forward pass.** $E_1=0$; $E_2 = 0+4 = 4$; $E_3=0+6=6$; $E_4=\\max(E_2+5,\\ E_3+3)=\\max(9,9)=9$; $E_5=6+7=13$; $E_6=\\max(E_4+4,\\ E_5+2)=\\max(13,15)=15$.\n\n**Backward pass.** $L_6=15$; $L_5=15-2=13$; $L_4=15-4=11$; $L_3=\\min(L_4-3,\\ L_5-7)=\\min(8,6)=6$; $L_2=L_4-5=11-5=6$; $L_1=\\min(L_2-4,\\ L_3-6)=\\min(2,0)=0$. The check $L_1=0$ confirms the passes are consistent.\n\n**Floats.**\n\n| Activity | $E_i$ | $L_j$ | $t$ | Total float $L_j-E_i-t$ | Free float $E_j-E_i-t$ |\n|---|---|---|---|---|---|\n| A (1–2) | 0 | 6 | 4 | 2 | 0 |\n| B (1–3) | 0 | 6 | 6 | **0** | 0 |\n| C (2–4) | 4 | 11 | 5 | 2 | 0 |\n| D (3–4) | 6 | 11 | 3 | 2 | 0 |\n| E (3–5) | 6 | 13 | 7 | **0** | 0 |\n| F (4–6) | 9 | 15 | 4 | 2 | 2 |\n| G (5–6) | 13 | 15 | 2 | **0** | 0 |\n\n**Critical path: 1–3–5–6, i.e. B–E–G, duration $6+7+2=15$ days.** The three paths are A-C-F $=13$, B-D-F $=13$ and B-E-G $=15$; the longest is the critical one.\n\nNote activity A: total float 2 but free float 0. Delaying A by 2 days does not delay the project, but it *does* delay the earliest start of C — that is exactly the distinction the two floats capture.\n\n**PERT probability.** Suppose the three critical activities have estimates B $(a,m,b)=(2,5,14)$, E $=(3,6,15)$, G $=(1,1,7)$.\n$$t_e(B)=\\frac{2+20+14}{6}=6,\\quad t_e(E)=\\frac{3+24+15}{6}=7,\\quad t_e(G)=\\frac{1+4+7}{6}=2$$\nmatching the deterministic durations, so the expected project length is still 15 days.\n$$\\sigma^2_B=\\left(\\tfrac{14-2}{6}\\right)^2=4,\\quad \\sigma^2_E=\\left(\\tfrac{15-3}{6}\\right)^2=4,\\quad \\sigma^2_G=\\left(\\tfrac{7-1}{6}\\right)^2=1$$\n$$\\sigma^2_{\\text{project}}=4+4+1=9 \\;\\Rightarrow\\; \\sigma_{\\text{project}}=3$$\nProbability of finishing within 18 days:\n$$Z=\\frac{18-15}{3}=1 \\quad\\Rightarrow\\quad P \\approx 0.8413$$\nAnd $P(T\\le15)=0.5$ exactly, since 15 is the mean — a useful check that you have not confused mean with mode.\n\n**Crashing.** Normal direct cost is Rs 8000 and indirect cost is Rs 200 per day. Crash data:\n\n| Activity | Normal | Crash | Slope (Rs/day) |\n|---|---|---|---|\n| A | 4 | 3 | 80 |\n| B | 6 | 4 | 150 |\n| C | 5 | 4 | 60 |\n| D | 3 | 2 | 90 |\n| E | 7 | 5 | 120 |\n| F | 4 | 3 | 70 |\n| G | 2 | 1 | 50 |\n\nAt 15 days the total cost is $8000 + 200(15) = 11000$.\n\n*Step 1.* Only B–E–G is critical. Cheapest slope on it is G at 50. Crash G by 1 day: duration 14, direct cost $+50$, indirect $-200$, **net saving 150**. Total $= 8050+2800 = 10850$.\n\n*Step 2.* B–E–G is still critical at 14 (the others are 13). G is fully crashed; cheapest remaining is E at 120. Crash E by 1: duration 13, $+120$ direct, $-200$ indirect, **net saving 80**. Total $=8170+2600=10770$.\n\n*Step 3.* Now all three paths are 13, so any further reduction must shorten all three at once. The options: crash F (70), which lies on both A-C-F and B-D-F, together with E again (120) for B-E-G — total 190. Or crash B (150), covering B-D-F and B-E-G, together with C (60) for A-C-F — total 210. The cheaper combination is $F+E = 190$ against an indirect saving of 200, a **net saving of 10**. Duration 12. Total $=8360+2400=10760$.\n\n*Step 4.* At 12 days E is at its crash limit of 5 and F at 3. To reach 11 the only route is B (150) for two paths plus C (60) for the third, costing 210 against a 200 saving — a net **loss** of 10. Stop.\n\n**Optimum: 12 days at a total cost of Rs 10,760**, against Rs 11,000 for the normal 15-day schedule. The savings accumulated were $150+80+10=240$, and $11000-240=10760$ — the arithmetic closes."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.7-1",
+     "q": "In a balanced transportation problem with 4 sources and 5 destinations, a non-degenerate basic feasible solution occupies how many cells?",
+     "opts": [
+      "20",
+      "9",
+      "8",
+      "5"
+     ],
+     "ans": 2,
+     "exp": "A balanced $m\\times n$ transportation problem has $m+n$ supply and demand equations, one of which is redundant, so the basis has $m+n-1$ cells: $4+5-1=8$. Occupying fewer than 8 means the solution is degenerate and an $\\varepsilon$ must be inserted before MODI can assign all the $u_i$ and $v_j$."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.7-2",
+     "q": "In the MODI method, the current solution is optimal for a minimisation problem when",
+     "opts": [
+      "all $u_i + v_j = c_{ij}$",
+      "all opportunity costs $c_{ij}-u_i-v_j \\ge 0$ for unoccupied cells",
+      "all opportunity costs are negative",
+      "the number of occupied cells is $m+n$"
+     ],
+     "ans": 1,
+     "exp": "For occupied cells $c_{ij}=u_i+v_j$ by construction, so option A says nothing. Optimality is decided on the *unoccupied* cells: if every $d_{ij}=c_{ij}-u_i-v_j$ is non-negative, no reallocation can lower the cost. A single negative $d_{ij}$ identifies an improving entering cell, and the cost falls by $|d_{ij}|\\times\\theta$."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.7-3",
+     "q": "An activity has $E_i = 8$, $E_j = 16$, $L_i = 10$, $L_j = 19$ and duration 5. Its total float and free float are",
+     "opts": [
+      "6 and 3",
+      "3 and 6",
+      "6 and 6",
+      "11 and 8"
+     ],
+     "ans": 0,
+     "exp": "Total float $= L_j - E_i - t = 19-8-5 = 6$. Free float $= E_j - E_i - t = 16-8-5=3$. The independent float would be $\\max(0, E_j-L_i-t)=\\max(0,16-10-5)=1$, and indeed $1\\le3\\le6$ as the general inequality requires."
+    },
+    {
+     "t": "check",
+     "id": "chk-1.7-4",
+     "q": "The optimal value of the dual of a maximisation LP with a finite optimum is",
+     "opts": [
+      "always greater than the primal optimum",
+      "always less than the primal optimum",
+      "equal to the primal optimum",
+      "unrelated to the primal optimum"
+     ],
+     "ans": 2,
+     "exp": "Strong duality: if either problem has a finite optimum then both do and the optimal values are equal. Weak duality gives only the one-sided bound $c^{\\mathsf T}x\\le b^{\\mathsf T}y$ for *feasible* (not necessarily optimal) pairs, which is where the 'greater than' distractor comes from. The gap closes exactly at optimality."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Read shadow prices straight off the final simplex tableau",
+     "body": "The optimal dual variables sit in the $z$-row under the slack columns, in order. You never need to solve the dual separately: if the final $z$-row shows $\\tfrac34$ and $\\tfrac12$ under $s_1,s_2$, then $y_1=\\tfrac34$, $y_2=\\tfrac12$ and $W = \\sum b_i y_i$ must equal $Z$. If it does not, you have a pivoting error."
+    },
+    {
+     "title": "VAM penalties = second smallest minus smallest",
+     "body": "Compute the penalty for every live row and column as the gap between its two cheapest costs, take the largest penalty, and allocate to the cheapest cell in that line. Recompute penalties only for the lines still alive. VAM is optimal or within one MODI iteration of optimal often enough that you can usually answer 'what is the minimum cost' from VAM alone."
+    },
+    {
+     "title": "Hungarian: check line count before doing anything clever",
+     "body": "After the two reductions, cover the zeros with the fewest lines. If the count already equals $n$, stop and read off the assignment — many exam matrices are constructed to finish in one pass. Only when the count is short do you need the $\\theta$ adjustment, and $\\theta$ is always the smallest *uncovered* entry, added back at intersections."
+    },
+    {
+     "title": "Crash by combined slope when paths tie",
+     "body": "Once two or more paths are critical, you cannot shorten the project by crashing one activity unless it lies on all of them. Compare the cheapest *set* that covers every critical path against the daily indirect cost. A single activity shared by several critical paths is almost always the bargain — look for it before adding slopes."
+    },
+    {
+     "title": "Float tests for the critical path",
+     "body": "Total float zero identifies critical activities without tracing paths. Equivalently, an activity $(i,j)$ is critical iff $E_i=L_i$, $E_j=L_j$ and $E_j-E_i=t_{ij}$ — all three, since the first two alone can be satisfied by a non-critical activity between two critical events."
+    }
+   ],
+   "traps": [
+    {
+     "title": "An unbalanced transportation problem must be balanced first",
+     "body": "If $\\sum a_i \\ne \\sum b_j$, add a dummy row or column with zero costs before doing anything. Running VAM or MODI on an unbalanced table produces a solution that satisfies neither supply nor demand, and every subsequent number is wrong. The dummy's allocations represent unshipped supply or unmet demand."
+    },
+    {
+     "title": "Rounding the LP relaxation does not solve an ILP",
+     "body": "The rounded point may be infeasible, and even when feasible it may be far from the integer optimum. The relaxation only provides a bound — an upper bound for a maximisation. Branch and bound or cutting planes are needed for an exact answer. (Transportation and assignment are exceptions: their constraint matrices are totally unimodular, so LP already returns integers.)"
+    },
+    {
+     "title": "Total float is not free float",
+     "body": "Total float uses $L_j$; free float uses $E_j$. An activity can have positive total float and zero free float, meaning any delay pushes its successors' earliest starts even though the project end is safe. Exam options deliberately offer both numbers, and $\\text{IF}\\le\\text{FF}\\le\\text{TF}$ is the check."
+    },
+    {
+     "title": "PERT variances add, standard deviations do not",
+     "body": "For the project, $\\sigma^2_{\\text{project}} = \\sum \\sigma^2_{\\text{critical activities}}$, and $\\sigma_{\\text{project}}=\\sqrt{\\;}$ of that sum. Adding the individual $\\sigma$ values instead inflates the spread and produces a wrong $Z$. Also, only the *critical path's* variances are summed, and if a near-critical path has much larger variance the simple PERT estimate understates the risk."
+    },
+    {
+     "title": "The critical path can change while crashing",
+     "body": "After every crash step, recompute all path lengths. Continuing to crash the original critical path after another path has caught up buys nothing — the project duration stops falling while the direct cost keeps rising. This is the most expensive mistake in a crashing question because every later step then inherits it."
+    }
+   ]
+  }
+ ]
+}

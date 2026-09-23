@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NET CS Lab — UGC NET Computer Science and Applications</title>
+<meta name="description" content="Interactive, offline-first preparation for UGC NET Computer Science and Applications (Paper 2, Code 87): concept lessons, runnable labs, year-wise and topic-wise previous year questions, shortcuts, flashcards and full mock tests.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<link rel="stylesheet" href="app.css">
+<script>
+(function(){var t=null;try{t=localStorage.getItem("net:v1:theme")}catch(e){}
+if(t!=="light"&&t!=="dark")t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
+document.documentElement.setAttribute("data-theme",t);})();
+</script>
+</head>
+<body>
+<header id="topbar">
+  <button id="menu-btn" class="icon-btn" aria-label="Open menu" title="Menu">☰</button>
+  <a class="brand" href="#/"><span class="logo" aria-hidden="true">⌘</span><span class="brand-text">NET CS Lab</span></a>
+  <div id="search-wrap">
+    <input id="search" type="search" placeholder="Search topics, questions, tricks   ( / )" autocomplete="off" spellcheck="false" aria-label="Search">
+    <div id="search-results" class="hidden" role="listbox"></div>
+  </div>
+  <nav class="top-links">
+    <a href="#/pyq">PYQs</a>
+    <a href="#/mock">Mock test</a>
+    <a href="#/cards">Flashcards</a>
+    <a href="#/stats">Progress</a>
+  </nav>
+  <button id="theme-btn" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">☾</button>
+</header>
+<div id="scrim"></div>
+<div id="layout">
+  <aside id="sidebar">
+    <div id="side-links">
+      <a href="#/">Dashboard</a>
+      <a href="#/pyq">PYQs by year</a>
+      <a href="#/topicwise">PYQs by topic</a>
+      <a href="#/tricks">Shortcuts &amp; tricks</a>
+      <a href="#/labs">Interactive labs</a>
+      <a href="#/cards">Flashcards</a>
+      <a href="#/mock">Mock tests</a>
+      <a href="#/stats">Progress</a>
+    </div>
+    <nav id="tree" aria-label="Syllabus"></nav>
+  </aside>
+  <main id="main"><noscript>This site needs JavaScript enabled.</noscript></main>
+  <aside id="toc" aria-label="On this page"></aside>
+</div>
+<script src="vendor/marked.js"></script>
+<script src="vendor/katex/katex.min.js"></script>
+<script src="vendor/katex/auto-render.min.js"></script>
+<script src="vendor/minisearch.js"></script>
+<script src="app.js" defer></script>
+</body>
+</html>

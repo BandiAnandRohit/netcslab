@@ -1,0 +1,1090 @@
+[
+ {
+  "id": "c4.1-1",
+  "unit": 4,
+  "topic": "4.1",
+  "front": "Name the three levels of the ANSI/SPARC architecture, from storage upward.",
+  "back": "**Internal** (physical storage) → **conceptual** (whole-enterprise logical schema) → **external** (per-user views). Counts: 1 internal, 1 conceptual, **many** external.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.1-2",
+  "unit": 4,
+  "topic": "4.1",
+  "front": "Which mapping must be rewritten when an index is added, and which independence is that?",
+  "back": "The **conceptual/internal** mapping — **physical data independence**. The logical schema and all programs are untouched.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.1-3",
+  "unit": 4,
+  "topic": "4.1",
+  "front": "Which kind of data independence is harder to achieve, and why?",
+  "back": "**Logical**. Physical changes are invisible to the conceptual schema by construction; logical changes are visible unless someone deliberately rewrites the view definitions, and some cannot be hidden at all.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.1-4",
+  "unit": 4,
+  "topic": "4.1",
+  "front": "Schema versus instance — in one analogy.",
+  "back": "Schema : instance :: type declaration : variable value. Schema (intension) is set at design time; instance (extension) changes with every INSERT.",
+  "kind": "concept"
+ },
+ {
+  "id": "c4.1-5",
+  "unit": 4,
+  "topic": "4.1",
+  "front": "Which five problems of file-based systems does a DBMS solve?",
+  "back": "Redundancy/inconsistency, difficulty of access, integrity enforcement, atomicity of updates, and concurrent access plus security.",
+  "kind": "list"
+ },
+ {
+  "id": "c4.1-6",
+  "unit": 4,
+  "topic": "4.1",
+  "front": "Classify: `CREATE`, `SELECT`, `GRANT`, `COMMIT`.",
+  "back": "`CREATE` → DDL, `SELECT` → DML, `GRANT` → DCL, `COMMIT` → TCL.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.1-7",
+  "unit": 4,
+  "topic": "4.1",
+  "front": "Which data models are *record-based* and which are *object-based*?",
+  "back": "Record-based: hierarchical, network, relational. Object-based: ER, object-oriented, semantic. ER is a **design** model, never an implementation model.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.1-8",
+  "unit": 4,
+  "topic": "4.1",
+  "front": "Where is the description of a database stored?",
+  "back": "In the **data dictionary / system catalogue**, itself stored as tables. It holds metadata (schemas, constraints, statistics), not the rows.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.1-9",
+  "unit": 4,
+  "topic": "4.1",
+  "front": "What is the impedance mismatch?",
+  "back": "SQL works set-at-a-time while host languages work record-at-a-time, and their type systems differ. Bridged by **cursors** in embedded SQL.",
+  "kind": "concept"
+ },
+ {
+  "id": "c4.1-10",
+  "unit": 4,
+  "topic": "4.1",
+  "front": "Two-tier versus three-tier architecture?",
+  "back": "Two-tier: client talks straight to the DB server (ODBC/JDBC), logic on the client. Three-tier: client → application server → DB server; better scaling and security since the client never holds DB credentials.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.1-11",
+  "unit": 4,
+  "topic": "4.1",
+  "front": "`TRUNCATE` or `DELETE` — which is DDL?",
+  "back": "`TRUNCATE` is **DDL**: deallocates storage, no WHERE clause, normally not rollback-able. `DELETE` is logged **DML** with a WHERE clause and can be rolled back.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.1-12",
+  "unit": 4,
+  "topic": "4.1",
+  "front": "Who is responsible for the conceptual schema, and who for the external schemas?",
+  "back": "The **DBA / database designer** owns the conceptual and internal schemas; **application programmers** work against external schemas (views).",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.2-1",
+  "unit": 4,
+  "topic": "4.2",
+  "front": "Which ER constructs create a new relation when mapped?",
+  "back": "Weak entities, $M{:}N$ relationships, multivalued attributes, and $n$-ary ($n\\ge3$) relationships — plus one per strong entity. $1{:}1$ and $1{:}N$ relationships create **none**.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.2-2",
+  "unit": 4,
+  "topic": "4.2",
+  "front": "What makes an entity type *weak*?",
+  "back": "It has **no key of its own**. It is identified by its owner's primary key plus its **partial key** (discriminator), has total participation in the identifying relationship, which is $1{:}N$ owner→weak.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.2-3",
+  "unit": 4,
+  "topic": "4.2",
+  "front": "For a $1{:}N$ relationship, where does the foreign key go?",
+  "back": "Into the relation of the **N-side**, holding the primary key of the 1-side. There is exactly one value to store per N-side tuple.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.2-4",
+  "unit": 4,
+  "topic": "4.2",
+  "front": "For a $1{:}1$ relationship, where should the foreign key go?",
+  "back": "Into the entity with **total participation**, so the column is never NULL. If both are total, consider merging the two entities into one relation.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.2-5",
+  "unit": 4,
+  "topic": "4.2",
+  "front": "Total participation versus weak entity — what is the difference?",
+  "back": "Participation is about **existence** (must every entity take part?); weakness is about **identification** (does it have its own key?). An entity can be totally participating and still strong.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.2-6",
+  "unit": 4,
+  "topic": "4.2",
+  "front": "Superkey, candidate key, primary key, prime attribute — define each.",
+  "back": "Superkey: any uniquely identifying attribute set. Candidate key: a **minimal** superkey. Primary key: the chosen candidate key (no NULLs). Prime attribute: one belonging to **some** candidate key.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.2-7",
+  "unit": 4,
+  "topic": "4.2",
+  "front": "How many superkeys does $R$ with $n$ attributes and one candidate key of size $m$ have?",
+  "back": "$2^{\\,n-m}$ — the key plus any subset of the remaining $n-m$ attributes.",
+  "kind": "formula"
+ },
+ {
+  "id": "c4.2-8",
+  "unit": 4,
+  "topic": "4.2",
+  "front": "State entity integrity and referential integrity.",
+  "back": "**Entity integrity**: no attribute of a primary key may be NULL. **Referential integrity**: a foreign key value must match an existing primary key value, or be wholly NULL.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.2-9",
+  "unit": 4,
+  "topic": "4.2",
+  "front": "Which single operation can violate ONLY referential integrity?",
+  "back": "`DELETE` — removing rows can orphan children but can never create a duplicate key, a NULL primary key or an out-of-domain value.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.2-10",
+  "unit": 4,
+  "topic": "4.2",
+  "front": "Disjointness and completeness constraints on a specialisation?",
+  "back": "Disjoint (d) vs overlapping (o), and total (double line) vs partial — four combinations. A person who is both student and employee needs **overlapping**.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.2-11",
+  "unit": 4,
+  "topic": "4.2",
+  "front": "What is aggregation in ER modelling, and when is it needed?",
+  "back": "Treating an entire relationship as if it were an entity so another relationship can point at it — needed when a relationship itself participates in a relationship, and it asserts something different from a ternary relationship.",
+  "kind": "concept"
+ },
+ {
+  "id": "c4.2-12",
+  "unit": 4,
+  "topic": "4.2",
+  "front": "Composite versus multivalued attribute on mapping?",
+  "back": "Composite → its leaf components become ordinary columns of the same relation. Multivalued → a **new relation** with the attribute plus the owner's key, PK = both.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.2-13",
+  "unit": 4,
+  "topic": "4.2",
+  "front": "In which three ways do SQL tables differ from mathematical relations?",
+  "back": "SQL tables are **multisets** (duplicates allowed), their columns are **positionally ordered**, and they permit NULLs. True relations are duplicate-free, unordered sets of tuples.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.3-1",
+  "unit": 4,
+  "topic": "4.3",
+  "front": "List the six basic operators of relational algebra.",
+  "back": "Selection $\\sigma$, projection $\\pi$, union $\\cup$, set difference $-$, Cartesian product $\\times$, rename $\\rho$. Join, intersection, division and outer joins are all derived.",
+  "kind": "list"
+ },
+ {
+  "id": "c4.3-2",
+  "unit": 4,
+  "topic": "4.3",
+  "front": "Write division in terms of basic operators.",
+  "back": "$R \\div S = \\pi_X(R) - \\pi_X\\big((\\pi_X(R) \\times S) - R\\big)$, where $X = \\text{attr}(R) - \\text{attr}(S)$.",
+  "kind": "formula"
+ },
+ {
+  "id": "c4.3-3",
+  "unit": 4,
+  "topic": "4.3",
+  "front": "What English words signal that a query needs division?",
+  "back": "*every, all, without exception*. In SQL it becomes the double `NOT EXISTS`; in calculus, $\\forall$.",
+  "kind": "trick"
+ },
+ {
+  "id": "c4.3-4",
+  "unit": 4,
+  "topic": "4.3",
+  "front": "Degree of $R \\div S$, and its maximum cardinality?",
+  "back": "Degree $= \\deg R - \\deg S$. Cardinality $\\le \\lfloor |R| / |S| \\rfloor$, since each qualifying value consumes $|S|$ tuples of $R$.",
+  "kind": "formula"
+ },
+ {
+  "id": "c4.3-5",
+  "unit": 4,
+  "topic": "4.3",
+  "front": "Natural join versus equijoin — degree difference?",
+  "back": "Equijoin keeps the join column **twice**: $\\deg = \\deg R + \\deg S$. Natural join keeps **one** copy: $\\deg = \\deg R + \\deg S - |\\text{common attributes}|$.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.3-6",
+  "unit": 4,
+  "topic": "4.3",
+  "front": "What happens to a natural join when the two relations share no attribute names?",
+  "back": "It degenerates into the **Cartesian product**: $|R|\\cdot|S|$ tuples, degree $\\deg R + \\deg S$.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.3-7",
+  "unit": 4,
+  "topic": "4.3",
+  "front": "Does projection remove duplicates? Does SQL's SELECT?",
+  "back": "$\\pi$ **removes** duplicates (relations are sets). SQL's `SELECT` **keeps** them unless you write `DISTINCT`.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.3-8",
+  "unit": 4,
+  "topic": "4.3",
+  "front": "What is a semijoin and where does it matter?",
+  "back": "$R \\ltimes S = \\pi_{\\text{attr}(R)}(R \\bowtie S)$ — the tuples of $R$ that have a partner. Central to distributed query optimisation because only the join column is shipped.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.3-9",
+  "unit": 4,
+  "topic": "4.3",
+  "front": "State Codd's theorem precisely.",
+  "back": "Relational algebra $\\equiv$ **safe** tuple calculus $\\equiv$ **safe** domain calculus. A language at least this expressive is **relationally complete**.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.3-10",
+  "unit": 4,
+  "topic": "4.3",
+  "front": "When is a calculus expression unsafe?",
+  "back": "When its result, or a quantifier's range, is not confined to $\\text{dom}(P)$ — the constants in the formula plus the values in the relations it mentions. $\\{t \\mid \\neg(t \\in R)\\}$ is the standard unsafe example.",
+  "kind": "concept"
+ },
+ {
+  "id": "c4.3-11",
+  "unit": 4,
+  "topic": "4.3",
+  "front": "Which language does QBE derive from?",
+  "back": "**Domain** relational calculus — which is why you fill values into individual columns. SQL is modelled on **tuple** calculus.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.3-12",
+  "unit": 4,
+  "topic": "4.3",
+  "front": "Name two things relational algebra cannot express.",
+  "back": "**Aggregation** (SUM, AVG, COUNT) and **transitive closure** (recursion). SQL adds both; Datalog adds recursion.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.3-13",
+  "unit": 4,
+  "topic": "4.3",
+  "front": "Bounds on $|R \\cup S|$, $|R \\cap S|$ and $|R - S|$?",
+  "back": "$\\max(|R|,|S|) \\le |R\\cup S| \\le |R|+|S|$; $0 \\le |R\\cap S| \\le \\min(|R|,|S|)$; $\\max(0,|R|-|S|) \\le |R-S| \\le |R|$.",
+  "kind": "formula"
+ },
+ {
+  "id": "c4.4-1",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "Give SQL's logical order of clause evaluation.",
+  "back": "FROM → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT. Hence WHERE cannot see aggregates or SELECT aliases, but ORDER BY can.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.4-2",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "Which aggregate does NOT ignore NULLs?",
+  "back": "Only `COUNT(*)`. `COUNT(col)`, `SUM`, `AVG`, `MIN`, `MAX` all skip NULLs — so `AVG(sal)` divides by the count of **non-null** salaries.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.4-3",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "Why does `x NOT IN (subquery)` return no rows when the subquery contains a NULL?",
+  "back": "`x <> NULL` is **unknown**, so the whole conjunction can never become true, and WHERE keeps only true rows. Use `NOT EXISTS`, which returns a genuine boolean.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.4-4",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "Fill in: `TRUE OR NULL` = ?, `FALSE AND NULL` = ?",
+  "back": "`TRUE OR NULL` → **TRUE**; `FALSE AND NULL` → **FALSE**. These are the only two cases where unknown does not propagate.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.4-5",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "Correlated versus uncorrelated subquery — how do you tell, and what does it cost?",
+  "back": "If the subquery mentions an alias declared in the **outer** query it is correlated and runs **once per outer row**; otherwise it is evaluated **once**.",
+  "kind": "concept"
+ },
+ {
+  "id": "c4.4-6",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "Rewrite `> ALL` and `> ANY` as scalar comparisons.",
+  "back": "`x > ALL(S)` ≡ `x > MAX(S)`; `x > ANY(S)` ≡ `x > MIN(S)`. On an empty set, `> ALL` is **true** and `> ANY` is **false**.",
+  "kind": "trick"
+ },
+ {
+  "id": "c4.4-7",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "When is a SQL view updatable?",
+  "back": "One base table, no aggregates, no DISTINCT, no GROUP BY/HAVING, no set operators, and it must include every NOT NULL column lacking a default. Joins and computed columns make it read-only.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.4-8",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "What does `WITH CHECK OPTION` prevent?",
+  "back": "Rows inserted or updated through the view that would immediately fall outside the view's own WHERE condition — the 'disappearing row' problem.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.4-9",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "`COUNT(*)` on a LEFT JOIN with no match — what goes wrong?",
+  "back": "It returns **1**, counting the NULL-padded row. Use `COUNT(child.key)` to get **0**, since COUNT of a column skips NULLs.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.4-10",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "WHERE versus HAVING?",
+  "back": "`WHERE` filters **rows before** grouping and cannot use aggregates; `HAVING` filters **groups after** aggregation and normally does. `HAVING` without `GROUP BY` treats the whole table as one group.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.4-11",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "`UNION` versus `UNION ALL`?",
+  "back": "`UNION` removes duplicates (so it must sort or hash); `UNION ALL` keeps everything and is cheaper. `INTERSECT` and `EXCEPT` also deduplicate by default.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.4-12",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "What can a BEFORE trigger do that an AFTER trigger cannot?",
+  "back": "Modify `NEW` to change what actually gets stored (and reject the operation before it happens). `OLD` is undefined on INSERT; `NEW` is undefined on DELETE.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.4-13",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "What is an `INSTEAD OF` trigger for?",
+  "back": "Making a **non-updatable view** updatable by supplying the translation into base-table operations manually.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.4-14",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "Why are `CREATE ASSERTION` statements rarely implemented?",
+  "back": "An assertion constrains the whole database, so it must be re-checked after **every** modification to any table it mentions — prohibitively expensive. CHECK constraints and triggers are used instead.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.4-15",
+  "unit": 4,
+  "topic": "4.4",
+  "front": "How do NULLs behave under GROUP BY and DISTINCT, versus under `=`?",
+  "back": "GROUP BY, DISTINCT and UNION treat all NULLs as **equal**, collapsing them into one group/row — the exact opposite of `NULL = NULL`, which is unknown.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.5-1",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "State Armstrong's three primary axioms.",
+  "back": "**Reflexivity**: $Y \\subseteq X \\Rightarrow X \\to Y$. **Augmentation**: $X\\to Y \\Rightarrow XZ \\to YZ$. **Transitivity**: $X\\to Y, Y\\to Z \\Rightarrow X \\to Z$. Sound and complete.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.5-2",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "Which side of an FD may be split, and which may not?",
+  "back": "Only the **right**: $X \\to YZ$ gives $X\\to Y$ and $X\\to Z$. $XY \\to Z$ does **not** give $X\\to Z$.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.5-3",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "How do you test whether $X \\to Y$ follows from $F$?",
+  "back": "Compute $X^+$ by repeatedly applying any FD whose LHS is inside $X^+$. Then $X\\to Y$ holds iff $Y \\subseteq X^+$; $X$ is a superkey iff $X^+ = R$.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.5-4",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "Shortcut for finding candidate keys?",
+  "back": "Attributes appearing **only on LHS** or in no FD are in **every** key; attributes appearing **only on RHS** are in **none**. Compute the closure of the forced set first, then add both-sides attributes one at a time.",
+  "kind": "trick"
+ },
+ {
+  "id": "c4.5-5",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "Give the three steps of computing a canonical cover, in order.",
+  "back": "1. Split RHSs to single attributes. 2. Remove extraneous **LHS** attributes. 3. Remove redundant **FDs**. Recompute closures against the current set after each deletion.",
+  "kind": "steps"
+ },
+ {
+  "id": "c4.5-6",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "Define 2NF, 3NF and BCNF in one line each.",
+  "back": "2NF: no non-prime attribute partially depends on a candidate key. 3NF: every non-trivial $X\\to A$ has $X$ a superkey **or** $A$ prime. BCNF: every non-trivial $X\\to A$ has $X$ a superkey — no exception.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.5-7",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "When is a relation automatically in 2NF? When automatically in 3NF?",
+  "back": "Automatically 2NF if **every candidate key is a single attribute**. Automatically 3NF if **every attribute is prime**.",
+  "kind": "trick"
+ },
+ {
+  "id": "c4.5-8",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "What is the unique signature of 'in 3NF but not in BCNF'?",
+  "back": "A **non-superkey determines a prime attribute**. If the RHS of the offending FD were non-prime, 3NF would fail too.",
+  "kind": "trick"
+ },
+ {
+  "id": "c4.5-9",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "Give the binary lossless-join test.",
+  "back": "$R\\to\\{R_1,R_2\\}$ is lossless iff $(R_1 \\cap R_2) \\to R_1$ or $(R_1 \\cap R_2) \\to R_2$ — the shared attributes must be a superkey of at least one fragment. Empty intersection is always lossy.",
+  "kind": "formula"
+ },
+ {
+  "id": "c4.5-10",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "Does 'lossy' mean rows disappear?",
+  "back": "No — the join of the projections gains **spurious extra tuples**, which is what makes the original unrecoverable. No row is ever lost.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.5-11",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "Which normal form guarantees both lossless join AND dependency preservation?",
+  "back": "**3NF**, via the synthesis algorithm from a canonical cover. BCNF decomposition is always lossless but may lose dependencies.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.5-12",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "What is the standard counterexample to 'BCNF preserves dependencies'?",
+  "back": "$R(\\text{student},\\text{subject},\\text{teacher})$ with $\\{st,su\\}\\to te$ and $te \\to su$. It is 3NF not BCNF, and the only lossless BCNF split loses $\\{st,su\\}\\to te$.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.5-13",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "Define a multivalued dependency and 4NF.",
+  "back": "$X \\twoheadrightarrow Y$: for each $X$ value, the set of $Y$ values is independent of the rest. MVDs come in pairs. **4NF**: every non-trivial MVD has a superkey on the left.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.5-14",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "What characterises a relation in 4NF but not 5NF?",
+  "back": "It satisfies a **join dependency** not implied by its keys: it decomposes losslessly into **three or more** fragments but into no two. The classic case is SUPPLIER–PART–PROJECT.",
+  "kind": "concept"
+ },
+ {
+  "id": "c4.5-15",
+  "unit": 4,
+  "topic": "4.5",
+  "front": "Can an instance of a relation prove that an FD holds?",
+  "back": "No — an instance can only **disprove** an FD, by exhibiting two tuples that agree on $X$ and differ on $Y$. FDs are assertions about every legal state.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.6-1",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "Which query-optimisation rewrites matter most?",
+  "back": "Push **selections** down, push **projections** down, replace $\\sigma_\\theta(R\\times S)$ by a join, and reorder joins to keep intermediate results small.",
+  "kind": "list"
+ },
+ {
+  "id": "c4.6-2",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "Cost of a block nested-loop join with $M$ buffer blocks?",
+  "back": "$\\left\\lceil \\frac{b_{\\text{outer}}}{M-2} \\right\\rceil \\times b_{\\text{inner}} + b_{\\text{outer}}$ block transfers. Put the **smaller** relation outside.",
+  "kind": "formula"
+ },
+ {
+  "id": "c4.6-3",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "Estimate $|r \\bowtie s|$ on a common attribute $A$.",
+  "back": "$\\dfrac{n_r \\cdot n_s}{\\max(V(A,r),V(A,s))}$ — and exactly $n_r$ when $A$ is a key of $s$ and a NOT NULL foreign key in $r$.",
+  "kind": "formula"
+ },
+ {
+  "id": "c4.6-4",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "Who enforces each ACID property?",
+  "back": "Atomicity and durability — the **recovery manager** (log). Isolation — the **concurrency-control manager**. Consistency — the **application programmer**.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.6-5",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "Which pairs of operations conflict?",
+  "back": "Different transactions, same data item, at least one a **write**: so RW, WR and WW conflict; **RR never does**.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.6-6",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "How do you test conflict serializability?",
+  "back": "Build the **precedence graph** (node per transaction, edge $T_i\\to T_j$ on each conflicting pair in that order). Serializable iff **acyclic**; any topological order is an equivalent serial schedule.",
+  "kind": "steps"
+ },
+ {
+  "id": "c4.6-7",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "What must a view-serializable-but-not-conflict-serializable schedule contain?",
+  "back": "A **blind write** — a write to an item the transaction never read. Testing view serializability is NP-complete; conflict serializability is polynomial.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.6-8",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "Order the schedule classes by strength.",
+  "back": "serial $\\subset$ strict $\\subset$ cascadeless (ACA) $\\subset$ recoverable $\\subset$ all. Recoverability and serializability are **independent** of each other.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.6-9",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "What does 2PL guarantee, and what does it not?",
+  "back": "Guarantees **conflict serializability** (order = order of lock points). Does **not** guarantee deadlock freedom, recoverability or cascadelessness.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.6-10",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "Which 2PL variant is deadlock-free, and which prevents cascading rollback?",
+  "back": "**Conservative (static)** 2PL is deadlock-free (all locks up front). **Strict** 2PL holds exclusive locks to commit and is cascadeless and strict. **Rigorous** holds all locks to commit.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.6-11",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "State the basic timestamp-ordering read and write rules.",
+  "back": "read($X$): abort if $TS(T) < W\\text{-}TS(X)$, else read and bump $R\\text{-}TS$. write($X$): abort if $TS(T) < R\\text{-}TS(X)$ or $TS(T) < W\\text{-}TS(X)$, else write and set $W\\text{-}TS$.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.6-12",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "What is Thomas's write rule?",
+  "back": "If $TS(T) < W\\text{-}TS(X)$ the write is obsolete, so **ignore it** instead of aborting $T$. This permits some view-serializable but non-conflict-serializable schedules.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.6-13",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "Wait–die versus wound–wait?",
+  "back": "Both privilege the **older** transaction. Wait-**die**: older **waits**, younger dies (non-preemptive). **Wound**-wait: older **wounds** (preempts) the holder, younger waits. Restarts keep the original timestamp, so no starvation.",
+  "kind": "trick"
+ },
+ {
+  "id": "c4.6-14",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "State the write-ahead logging rule.",
+  "back": "A change's log record must reach stable storage **before** the changed data page, and all of a transaction's log records must be forced **before** its commit is durable.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.6-15",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "Deferred versus immediate update — which needs undo?",
+  "back": "Deferred (NO-UNDO/REDO) needs **redo only**; nothing uncommitted ever reaches disk. Immediate (UNDO/REDO) needs both, and logs old as well as new values.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.6-16",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "In log-based recovery, which phase runs first and in which direction?",
+  "back": "**Undo first, scanning backwards**, then **redo, scanning forwards** from the checkpoint. Both are idempotent, so a crash during recovery is safe.",
+  "kind": "trick"
+ },
+ {
+  "id": "c4.6-17",
+  "unit": 4,
+  "topic": "4.6",
+  "front": "What are the three passes of ARIES?",
+  "back": "**Analysis** (rebuild dirty-page and transaction tables from the last checkpoint), **Redo** (repeat history, including losers' actions), **Undo** (roll back losers using CLRs, which are never undone).",
+  "kind": "list"
+ },
+ {
+  "id": "c4.7-1",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "Valid time versus transaction time?",
+  "back": "**Valid time** = when the fact is true in the real world (editable). **Transaction time** = when the database recorded it (append-only). Both together = a **bitemporal** relation.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.7-2",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "How does a key change in a temporal relation?",
+  "back": "It becomes (entity key + valid-time start), with the constraint that intervals for one entity must **not overlap** — sequenced temporal integrity.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.7-3",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "Which index structures are used for spatial data, and why not B+ trees?",
+  "back": "**R-trees**, quadtrees, k-d trees and grid files. B$^+$ trees order on one dimension only, which cannot answer range or nearest-neighbour queries in two or more dimensions.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.7-4",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "What makes multimedia retrieval different from relational retrieval?",
+  "back": "It is **content-based**: features are extracted into vectors and results are **ranked by similarity** rather than matched exactly. The gap between features and meaning is the **semantic gap**.",
+  "kind": "concept"
+ },
+ {
+  "id": "c4.7-5",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "What is an ECA rule?",
+  "back": "**Event–Condition–Action** — the formal model behind triggers in an active database. Rule sets must be checked for **termination** and **confluence**.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.7-6",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "EDB versus IDB in a deductive database?",
+  "back": "**Extensional** = stored facts (ordinary tables). **Intensional** = predicates derived by Datalog rules.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.7-7",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "What is the Datalog safety condition?",
+  "back": "Every variable in the rule head must appear in a **positive** literal of the body, which keeps derived relations finite. Negation must also be **stratified**.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.7-8",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "Naive versus semi-naive Datalog evaluation?",
+  "back": "Naive recomputes all previously derived tuples each round; **semi-naive** joins only against tuples **newly derived in the previous round**, reaching the same fixpoint far faster.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.7-9",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "DTD versus XML Schema — three differences.",
+  "back": "XSD **is XML**, has rich **data types** and **namespaces**, and supports `minOccurs`/`maxOccurs`. DTD is not XML, is typeless, and expresses cardinality only through $?$, $*$, $+$ (but does have ID/IDREF).",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.7-10",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "Well-formed versus valid XML?",
+  "back": "**Well-formed** = syntactically correct (one root, properly nested, tags closed). **Valid** = well-formed **and** conforming to a DTD or XSD. Validity is meaningless without a schema.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.7-11",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "What does FLWOR stand for?",
+  "back": "`for`, `let`, `where`, `order by`, `return` — the XQuery expression built around XPath path expressions.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.7-12",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "Name three ways mobile databases differ from fixed ones.",
+  "back": "Disconnection is normal (local replicas + reconciliation), **broadcast disks** push hot data to many clients, and **location-dependent queries** make the answer a function of position.",
+  "kind": "list"
+ },
+ {
+  "id": "c4.7-13",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "Horizontal versus vertical fragmentation — operator and correctness condition?",
+  "back": "Horizontal uses **selection**, reconstructs by **union**, needs completeness and disjointness. Vertical uses **projection**, reconstructs by **join**, and must repeat the **primary key** in every fragment.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.7-14",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "When does a semijoin beat shipping the whole relation?",
+  "back": "When the join column is small relative to a full tuple **and** selectivity is high. If nearly everything matches, the semijoin's extra round trip is wasted.",
+  "kind": "trick"
+ },
+ {
+  "id": "c4.7-15",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "What is the blocking problem in 2PC?",
+  "back": "A participant that has voted COMMIT is **in doubt**: it cannot decide alone and must hold its locks until the coordinator recovers. 3PC adds a pre-commit phase to avoid this — but only without network partitions.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.7-16",
+  "unit": 4,
+  "topic": "4.7",
+  "front": "List the transparencies a DDBMS should provide.",
+  "back": "Fragmentation, location (allocation), replication, naming, transaction/concurrency, and failure transparency.",
+  "kind": "list"
+ },
+ {
+  "id": "c4.8-1",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "Give Inmon's four defining adjectives for a data warehouse.",
+  "back": "**Subject-oriented, integrated, time-variant, non-volatile** — a collection of data supporting management decision making.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.8-2",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "Star versus snowflake schema?",
+  "back": "Star: **denormalised** dimension tables, fewer joins, faster queries. Snowflake: **normalised** dimension hierarchies, less redundancy, more joins and slower queries. Several fact tables sharing dimensions = **fact constellation**.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.8-3",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "What is in a fact table versus a dimension table?",
+  "back": "Fact table: numeric **measures** plus foreign keys to dimensions; PK = the combination of those FKs; long and narrow. Dimension table: descriptive attributes; short and wide.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.8-4",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "How many cuboids does an $n$-dimensional cube have?",
+  "back": "$2^n$ without hierarchies; $\\prod_{i=1}^{n}(L_i+1)$ when dimension $i$ has $L_i$ levels. Base cuboid = finest grain, apex cuboid = grand total.",
+  "kind": "formula"
+ },
+ {
+  "id": "c4.8-5",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "Distinguish slice, dice, roll-up and drill-down.",
+  "back": "**Slice**: fix **one** dimension to one value ($n-1$ dimensions). **Dice**: restrict **two or more** dimensions to subsets (same dimensionality). **Roll-up**: aggregate coarser. **Drill-down**: the reverse.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.8-6",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "ROLAP, MOLAP, HOLAP?",
+  "back": "ROLAP keeps data in relational tables (scales, slower). MOLAP uses a multidimensional array (fast, sparse, less scalable). HOLAP puts detail in relational and aggregates in multidimensional storage.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.8-7",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "Define support, confidence and lift.",
+  "back": "$\\text{sup}(X) = $ fraction of transactions containing $X$. $\\text{conf}(X\\Rightarrow Y) = \\text{sup}(XY)/\\text{sup}(X)$. $\\text{lift} = \\text{conf}/\\text{sup}(Y)$; $>1$ positive correlation, $=1$ independent, $<1$ negative.",
+  "kind": "formula"
+ },
+ {
+  "id": "c4.8-8",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "State the Apriori property and what it is used for.",
+  "back": "**Every subset of a frequent itemset is frequent** — equivalently, every superset of an infrequent itemset is infrequent. Used to prune $C_k$ before counting.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.8-9",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "Why is FP-growth better than Apriori?",
+  "back": "It builds an **FP-tree** in just **two database scans** and mines it recursively with conditional pattern bases, avoiding candidate generation entirely.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.8-10",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "Give the entropy and information-gain formulas.",
+  "back": "$\\text{Entropy}(S) = -\\sum_i p_i\\log_2 p_i$; $\\text{Gain}(S,A) = \\text{Entropy}(S) - \\sum_v \\frac{|S_v|}{|S|}\\text{Entropy}(S_v)$. A pure node has entropy 0, a 50/50 split exactly 1.",
+  "kind": "formula"
+ },
+ {
+  "id": "c4.8-11",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "ID3 versus C4.5 versus CART?",
+  "back": "ID3: information gain, biased to many-valued attributes. C4.5: **gain ratio**, handles continuous and missing values. CART: **Gini index**, strictly binary trees.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.8-12",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "What determines an SVM's decision boundary?",
+  "back": "Only the **support vectors** on the margin. The margin width is $2/\\lVert w\\rVert$, so maximising it means minimising $\\lVert w\\rVert^2/2$; non-linear boundaries come from the **kernel trick**.",
+  "kind": "concept"
+ },
+ {
+  "id": "c4.8-13",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "Why is KNN called a lazy learner?",
+  "back": "It builds no model at training time — all work happens at query time, computing distances to every training point. Attributes must be normalised or large-range ones dominate.",
+  "kind": "concept"
+ },
+ {
+  "id": "c4.8-14",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "Which clustering algorithm needs no $k$ and reports noise?",
+  "back": "**DBSCAN**, parameterised by $\\varepsilon$ and MinPts. It finds arbitrarily shaped clusters; $k$-means finds only spherical ones and needs $k$ in advance.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.8-15",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "Name the three HMM problems and their algorithms.",
+  "back": "Evaluation $P(O\\mid\\lambda)$ → **forward**; decoding the best state sequence → **Viterbi**; learning the parameters → **Baum–Welch** (EM). The first two cost $O(N^2T)$.",
+  "kind": "list"
+ },
+ {
+  "id": "c4.8-16",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "PageRank versus HITS?",
+  "back": "PageRank: one **query-independent** global score from a damped random-surfer model. HITS: **per-query** hub and authority scores that reinforce each other.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.8-17",
+  "unit": 4,
+  "topic": "4.8",
+  "front": "How does sequential pattern mining differ from association rule mining?",
+  "back": "**Order matters** and items may be separated by others within a customer sequence. Algorithms: GSP, SPADE, PrefixSpan.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.9-1",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "Name the Vs of big data.",
+  "back": "Volume, velocity, variety — plus veracity, value and (sometimes) variability. The structural answer to all of them is to **scale out, not up**.",
+  "kind": "list"
+ },
+ {
+  "id": "c4.9-2",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "What does the HDFS NameNode store, and what does it not?",
+  "back": "The namespace and block→DataNode map, **in memory** (persisted as `fsimage` + `edits`). It stores **no file data** — all bytes flow directly between clients and DataNodes.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.9-3",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "Why is an HDFS block 128 MB rather than 4 KB?",
+  "back": "To make seek time negligible against transfer time, and to keep the NameNode's in-memory metadata small. The cost is the **small-files problem** (~150 bytes of NameNode RAM per file).",
+  "kind": "concept"
+ },
+ {
+  "id": "c4.9-4",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "Describe HDFS default rack-aware replica placement.",
+  "back": "Replica 1 on the local node, replica 2 in a **different rack**, replica 3 on another node in **that same second rack** — one cross-rack write, survives a whole rack failure.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.9-5",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "Is the Secondary NameNode a backup?",
+  "back": "**No.** It only merges `edits` into `fsimage` periodically. Failover requires the Hadoop 2 **standby** NameNode with a quorum journal and ZooKeeper.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.9-6",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "Give the MapReduce type signatures and the full pipeline.",
+  "back": "$\\texttt{map}:(k_1,v_1)\\to\\text{list}(k_2,v_2)$; $\\texttt{reduce}:(k_2,\\text{list}(v_2))\\to\\text{list}(k_3,v_3)$. Pipeline: split → map → [combine] → partition → shuffle & sort → reduce → output.",
+  "kind": "formula"
+ },
+ {
+  "id": "c4.9-7",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "What sets the number of mappers, and what sets the number of reducers?",
+  "back": "Mappers = number of **input splits** (one per HDFS block by default) — not a programmer choice. Reducers **are** a programmer parameter; the partitioner (`hash(key) mod R`) assigns keys.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.9-8",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "When may a combiner be used?",
+  "back": "Only when the reduce operation is **commutative and associative** — sum, max, count yes; **average no** (emit (sum,count) pairs instead).",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.9-9",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "Why is Spark faster than MapReduce on iterative jobs?",
+  "back": "**RDDs** stay in memory between stages, so no round trip to HDFS per iteration, and lost partitions are recomputed from **lineage** rather than replicated.",
+  "kind": "concept"
+ },
+ {
+  "id": "c4.9-10",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "Transformations versus actions in Spark?",
+  "back": "Transformations (`map`, `filter`, `join`) are **lazy** and only build a DAG. Actions (`count`, `collect`, `save`) trigger execution.",
+  "kind": "fact"
+ },
+ {
+  "id": "c4.9-11",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "Name the four NOSQL families with one example each.",
+  "back": "Key–value (Redis/DynamoDB), document (MongoDB), column-family / wide-column (Cassandra, HBase), graph (Neo4j).",
+  "kind": "list"
+ },
+ {
+  "id": "c4.9-12",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "What separates a key–value store from a document store?",
+  "back": "Whether you can query **inside** the value. A document store indexes and filters on fields within the JSON; a key–value store treats the value as an opaque blob.",
+  "kind": "trick"
+ },
+ {
+  "id": "c4.9-13",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "State the CAP theorem and what it really forces.",
+  "back": "You cannot have consistency, availability and partition tolerance together. Partitions are unavoidable, so during one you must choose **C or A**: CP (HBase, MongoDB, ZooKeeper) or AP (Cassandra, DynamoDB, Riak).",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.9-14",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "Is CAP's C the same as ACID's C?",
+  "back": "**No.** CAP's consistency is linearizability across replicas; ACID's consistency is preservation of application integrity constraints by a transaction.",
+  "kind": "trap"
+ },
+ {
+  "id": "c4.9-15",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "What does BASE stand for?",
+  "back": "**B**asically **A**vailable, **S**oft state, **E**ventually consistent — the AP-side alternative to ACID.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.9-16",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "Give the quorum condition for strong consistency.",
+  "back": "$R + W > N$ makes the read set and write set overlap. $W > N/2$ additionally prevents two conflicting writes both succeeding. With $N=3$, $W=R=2$ is the usual balanced choice.",
+  "kind": "formula"
+ },
+ {
+  "id": "c4.9-17",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "What is PACELC?",
+  "back": "If **P**artition then **A** or **C**, **E**lse **L**atency or **C**onsistency — CAP extended to note that even a healthy system trades consistency against latency.",
+  "kind": "definition"
+ },
+ {
+  "id": "c4.9-18",
+  "unit": 4,
+  "topic": "4.9",
+  "front": "What is NewSQL?",
+  "back": "Systems (Spanner, CockroachDB, VoltDB) that combine horizontal sharding with per-shard consensus (Paxos/Raft) to offer SQL and ACID **at scale**, paying extra latency for strong consistency.",
+  "kind": "definition"
+ }
+]

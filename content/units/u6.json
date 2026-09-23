@@ -1,0 +1,1005 @@
+{
+ "unit": 6,
+ "summary": "Software engineering: process models and agile methods, requirements and design, quality and risk, estimation with function points and COCOMO, testing, and configuration management — a high-yield recall unit where exact names, orderings and coefficients decide the marks.",
+ "topics": [
+  {
+   "id": "6.1",
+   "title": "Software Process Models",
+   "summary": "The generic process framework, umbrella activities, process patterns, and every prescriptive model from waterfall to the Unified Process with the situation each one fits.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## Why a process at all\n\nSoftware is not manufactured; it is *engineered*, and it does not wear out — it deteriorates because of repeated change. Those two facts mean that the risk in a software project is almost never the typing. It is agreeing what to build, keeping the design coherent while requirements move, and knowing when the thing is good enough to ship. A **software process** is the framework of activities, actions and tasks that a team follows to get from an idea to a deployed, maintained product. A **process model** is a named, prescriptive arrangement of that framework: which activities happen, in what order, how often, and what comes out of each.\n\nThe vocabulary is layered and the exam tests the layering directly:\n\n- A **process framework** contains a small number of **framework activities** that apply to every project, large or small.\n- Each framework activity contains **software engineering actions** (for example, *architectural design* is an action inside modelling).\n- Each action is a set of **work tasks**, each producing **work products**, with **quality assurance points** and **project milestones**.\n- Running alongside all of it are the **umbrella activities**, which are not tied to any one phase."
+    },
+    {
+     "t": "cal",
+     "kind": "mnemonic",
+     "title": "The five generic framework activities",
+     "text": "**Communication → Planning → Modeling → Construction → Deployment.**\n\nRemember **C-P-M-C-D**. Communication is requirements gathering and customer collaboration; Planning produces the software project plan (tasks, risks, resources, schedule); Modeling covers analysis and design; Construction is code generation *and* testing together; Deployment is delivery, support and feedback.\n\nA common exam distractor puts *testing* as a sixth framework activity. It is not — testing lives inside **Construction**."
+    },
+    {
+     "t": "md",
+     "text": "## Umbrella activities\n\nUmbrella activities run across the whole life cycle rather than at one point in it. Pressman's list has eight:\n\n1. Software project tracking and control\n2. Risk management\n3. Software quality assurance\n4. Technical reviews\n5. Measurement\n6. Software configuration management\n7. Reusability management\n8. Work product preparation and production\n\nIf a question asks whether *risk management*, *SQA*, *measurement* or *SCM* is a framework activity or an umbrella activity, the answer is always umbrella. The framework list has exactly five entries and none of them is a management or assurance function.\n\n## Process patterns\n\nA **process pattern** describes a recurring process problem, the context it occurs in, and a proven way of addressing it — the same idea as a design pattern, applied one level up. Ambler's template names the pattern, its **forces**, its **type**, the **initial context**, the **problem**, the **solution**, the **resulting context**, **related patterns** and **known uses**.\n\nThree pattern types, in order of increasing scope:\n\n| Type | Scope | Example |\n|---|---|---|\n| **Task pattern** | one action or work task | *TechnicalReview*, *RequirementsGathering* |\n| **Stage pattern** | one framework activity, may contain task patterns | *Communication*, *DesignTheSolution* |\n| **Phase pattern** | the sequence of activities for the whole project | *SpiralModel*, *Prototyping* |\n\n## Process assessment and maturity\n\nA process that is never measured cannot be improved. **CMMI** (Capability Maturity Model Integration) grades organisational process maturity in five staged levels:\n\n| Level | Name | Characteristic |\n|---|---|---|\n| 1 | Initial | ad hoc, heroic, unrepeatable |\n| 2 | Managed | project-level discipline; requirements management, planning, tracking, SCM, QA |\n| 3 | Defined | one tailored organisation-wide standard process |\n| 4 | Quantitatively Managed | process and quality controlled statistically |\n| 5 | Optimizing | continuous, measured improvement and defect prevention |\n\nThe continuous representation instead rates each process area on capability levels 0–5 (Incomplete, Performed, Managed, Defined, Quantitatively Managed, Optimizing). Other assessment vehicles are **SCAMPI**, **CBA IPI**, **SPICE (ISO/IEC 15504)** and **ISO 9001:2000**. Individual and team variants are the **Personal Software Process (PSP)** and **Team Software Process (TSP)**."
+    },
+    {
+     "t": "md",
+     "text": "## The prescriptive models\n\nA **prescriptive** model prescribes the order and the deliverables in advance. They differ almost entirely in *when requirements are allowed to change* and *how early the customer sees running code*.\n\n### Waterfall (classic life cycle, Royce 1970)\n\nCommunication → Planning → Modeling → Construction → Deployment, each completed and signed off before the next begins. Documents are the hand-off between phases. It works only when requirements are fixed, well understood and stable, the technology is familiar, and the work is essentially a well-defined adaptation of an existing system.\n\nIts three classic weaknesses: real projects rarely follow a strict sequence; the customer must state every requirement up front and then wait; and no working version exists until very late, so a large blunder is discovered at the worst possible moment. Blocking states — where members wait on each other's documents — are common.\n\n### V-model\n\nThe waterfall bent into a V. The descending left arm is specification and decomposition; the ascending right arm is integration and testing; coding sits at the vertex. Each level of specification is paired with the test level that validates it:\n\n| Left arm (verification) | Right arm (validation) |\n|---|---|\n| Requirements analysis | Acceptance testing |\n| System / architectural design | System testing |\n| Component / high-level design | Integration testing |\n| Module / detailed design | Unit testing |\n\nThe V-model contributes nothing new about sequencing — it is still a waterfall — but it makes the point that **test plans are written when the corresponding specification is written**, not at the end.\n\n### Incremental model\n\nApply linear sequences in a staggered fashion, each producing a deliverable **increment**. The **first increment is the core product**: the essential functionality, with the extras left out. Customer feedback on increment $n$ shapes increment $n+1$. Useful when staffing is unavailable for a full release, or when the customer must have *something* operational by a fixed date. Distinguish it from *iterative*: incremental adds function; iterative refines the same function.\n\n### RAD (Rapid Application Development)\n\nAn incremental model with an extremely short cycle — a **60 to 90 day** delivery window — achieved by component reuse and code generation. Its phases are **business modelling, data modelling, process modelling, application generation, testing and turnover**. Multiple teams work on separate functional scopes in parallel.\n\nRAD fails when: the system cannot be properly modularised; the application demands high performance tuned at interfaces; the technical risk is high; or the customer and developers cannot commit to the rapid-fire activity the timebox requires.\n\n### Prototyping\n\nBuild a quick mock-up — often only screens and navigation — to pin down requirements the customer cannot articulate or an algorithm whose efficiency is uncertain. It is not a stand-alone life cycle so much as a technique that can be dropped into any other model. Cycle: communication → quick plan → quick design modelling → construct prototype → deployment, delivery and feedback, repeat.\n\nThe danger is political: the customer sees something that works and asks to ship it, and the developer, having used the first language that came to hand and ignored quality, agrees. A **throwaway** prototype must actually be thrown away; an **evolutionary** prototype must be built to production standards from the start.\n\n### Spiral model (Boehm, 1988)\n\nCouples the iterative nature of prototyping with the control of the waterfall, and makes **risk the driver**. The project spirals outward through the same set of task regions, each circuit producing a more complete version — a paper model first, then a prototype, then successively more complete engineered systems. Boehm's original four quadrants are:\n\n1. Determine objectives, alternatives and constraints\n2. Evaluate alternatives; identify and resolve risks\n3. Develop and verify the next-level product\n4. Plan the next phase\n\nKey properties: it is the **only classical model with explicit risk analysis in every cycle**; it does not end at delivery — the spiral continues through maintenance; and the radius of the spiral represents cumulative cost while the angular dimension represents progress through one circuit. It needs genuine risk-assessment expertise, and it suits large, expensive, high-risk systems. The **WINWIN spiral** adds an explicit customer–developer negotiation region.\n\n### Concurrent development model (concurrent engineering)\n\nRecognises that in a real project the framework activities do not queue; they all exist simultaneously, each in a different **state**. Modelling might be *under development* while a piece of it is *awaiting changes* and another is *under review*. Typical states of an activity are: none, under development, awaiting changes, under review, under revision, baselined, done. Transitions are triggered by events elsewhere in the project. It is applicable to all software development and is especially natural for client/server work.\n\n### Component-based development\n\nTreats commercial off-the-shelf and in-house components as the unit of construction. The steps are: research and evaluate candidate components; consider integration issues; design an architecture to accommodate them; integrate components into the architecture; test thoroughly. It has the evolutionary, iterative character of the spiral, and its pay-off is measured in reuse: reported figures of the order of 70% reduction in development cycle time and 84% of project cost.\n\n### Formal methods model\n\nSpecify the system in a mathematical notation (**Z**, **VDM**, **B**) and refine the specification into code by correctness-preserving transformations, so that ambiguity, incompleteness and inconsistency are discovered by analysis rather than by testing. **Cleanroom software engineering** is the best-known instance. It is extremely time-consuming and expensive, demands training few developers have, and is hard to use as a customer communication tool — so it is reserved for safety-critical and security-critical systems.\n\n### Aspect-oriented software development (AOSD)\n\nSome concerns — security, logging, persistence, fault tolerance — cut across many components and cannot be localised in any one module. AOSD names these **crosscutting concerns**, represents each as an **aspect**, and *weaves* aspects into the system at defined join points. AOSD is a distinct process *and* a design/programming discipline; it is still maturing and is usually layered onto an evolutionary process.\n\n### The Unified Process (UP / RUP)\n\nUse-case driven, architecture-centric, iterative and incremental; developed alongside UML by Jacobson, Booch and Rumbaugh. Its phases are:\n\n| Phase | Purpose |\n|---|---|\n| **Inception** | business case, scope, rough architecture, key use cases |\n| **Elaboration** | refine use cases, produce an executable architectural baseline |\n| **Construction** | build the remaining components; the bulk of coding and testing |\n| **Transition** | beta release, user feedback, training, deployment |\n| **Production** | ongoing monitoring and support (Pressman's generic UP adds this) |\n\nRemember the order **I-E-C-T**. A frequent question asks in which phase the architecture is baselined: **Elaboration**, not Construction."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — choosing a model from the symptoms",
+     "text": "Read each situation and name the single best-fitting prescriptive model. The exam asks exactly this, usually as a match-the-list.\n\n**(a)** A bank must replace a 20-year-old fixed-deposit interest calculator. The rules are published by the regulator, will not change during the project, and the team has built three similar systems.\n→ **Waterfall.** Stable, fully understood requirements plus familiar technology is the *only* situation waterfall genuinely fits.\n\n**(b)** A defence contractor is building flight-control software where a residual fault could kill. Budget and schedule are generous.\n→ **Formal methods model** (Cleanroom). Correctness must be demonstrated, not sampled.\n\n**(c)** A start-up's founder can describe the feel of the product but cannot say what the reports should contain until she sees some.\n→ **Prototyping.** Requirements are fuzzy on the customer side, not the technical side.\n\n**(d)** A 200 person-month project with a new database technology nobody in the firm has used, an uncertain integration with a partner's API, and a board that wants the risk reviewed at each funding gate.\n→ **Spiral.** Large, expensive, high technical risk, repeated go/no-go decisions.\n\n**(e)** An internal expenses-claim system must be live in ten weeks; the data model is simple, the team has a code generator and a component library, and two sub-teams can work in parallel.\n→ **RAD.** Short timebox, modularisable, reuse available, committed users.\n\n**(f)** A hospital wants a patient records system delivered so that admissions works from month three, billing from month six and analytics from month nine, because staff can only be trained in waves.\n→ **Incremental.** Core product first, added function in planned increments.\n\n**(g)** A team of 60 must build a large enterprise system, wants UML models, and needs an executable architecture agreed before the bulk of coding starts.\n→ **Unified Process.** Use-case driven, architecture-centric, four phases."
+    },
+    {
+     "t": "cal",
+     "kind": "trap",
+     "title": "Iterative, incremental and evolutionary are three different words",
+     "text": "**Incremental** = deliver the product in pieces; each increment adds *new* function and the first one is the core product.\n\n**Iterative** = revisit and refine the *same* function repeatedly until it is right.\n\n**Evolutionary** = the umbrella term for models that are iterative and let the product grow with changing requirements: prototyping, spiral, concurrent and component-based are all evolutionary. Waterfall and V are not. The incremental model is usually classified as evolutionary in Pressman and as its own category elsewhere — read the option list before deciding."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.1-1",
+     "q": "Which of the following is an umbrella activity rather than a generic framework activity?",
+     "opts": [
+      "Modeling",
+      "Construction",
+      "Software configuration management",
+      "Deployment"
+     ],
+     "ans": 2,
+     "exp": "The five framework activities are Communication, Planning, Modeling, Construction and Deployment. Software configuration management is one of the eight umbrella activities that run across the entire life cycle, alongside risk management, SQA, technical reviews, measurement, reusability management, tracking and control, and work product preparation."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.1-2",
+     "q": "The distinguishing feature of the spiral model compared with the incremental model is that the spiral model",
+     "opts": [
+      "delivers a core product in the first cycle",
+      "includes explicit risk analysis in every cycle",
+      "never returns to an earlier activity",
+      "requires a formal mathematical specification"
+     ],
+     "ans": 1,
+     "exp": "Both models iterate and both produce successively more complete versions, so options about delivering versions do not separate them. What only the spiral has is a dedicated risk-analysis region traversed on every circuit, which is why it is described as risk-driven and is recommended for large, high-risk systems. Formal specification belongs to the formal methods model."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.1-3",
+     "q": "In the Unified Process, an executable architectural baseline is produced during",
+     "opts": [
+      "Inception",
+      "Elaboration",
+      "Construction",
+      "Transition"
+     ],
+     "ans": 1,
+     "exp": "Inception establishes the business case and rough scope. Elaboration refines the use cases and delivers an executable architectural baseline — a running skeleton that proves the architecture. Construction then fills in the remaining components, and Transition handles beta release and deployment."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Match models by the one word in the stem",
+     "body": "Exam stems are keyed to a single give-away: *risk* → spiral; *60 to 90 days* or *code generation* → RAD; *core product first* → incremental; *customer cannot state requirements* → prototyping; *mathematically verified / safety-critical* → formal methods; *crosscutting concern* → AOSD; *use-case driven, architecture-centric* → Unified Process; *COTS* → component-based. Read for that word before reading the options."
+    },
+    {
+     "title": "Five framework activities, eight umbrella activities",
+     "body": "If the count in an option list is five, it is the framework list; if it is eight, it is the umbrella list. Any list of five that contains *testing* or *maintenance* as a separate item is wrong, because testing sits inside Construction."
+    },
+    {
+     "title": "Left arm meets right arm in the V-model",
+     "body": "Pair the V-model levels from the outside in: requirements↔acceptance, system design↔system test, component design↔integration test, module design↔unit test. The outermost pair is always the customer-facing one."
+    },
+    {
+     "title": "Process pattern types scale by scope",
+     "body": "Task ⊂ Stage ⊂ Phase. A pattern named after one activity (Communication) is a stage pattern; one named after a whole model (SpiralModel) is a phase pattern; one named after a single action (TechnicalReview) is a task pattern."
+    },
+    {
+     "title": "CMMI level 3 is where the process becomes organisational",
+     "body": "Levels 1 and 2 are about individual projects; level 3 (Defined) is the first level with a single organisation-wide standard process; 4 adds statistics; 5 adds continuous improvement. If a question mentions statistical control, the answer is 4, not 5."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Waterfall's problem is not that it has phases",
+     "body": "Every model has phases. Waterfall's specific faults are that it demands all requirements up front, that real projects do not progress strictly sequentially, and that no working program exists until very late in the schedule. Options that criticise waterfall for 'lacking documentation' or 'skipping design' are inverted."
+    },
+    {
+     "title": "Unsafe to assume prototyping means throwaway",
+     "body": "Prototyping has two flavours. A throwaway prototype is built quickly and discarded; an evolutionary prototype becomes the product and must be built to production quality. Questions that describe a prototype being delivered to the customer are testing whether you know the second kind exists."
+    },
+    {
+     "title": "RAD is incremental, not a form of waterfall",
+     "body": "RAD applies a compressed linear sequence to each parallel scope, but the overall model is incremental with parallel teams and a hard timebox. It is also not suitable for high technical risk — that is the spiral's territory."
+    },
+    {
+     "title": "The spiral does not stop at delivery",
+     "body": "Unlike waterfall, the spiral model is described as applying throughout the life of the software: circuits continue for enhancement and maintenance. An option saying the spiral 'terminates when the software is delivered' is false."
+    }
+   ]
+  },
+  {
+   "id": "6.2",
+   "title": "Agile Process Models",
+   "summary": "The Agile Manifesto's four values and twelve principles, XP's practices, Scrum's roles, artefacts and timeboxes, and the ASD, DSDM, FDD, Crystal, Lean, Kanban and web engineering variants.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## What agility actually claims\n\nAgility is not speed and it is not the absence of process. It is **effective response to change** at an economically acceptable cost. The classical models assume that the cost of changing a requirement rises steeply with time, so they push hard to freeze requirements early. Agile methods attack the assumption instead: by keeping increments tiny, the design simple, the tests automated and the customer in the room, they try to flatten that cost-of-change curve so that late change is affordable.\n\nThe practical consequences are always the same four: **short increments**, **working software as the measure of progress**, **the customer inside the team**, and **self-organising teams**. Everything below is a different arrangement of those four.\n\n## The Agile Manifesto — four values\n\nSigned at Snowbird, Utah in **2001** by seventeen practitioners. The wording matters because questions quote it:\n\n> We are uncovering better ways of developing software by doing it and helping others do it. Through this work we have come to value:\n> 1. **Individuals and interactions** over processes and tools\n> 2. **Working software** over comprehensive documentation\n> 3. **Customer collaboration** over contract negotiation\n> 4. **Responding to change** over following a plan\n>\n> That is, while there is value in the items on the right, we value the items on the left more.\n\nThe final sentence is the part candidates forget. The manifesto does **not** say documentation, tools, contracts and plans are worthless — it says they are the lesser of two goods."
+    },
+    {
+     "t": "md",
+     "text": "## The twelve principles\n\nStated compactly, in the manifesto's own order:\n\n1. Satisfy the customer through **early and continuous delivery** of valuable software.\n2. **Welcome changing requirements**, even late in development.\n3. Deliver working software **frequently** — weeks rather than months, preferring the shorter timescale.\n4. Business people and developers must **work together daily**.\n5. Build projects around **motivated individuals**; give them the environment and support they need and trust them.\n6. **Face-to-face conversation** is the most efficient and effective method of conveying information within a team.\n7. **Working software is the primary measure of progress.**\n8. Promote **sustainable development** — sponsors, developers and users should be able to maintain a constant pace indefinitely.\n9. Continuous attention to **technical excellence and good design** enhances agility.\n10. **Simplicity** — the art of maximising the work not done — is essential.\n11. The best architectures, requirements and designs emerge from **self-organising teams**.\n12. At regular intervals the team **reflects** on how to become more effective and tunes its behaviour accordingly.\n\nPrinciples 7 and 10 are the two most quoted. Principle 12 is the one Scrum implements as the retrospective."
+    },
+    {
+     "t": "md",
+     "text": "## Extreme Programming (XP)\n\nKent Beck's method, the most widely used agile process. It rests on five **values**: **communication, simplicity, feedback, courage** and **respect**. Its process is four activities that cycle continuously.\n\n**Planning.** Starts with *listening*, which produces **user stories** written on cards by the customer. Each story gets a **value** (priority) from the customer and a **cost** in development weeks from the team. A story costing more than three weeks is split. The team measures **project velocity** — the number of story points delivered in the first release — and uses it to estimate delivery dates and to cap the stories committed to in subsequent releases. The customer can add, change, split or reprioritise stories at any release boundary.\n\n**Design.** Rigorously follows **KISS** — keep it simple. No extra functionality is designed in for tomorrow. **CRC cards** (Class-Responsibility-Collaborator) are the only design notation normally used. When a difficult design problem appears, the team builds a **spike solution**: a throwaway prototype of just that problem. **Refactoring** is a continuous design activity, not a clean-up phase: improve internal structure without changing external behaviour.\n\n**Coding.** Before writing a story's code, write the **unit tests** for it — test-first development. Code is written in **pairs** at one workstation, providing real-time review. **Continuous integration**: pairs integrate their work as soon as it is ready, often several times a day, which avoids the compatibility and interfacing problems of a big-bang integration. **Collective ownership** means any pair may change any code.\n\n**Testing.** Unit tests are collected into a **universal testing suite** that is run automatically on every integration, giving continuous regression testing. **Acceptance tests** (also called *customer tests*) are specified by the customer from the user stories and check externally visible behaviour.\n\nThe commonly examined list of **twelve XP practices** is: the planning game, small releases, metaphor, simple design, testing, refactoring, pair programming, collective ownership, continuous integration, 40-hour week (sustainable pace), on-site customer, coding standards.\n\n**Industrial XP (IXP)** extends XP for larger organisations with readiness assessment, a project community, project chartering, test-driven management, retrospectives and continuous learning."
+    },
+    {
+     "t": "md",
+     "text": "## Scrum\n\nThe framework by Schwaber and Beedle. Scrum is deliberately small: three roles, three artefacts, five events.\n\n**Roles.** The **Product Owner** owns the product backlog, maximises value, and is a single person, not a committee. The **Scrum Master** is a servant-leader who removes impediments and protects the team from interruption; he or she is not a project manager and does not assign work. The **Development Team** is cross-functional, self-organising, and conventionally **3 to 9 members**.\n\n**Artefacts.** The **Product Backlog** is the ordered list of everything that might be needed, owned by the Product Owner and continuously refined. The **Sprint Backlog** is the set of items selected for the current sprint plus the plan for delivering them, owned by the team. The **Increment** is the sum of all completed backlog items at the end of the sprint, which must meet the **Definition of Done** and be potentially releasable. Progress is commonly tracked on a **burndown chart** — remaining work on the vertical axis against time.\n\n**Events and their timeboxes**, for a one-month sprint:\n\n| Event | Timebox (1-month sprint) | Purpose |\n|---|---|---|\n| **The Sprint** | 1 month or less | the container for all other events |\n| **Sprint Planning** | 8 hours | decide *what* can be delivered and *how* |\n| **Daily Scrum** | **15 minutes**, same time and place every day | team re-plans the next 24 hours |\n| **Sprint Review** | 4 hours | inspect the increment with stakeholders, adapt the backlog |\n| **Sprint Retrospective** | 3 hours | inspect the *process*, plan improvements |\n\nFor shorter sprints the timeboxes are usually shorter in proportion — a two-week sprint takes 4 hours of planning, 2 hours of review and 1.5 hours of retrospective — but the **Daily Scrum stays at 15 minutes regardless of sprint length**. The three classic daily-scrum questions are: what did I do since the last meeting, what will I do before the next, and what is in my way. During a sprint no change may be made that endangers the sprint goal, and the sprint's scope is not expanded; only the Product Owner may cancel a sprint."
+    },
+    {
+     "t": "md",
+     "text": "## The other agile methods\n\n**ASD — Adaptive Software Development** (Jim Highsmith). Three phases with deliberately non-engineering names: **Speculation** (adaptive cycle planning — mission, constraints, release schedule), **Collaboration** (people work together to create; emphasis on trust and joint application development), **Learning** (focus groups, formal technical reviews, postmortems). The cycle is mission-driven, component-based, iterative, time-boxed, risk-driven and change-tolerant.\n\n**DSDM — Dynamic Systems Development Method**. Built on the **Pareto principle**: deliver the 80% of the system that gives most of the value in 20% of the time, then iterate. Its five phases are **feasibility study, business study, functional model iteration, design and build iteration, implementation**. Requirements are prioritised with **MoSCoW**: **Must** have, **Should** have, **Could** have, **Won't** have this time. Nine principles, of which the most examined are that active user involvement is imperative, teams must be empowered to make decisions, and all changes during development are **reversible**. Time is fixed by timeboxing; scope flexes.\n\n**FDD — Feature Driven Development** (Peter Coad, Jeff De Luca). A **feature** is a client-valued function expressible in the template *&lt;action&gt; the &lt;result&gt; &lt;by|for|of|to&gt; a(n) &lt;object&gt;*, for example \"calculate the total of a sale\". Any feature that would take more than **two weeks** is decomposed. Five activities: **develop an overall model, build a features list, plan by feature, design by feature, build by feature** — the first three are done once, the last two are the iterative engine. FDD scales better to large teams than XP because it keeps an overall object model and per-feature ownership.\n\n**Crystal** (Alistair Cockburn and Jim Highsmith). Not one method but a **family**, chosen by two parameters: **team size**, which sets the colour, and **criticality**, which sets the ceremony. Colours run **Clear** (up to about 6–8 people) → **Yellow** (10–20) → **Orange** (20–40) → **Red** (40–80) and beyond. Criticality levels are the potential loss from a defect: **Comfort, Discretionary money, Essential money, Life**. Crystal's slogan is that a bigger or more critical project needs more method, and a small one needs very little.\n\n**Lean software development**. Mary and Tom Poppendieck's transfer of the Toyota Production System. Seven principles: **eliminate waste, build quality in, create knowledge (amplify learning), defer commitment (decide as late as possible), deliver fast, respect people, optimise the whole**. Waste in software includes partially done work, extra features, relearning, hand-offs, task switching, delays and defects.\n\n**Kanban**. A pull-based flow method with no prescribed iterations, roles or estimates. Its core practices: **visualise the workflow** on a board of columns; **limit work in progress (WIP)** with an explicit number per column; **manage flow** by measuring lead and cycle time; **make process policies explicit**; **implement feedback loops**; **improve collaboratively and evolve experimentally**. Limiting WIP is the mechanism — Little's law, $\\text{WIP} = \\text{throughput} \\times \\text{cycle time}$, says that halving WIP at constant throughput halves cycle time. Scrum timeboxes work; Kanban limits it.\n\n**Agile Modeling (AM)** (Scott Ambler) supplies modelling practice — model with a purpose, use multiple models, travel light, model in small increments — for teams that need architecture but not documents. **AUP (Agile Unified Process)** is \"serial in the large, iterative in the small\": the four UP phases overall, agile iterations inside, with disciplines of modelling, implementation, testing, deployment, configuration and project management, and environment management."
+    },
+    {
+     "t": "md",
+     "text": "## Web engineering\n\nA **WebApp** is not a conventional program and the process must account for it. Its distinguishing attributes: network intensiveness, **concurrency** of many users, **unpredictable load**, demands on performance and 24×7 availability, being **data- and content-driven**, **continuous evolution** (content updated hourly, not annually), **immediacy** of the delivery window (days or weeks), heightened **security** exposure, and the weight carried by **aesthetics**.\n\nThe WebE process framework reuses the generic activities but specialises the content: **Communication** becomes *formulation* and negotiation of scope; **Planning** is a lightweight increment plan; **Modeling** produces five design models — **content design, aesthetic design, interface design, navigation design and architecture design**, plus component design; **Construction** uses generation tools and continuous testing; **Deployment** is a release into a live environment with immediate feedback. WebApp testing adds **content testing, navigation testing, configuration testing (browser/OS matrix), compatibility, usability, performance and security testing**. Incremental and agile processes dominate because the immediacy attribute forbids a long linear front end."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — sizing a Scrum sprint from velocity",
+     "text": "A team runs two-week sprints. Their last four sprints completed 26, 31, 29 and 34 story points. The product backlog, in priority order, is:\n\n| Item | Points |\n|---|---|\n| A | 8 |\n| B | 13 |\n| C | 5 |\n| D | 8 |\n| E | 3 |\n| F | 13 |\n\n**Average velocity** $= (26 + 31 + 29 + 34)/4 = 120/4 = 30$ points per sprint.\n\n**Sprint forecast.** Taking items strictly in backlog order until the velocity is reached: A (8) → running total 8; B (13) → 21; C (5) → 26; D (8) → 34, which exceeds 30. Since D does not fit, the team takes A, B, C for 26 points and may pull E (3) to reach **29 points**, leaving D and F.\n\n**Release forecast.** Total remaining backlog $= 8+13+5+8+3+13 = 50$ points. At a velocity of 30, the number of sprints needed is $\\lceil 50/30 \\rceil = 2$ sprints, i.e. **4 weeks**.\n\n**Timeboxes for this two-week sprint**, scaling the one-month figures by half: Sprint Planning 4 hours, Sprint Review 2 hours, Sprint Retrospective 1.5 hours, and the **Daily Scrum still 15 minutes** — it never scales.\n\nNote what is *not* done: the team does not take D \"because it is only 8 points over\" and does not add scope mid-sprint. Velocity is a forecast, not a target, and the sprint scope is fixed once the sprint starts."
+    },
+    {
+     "t": "cal",
+     "kind": "note",
+     "title": "Which agile method owns which term",
+     "text": "A single-word lookup that answers most match-the-list questions.\n\n| Term | Method |\n|---|---|\n| User story, spike solution, CRC cards, pair programming, refactoring | **XP** |\n| Sprint, backlog, Scrum Master, burndown, retrospective | **Scrum** |\n| Speculation, Collaboration, Learning | **ASD** |\n| MoSCoW, timebox, 80/20, feasibility and business study | **DSDM** |\n| Feature, \"design by feature\", overall object model | **FDD** |\n| Clear / Yellow / Orange / Red, criticality levels | **Crystal** |\n| Eliminate waste, defer commitment, optimise the whole | **Lean** |\n| WIP limit, pull system, cumulative flow diagram | **Kanban** |"
+    },
+    {
+     "t": "check",
+     "id": "chk-6.2-1",
+     "q": "The timebox for the Daily Scrum in a two-week sprint is",
+     "opts": [
+      "15 minutes",
+      "30 minutes",
+      "1 hour",
+      "proportional to sprint length, so 7.5 minutes"
+     ],
+     "ans": 0,
+     "exp": "Sprint Planning, Review and Retrospective are usually scaled down for shorter sprints (4 hours, 2 hours and 1.5 hours respectively for a two-week sprint), but the Daily Scrum is fixed at 15 minutes for every sprint length. It is a re-planning meeting for the next 24 hours, and 24 hours does not change with sprint length."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.2-2",
+     "q": "Which pairing of agile method and concept is INCORRECT?",
+     "opts": [
+      "DSDM — MoSCoW prioritisation",
+      "FDD — design by feature",
+      "XP — sprint backlog",
+      "Crystal — criticality levels"
+     ],
+     "ans": 2,
+     "exp": "Sprint backlog is a Scrum artefact, not an XP one; XP's planning unit is the user story and its release plan. DSDM does use MoSCoW (Must, Should, Could, Won't), FDD's five activities do include design by feature and build by feature, and Crystal selects a family member using team size and criticality (Comfort, Discretionary money, Essential money, Life)."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.2-3",
+     "q": "According to the Agile Manifesto, which statement is correct?",
+     "opts": [
+      "Documentation has no value in agile projects",
+      "Following a plan is preferred to responding to change",
+      "Processes and tools are valued more than individuals and interactions",
+      "Working software is valued more than comprehensive documentation, but documentation still has value"
+     ],
+     "ans": 3,
+     "exp": "Each of the four values is a comparison, and the manifesto closes by stating explicitly that while there is value in the items on the right, the items on the left are valued more. So documentation, plans, contracts and tools are not rejected — they are ranked lower than working software, responsiveness, collaboration and people."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Counts pin the method",
+     "body": "Agile Manifesto: 4 values, 12 principles, 2001, 17 signatories. XP: 5 values, 4 activities, 12 practices. Scrum: 3 roles, 3 artefacts, 5 events. ASD: 3 phases. DSDM: 5 phases, 9 principles. FDD: 5 activities. Lean: 7 principles. If an option's count is wrong the option is wrong, without reading further."
+    },
+    {
+     "title": "Velocity divides, it does not multiply",
+     "body": "For 'how many sprints to finish the backlog', compute total points divided by average velocity and round up. For 'what fits in this sprint', fill in strict priority order and stop at the first item that overflows — do not repack to maximise utilisation."
+    },
+    {
+     "title": "Stubs of the daily scrum",
+     "body": "Daily Scrum = 15 minutes, everyone standing, same time and place, three questions, no problem-solving. Any option that gives it a variable duration or turns it into a status report to the Scrum Master is wrong."
+    },
+    {
+     "title": "XP's test-first order",
+     "body": "In XP the unit tests are written before the code they test, and acceptance tests are derived from user stories by the customer. If a question asks what happens first in an XP coding episode, the answer is 'write the unit test', never 'write the code'."
+    },
+    {
+     "title": "Scrum Master is not a manager",
+     "body": "When a question describes someone assigning tasks, estimating for the team, or committing scope on the team's behalf, that person is not playing the Scrum Master role as defined. The Scrum Master removes impediments and enforces the framework; the team self-organises; the Product Owner orders the backlog."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Agile does not mean no documentation and no design",
+     "body": "Principle 9 explicitly demands continuous attention to technical excellence and good design, and the manifesto states the right-hand items still have value. The distinction is that documents are produced when they earn their keep, not on a schedule."
+    },
+    {
+     "title": "Incremental delivery alone is not agility",
+     "body": "Delivering in increments is necessary but not sufficient. Agility requires responsiveness to change at acceptable cost — which needs the customer available, the tests automated and the design kept simple. A waterfall chopped into three deliveries is still a waterfall."
+    },
+    {
+     "title": "Scrum has no architect, tester or analyst role",
+     "body": "Scrum defines exactly three accountabilities. The development team is cross-functional and contains whatever skills are needed, but Scrum names no sub-roles inside it. Options listing 'Project Manager' or 'Technical Lead' among Scrum roles are distractors."
+    },
+    {
+     "title": "Kanban and Scrum limit different things",
+     "body": "Scrum limits time — a fixed-length sprint with a committed scope. Kanban limits work in progress — an explicit cap per column, with no iterations, no prescribed roles and no estimation required. Swapping the two is the standard distractor."
+    }
+   ]
+  },
+  {
+   "id": "6.3",
+   "title": "Software Requirements",
+   "summary": "Functional and non-functional requirements, the seven requirements-engineering tasks, elicitation techniques, use cases and scenarios, analysis modelling, and the IEEE 830 SRS with its eight quality attributes.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## What a requirement is, and why they go wrong\n\nA **requirement** is a statement of a service the system must provide, or a constraint on it. Requirements sit at the point where the customer's world and the engineer's world meet, which is exactly why they are the largest single source of project failure: a fault injected in requirements is cheap to fix while it is still a sentence and ruinously expensive once it has propagated through design, code and tests. Boehm's classic figure is that the relative cost of correcting an error rises roughly by an order of magnitude with each phase it survives.\n\nRequirements come in two kinds and the distinction is asked almost every year.\n\n**Functional requirements** say *what the system does*: the services, the inputs it accepts, the outputs it produces, how it behaves in particular situations, and what it must not do. \"The system shall generate a monthly interest statement for every active account on the first working day of the month\" is functional.\n\n**Non-functional requirements (NFRs)** constrain *how well* the system does it, or constrain the development process or the product's environment. \"Ninety-five per cent of statement generations shall complete within two seconds\" is non-functional. NFRs are usually harder to state, harder to verify, and more likely to be the reason a delivered system is rejected, because a single unmet NFR can make the whole system unusable while a single missing function merely reduces its scope.\n\nSommerville's standard classification of NFRs:\n\n| Class | Sub-types | Examples |\n|---|---|---|\n| **Product requirements** | usability, efficiency (performance, space), reliability, portability, security | response time, memory footprint, MTBF |\n| **Organisational requirements** | environmental, operational, development (process, standards) | must use the company's Java coding standard; must be delivered as a Docker image |\n| **External requirements** | regulatory, ethical, legislative (accounting, safety/security), interoperability | must comply with data-protection law; must exchange HL7 messages |\n\nA third category sometimes examined is **domain requirements** — constraints coming from the application domain itself, which may be functional or non-functional and are often left implicit by domain experts, making them a notorious source of omissions."
+    },
+    {
+     "t": "md",
+     "text": "## Requirements engineering: the seven tasks\n\nPressman splits requirements engineering into seven tasks. The order is examinable.\n\n1. **Inception** — establish a basic understanding of the problem, who wants it, the nature of the solution, and the first contact between stakeholders and the team. Ask context-free questions: who is behind the request, who will use it, what is the economic benefit, is there another source.\n2. **Elicitation** — draw the requirements out of the stakeholders.\n3. **Elaboration** — expand and refine what was elicited into an analysis model: user scenarios, extracted analysis classes, attributes, services, relationships.\n4. **Negotiation** — reconcile conflicts. Stakeholders ask for more than can be built; requirements are ranked, risk-assessed and traded until a realistic set is agreed.\n5. **Specification** — produce the deliverable: a written document, a set of models, a formal mathematical specification, a prototype, or any combination. For large systems this is the **SRS**.\n6. **Validation** — review the specification for quality: are the requirements unambiguous, consistent, testable, complete, and are the omissions and inconsistencies found before design begins? The primary mechanism is the **formal technical review**.\n7. **Requirements management** — track, trace and control requirements as they change through the life of the project, using traceability tables (features, source, dependency, subsystem, interface).\n\nChristel and Kang's classification of why elicitation is hard is worth memorising: **problems of scope** (boundary ill-defined, unnecessary technical detail), **problems of understanding** (stakeholders unsure what they need, poor communication, ambiguous language, conflicting views), and **problems of volatility** (requirements change over time)."
+    },
+    {
+     "t": "md",
+     "text": "## Elicitation techniques\n\n| Technique | How it works | Best when |\n|---|---|---|\n| **Interviews** | structured (fixed agenda) or unstructured (open exploration) | small stakeholder set; deep understanding needed |\n| **Questionnaires** | fixed questions to many respondents | many geographically spread users; statistical picture wanted |\n| **FAST / JAD** | Facilitated Application Specification Technique: a facilitated joint meeting of customers and developers, neutral site, agenda, lists of objects, services, constraints and performance criteria produced and consolidated | requirements span several business groups |\n| **Brainstorming** | idea generation without criticism, then consolidation | early inception; innovative products |\n| **Prototyping** | show something and observe the reaction | customer cannot articulate the requirement |\n| **Observation / ethnography** | watch users work in their real setting | tacit knowledge; existing manual process |\n| **Document analysis** | study forms, manuals, regulations, existing code | replacing a legacy system |\n| **Use cases and scenarios** | narrate concrete interactions | validating with non-technical stakeholders |\n| **QFD — Quality Function Deployment** | translate customer needs into technical requirements; ranks requirements by customer value | when priorities must be quantified |\n| **Viewpoint-oriented** | collect requirements per stakeholder class, then reconcile | conflicting stakeholder groups |\n\n**QFD** classifies requirements into three bands that examiners like: **normal requirements** (objectives stated by the customer; satisfaction is proportional to how well they are met), **expected requirements** (so fundamental the customer does not mention them — the system must not crash, the interface must be usable), and **exciting requirements** (features beyond expectation that delight when present)."
+    },
+    {
+     "t": "md",
+     "text": "## Use cases and scenarios\n\nA **use case** is a description of a set of interactions between the system and one or more **actors**, written from the actor's point of view, that delivers an observable result of value. To write one you need: the **actor** (a role, not a person — a primary actor drives the system directly, a secondary actor supports it), the **goal**, the **preconditions**, the **main flow** (also called the primary scenario or happy path), the **alternative flows**, the **exception flows**, and the **postconditions**.\n\nA **scenario** is one concrete path through a use case. One use case therefore contains many scenarios: exactly one primary scenario and any number of alternative and exception scenarios.\n\nRelationships between use cases in UML:\n\n- **&lt;&lt;include&gt;&gt;** — the base use case *always* uses the included one; the included behaviour is factored out because it is common. \"Withdraw cash\" includes \"Authenticate user\".\n- **&lt;&lt;extend&gt;&gt;** — the extending use case *conditionally* adds behaviour at a defined extension point. \"Withdraw cash\" is extended by \"Print receipt\".\n- **Generalisation** — one use case (or actor) is a specialisation of another.\n\nThe direction of the arrow is the standard trap: for both include and extend the arrow points *from* the use case that declares the relationship *to* the other one, which means the extend arrow points from the extension to the base — the opposite of the include arrow's apparent direction of flow.\n\n## Analysis modelling\n\nThe analysis model bridges the system description and the design model. Pressman groups its elements into four kinds:\n\n| Element | Notation | What it captures |\n|---|---|---|\n| **Scenario-based** | use case diagrams, activity diagrams, swimlane diagrams | the system from the user's viewpoint |\n| **Class-based** | class diagrams, CRC cards, collaboration diagrams | objects, attributes, operations, relationships |\n| **Flow-oriented** | data flow diagrams, control flow diagrams, process specifications (PSPEC) | how data is transformed as it moves |\n| **Behavioural** | state diagrams, sequence diagrams | how the system reacts to events |\n\n**Data flow diagrams** deserve their own rules. Notation: a circle (bubble) is a process, an arrow a data flow, a double line (or open rectangle) a data store, a rectangle an external entity. The **level 0 DFD is the context diagram** and contains exactly **one** bubble representing the entire system plus all external entities. Refining a bubble into a lower-level DFD is **levelling**; the rule that the inputs and outputs of the refined diagram must match those of the parent bubble is **balancing**. Data stores appear only from level 1 downwards, and a DFD shows no control flow, no decisions and no loops — that is a flowchart's job, and confusing the two is a standard distractor.\n\n**Data dictionary** entries define every flow and store using the notation `=` (is composed of), `+` (and), `[a|b]` (either-or), `{x}` (iteration), `(x)` (optional).\n\n**Entity-relationship diagrams** carry the data model: entities, attributes, relationships and cardinality/modality. **State diagrams** carry the behavioural model, with states as rounded rectangles and transitions labelled *event [guard] / action*."
+    },
+    {
+     "t": "md",
+     "text": "## The SRS and IEEE 830\n\nThe **Software Requirements Specification** is the contract: it states what the system will do, is agreed by customer and supplier, and becomes the baseline against which design is verified and acceptance tests are written. **IEEE Std 830-1998** gives the canonical structure:\n\n**1. Introduction**\n  1.1 Purpose\n  1.2 Scope\n  1.3 Definitions, acronyms and abbreviations\n  1.4 References\n  1.5 Overview\n\n**2. Overall description**\n  2.1 Product perspective (interfaces, memory, operations, site adaptation)\n  2.2 Product functions\n  2.3 User characteristics\n  2.4 Constraints\n  2.5 Assumptions and dependencies\n  2.6 Apportioning of requirements\n\n**3. Specific requirements**\n  external interface requirements; functional requirements; performance requirements; logical database requirements; design constraints; software system attributes (reliability, availability, security, maintainability, portability)\n\n**Appendixes. Index.**\n\nNote the split that questions exploit: section 2 is a **general, non-binding overview for the reader**, while section 3 contains the **detailed, verifiable requirements that developers and testers actually work from**. Section 2 does not state requirements in a testable form; section 3 does.\n\n### The eight qualities of a good SRS\n\nIEEE 830 says an SRS should be:\n\n1. **Correct** — every requirement stated is one the system must meet.\n2. **Unambiguous** — every requirement has exactly one interpretation.\n3. **Complete** — all significant requirements, all responses to all inputs, all figures and definitions labelled; no \"to be determined\" left.\n4. **Consistent** — no requirement conflicts with another (in terminology, in logic, or in characteristics).\n5. **Ranked for importance and/or stability** — each requirement marked essential/conditional/optional and marked by how likely it is to change.\n6. **Verifiable** — a finite, cost-effective process exists to check the product meets it. \"The system shall be user-friendly\" is not verifiable; \"a trained operator shall complete a booking in under 90 seconds\" is.\n7. **Modifiable** — well organised, with a table of contents, index and cross-references, and no redundancy, so that a change can be made cleanly.\n8. **Traceable** — backward traceable to the source that produced it, and forward traceable to the design and code elements that implement it.\n\nSome textbooks add *usable during operation and maintenance* as a ninth. The list of eight above is the one to reproduce."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — turning a vague statement into good requirements",
+     "text": "A library customer says: *\"The system should let members reserve books, and it must be fast and secure.\"*\n\n**Step 1 — separate functional from non-functional.**\n- Functional kernel: \"let members reserve books.\"\n- Non-functional kernel: \"fast\", \"secure\".\n\n**Step 2 — make the functional part complete.** A reserve-book service needs its inputs, outputs, preconditions and exception behaviour spelled out:\n\n> **FR-12.** The system shall allow an authenticated member with fewer than five active reservations to place a reservation on any title that has no available copy. On success the system shall record the reservation with a timestamp and return the member's position in the queue. If the member already has five active reservations, the system shall reject the request and display \"Reservation limit reached\".\n\nThat single sentence fixes the actor, the precondition, the trigger, the output and one exception path.\n\n**Step 3 — make the non-functional parts verifiable.** \"Fast\" and \"secure\" are unverifiable as written, violating quality 6.\n\n> **NFR-4 (performance).** Under a load of 200 concurrent users, 95% of reservation requests shall receive a response within 2 seconds and 100% within 5 seconds, measured at the web tier.\n>\n> **NFR-5 (security).** Member passwords shall be stored only as salted hashes using an algorithm on the approved list in Appendix B. Three consecutive failed logins shall lock the account for 15 minutes.\n\n**Step 4 — check against the qualities.** FR-12 is unambiguous (one reading), verifiable (a test can place six reservations), traceable (it can be labelled as arising from stakeholder request SR-3 and linked forward to the design class `ReservationManager`), and ranked (mark it *essential*, stability *high*). NFR-4 is now verifiable because it names the load, the percentile, the threshold and the measurement point — any one of those four missing makes it untestable again.\n\n**Step 5 — spot what is still missing.** Nothing says what happens when a reserved copy becomes available, how long the member has to collect it, or whether reservations expire. That is an incompleteness, and finding it is exactly the job of requirements **validation** by formal technical review."
+    },
+    {
+     "t": "cal",
+     "kind": "trap",
+     "title": "Which quality is being violated?",
+     "text": "Questions give one bad requirement and ask which SRS property it breaks. Use these signatures.\n\n| Bad requirement | Violated quality |\n|---|---|\n| \"The interface shall be user-friendly.\" | **Verifiable** (also unambiguous) |\n| \"Response time shall be fast\" in §3 and \"under 1 s\" in §5 | **Consistent** |\n| \"The system shall support many users.\" | **Unambiguous** |\n| No statement of what happens on invalid input | **Complete** |\n| No labels or IDs on requirements, heavy redundancy | **Modifiable** |\n| No link from a requirement back to who asked for it | **Traceable** |\n| Every requirement written as equally mandatory | **Ranked for importance** |"
+    },
+    {
+     "t": "check",
+     "id": "chk-6.3-1",
+     "q": "\"The system shall encrypt all stored customer records using AES-256.\" This requirement is best classified as",
+     "opts": [
+      "a functional requirement",
+      "a non-functional product requirement",
+      "an external legislative requirement",
+      "a domain requirement"
+     ],
+     "ans": 1,
+     "exp": "It constrains a quality of the product — its security — rather than naming a service the system delivers to a user, so it is non-functional, and within Sommerville's classification it is a product requirement (the security sub-type). It would be an external requirement only if the SRS derived it from a named law or standard rather than from the product's own quality goals."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.3-2",
+     "q": "In a level 0 data flow diagram, the number of processes shown is",
+     "opts": [
+      "exactly one",
+      "exactly two",
+      "one per external entity",
+      "as many as the analyst chooses"
+     ],
+     "ans": 0,
+     "exp": "The level 0 DFD is the context diagram: the entire system is drawn as a single bubble, surrounded by the external entities and the flows between them and the system. Decomposition into multiple processes begins at level 1, and the levelling must be balanced — the level 1 diagram's net inputs and outputs must match the single level 0 bubble's."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.3-3",
+     "q": "An SRS states requirement R7 in section 3 and repeats the same rule in different words in section 5, where the two versions disagree about a threshold. Which SRS quality is primarily violated?",
+     "opts": [
+      "Completeness",
+      "Consistency",
+      "Traceability",
+      "Modifiability"
+     ],
+     "ans": 1,
+     "exp": "Two statements in the same document that cannot both be satisfied is precisely an internal inconsistency. The redundancy also hurts modifiability, since a change must be made in two places, but the direct and primary violation named by IEEE 830 for conflicting requirements is consistency."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "The 'how well' test separates FR from NFR",
+     "body": "Ask whether the sentence answers *what does it do* or *how well / under what constraint does it do it*. Performance, security, availability, usability, portability, standards compliance and legal conformance are always non-functional, even when they mention a specific function."
+    },
+    {
+     "title": "Seven RE tasks in order: I-E-E-N-S-V-M",
+     "body": "Inception, Elicitation, Elaboration, Negotiation, Specification, Validation, Management. Note that Negotiation comes before Specification — you agree the set, then write it down — and Management is not a phase but runs throughout."
+    },
+    {
+     "title": "Verifiability is the quality most often tested",
+     "body": "When asked what is wrong with a requirement, look first for an adjective with no number attached: fast, reliable, robust, user-friendly, efficient, secure, easy. Each of those makes the requirement unverifiable and usually ambiguous as well."
+    },
+    {
+     "title": "Include is mandatory, extend is optional",
+     "body": "If the base use case cannot complete without the other, it is include. If the other adds behaviour only in certain circumstances at a named extension point, it is extend. Read the words 'always' and 'optionally' in the stem."
+    },
+    {
+     "title": "IEEE 830 section 2 versus section 3",
+     "body": "Anything described as a background, perspective, user characteristic, assumption or constraint overview belongs in section 2 (Overall description). Anything stated as a numbered, testable shall-statement belongs in section 3 (Specific requirements)."
+    }
+   ],
+   "traps": [
+    {
+     "title": "A DFD is not a flowchart",
+     "body": "A DFD shows data transformation, not control. It has no decision diamonds, no loops, no sequencing and no indication of when a process runs — only that data arriving causes data to leave. Options that credit a DFD with showing conditions or order of execution are wrong."
+    },
+    {
+     "title": "Validation and verification of requirements are different questions",
+     "body": "Requirements validation asks whether the SRS describes the system the customer wants; requirements verification asks whether the SRS is internally well formed. In the seven-task list the named activity is validation, and its main technique is the formal technical review, not testing — there is no code yet."
+    },
+    {
+     "title": "A scenario is not a use case",
+     "body": "A use case is the whole set of interaction paths for a goal; a scenario is one specific path through it. A question saying 'each use case corresponds to exactly one scenario' is false: there is one primary scenario plus alternative and exception scenarios."
+    },
+    {
+     "title": "Completeness does not mean 'long'",
+     "body": "IEEE 830 completeness means every significant requirement is present, every response to every class of input in every situation is defined, and every figure and term is labelled and defined — with no 'TBD' left. A thick document full of prose can still be incomplete, and a short one with full input-response coverage can be complete."
+    }
+   ]
+  },
+  {
+   "id": "6.4",
+   "title": "Software Design",
+   "summary": "Design concepts and the modularity trade-off, the complete cohesion and coupling ladders in order, architectural styles, and data, architectural, interface and component-level design.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## From analysis model to design model\n\nAnalysis says *what*; design says *how*. Design takes the analysis model and produces four things, which are also the four **levels of design**:\n\n| Level | Produces | From |\n|---|---|---|\n| **Data / class design** | data structures and design classes | class-based analysis elements, ERD |\n| **Architectural design** | the relationship among the major structural elements | class-based and flow-oriented elements |\n| **Interface design** | how the software communicates with users, other systems and itself | scenario-based and behavioural elements |\n| **Component-level design** | procedural descriptions of each component | all of the above, refined |\n\nDesign quality is judged by three rules (the classic \"goals of design\"): the design must implement all explicit requirements and all implicit ones the customer expects; it must be readable and understandable by those who will code, test and maintain it; and it must give a complete picture of the data, function and behaviour domains from an implementation perspective."
+    },
+    {
+     "t": "md",
+     "text": "## The design concepts\n\nThese are the intellectual tools the designer uses. Pressman's list, with what each is actually for:\n\n- **Abstraction** — describe a solution at a level of detail appropriate to the problem. A **procedural abstraction** names a sequence of instructions with a single function (\"open the door\"); a **data abstraction** names a collection of data (\"door\" with attributes type, weight, dimensions). Design proceeds from high to low abstraction.\n- **Architecture** — the overall structure: the components, their externally visible properties, and their relationships. It is not the source code; it is the framework the code hangs on.\n- **Patterns** — named, reusable solutions to recurring design problems, each carrying the context in which it applies and the consequences of using it.\n- **Separation of concerns** — divide a problem into pieces that can be solved independently. The justification is that the perceived complexity of two sub-problems solved separately is less than the complexity of solving them together: if $p_1$ and $p_2$ are problems with perceived complexity $C(p_1) > C(p_2)$, then $E(p_1) > E(p_2)$ for the effort, and crucially $C(p_1 + p_2) > C(p_1) + C(p_2)$.\n- **Modularity** — the practical form of separation of concerns: software divided into named, addressable components that can be developed and tested independently.\n- **Information hiding** (Parnas) — each module hides its design decisions from all others; interfaces reveal only what is necessary. The benefit is that when a hidden decision changes, only that module changes, so errors do not propagate. Information hiding is the *reason* modular designs are maintainable.\n- **Functional independence** — each module addresses one sub-function and has simple interfaces. Measured by **cohesion** and **coupling**.\n- **Refinement** (Wirth's stepwise refinement) — elaborate a statement of function through successive levels of detail. Refinement and abstraction are complementary: abstraction suppresses detail, refinement reveals it.\n- **Aspects** — a representation of a crosscutting concern, needed when a requirement cannot be satisfied without cutting across several modules.\n- **Refactoring** — reorganising a design or code to improve internal structure without changing external behaviour.\n- **Design classes** — five types refine the analysis classes: user interface, business domain, process, persistent, and system classes.\n\n### The modularity trade-off\n\nSplitting into more modules reduces the effort per module, but integration effort — the cost of the interfaces between them — grows with the number of modules. The total cost is the sum of these two opposing curves, so it has a minimum:\n\n$$\\text{Cost}_{\\text{total}}(m) = \\text{Cost}_{\\text{modules}}(m) + \\text{Cost}_{\\text{interface}}(m)$$\n\nThe region around that minimum is the **region of minimum cost**, and the number of modules there is often labelled $M$. Below it the design is **undermodular** (a few huge modules); above it, **overmodular** (integration overhead swamps the benefit). The honest answer to \"how many modules?\" is that there is no formula — but the shape of the curve is examined, and the expected answer to \"does modularity always reduce cost?\" is **no**."
+    },
+    {
+     "t": "md",
+     "text": "## Cohesion — the seven levels, worst to best\n\n**Cohesion** measures how strongly the elements *inside* one module belong together. High cohesion is desired. The ladder is asked almost every year, usually as \"arrange in increasing order of cohesion\" or \"which is the strongest/weakest form\".\n\n| Rank | Level | The elements are grouped because... | Example |\n|---|---|---|---|\n| 1 (worst) | **Coincidental** | no reason at all; arbitrary grouping | a `Utils` module holding `printBanner`, `sortArray` and `openSocket` |\n| 2 | **Logical** | they are the same *kind* of thing, with a flag selecting which one runs | one `handleIO(type)` routine that reads a tape, a disk or a keyboard according to `type` |\n| 3 | **Temporal** | they all happen at the same *time* | `initialise()` that opens files, zeroes counters and sets the clock |\n| 4 | **Procedural** | they must execute in a particular *order* | `readRecord(); validate(); writeLog()` where the only link is sequence |\n| 5 | **Communicational** | they all operate on the *same data* | a module that computes the total, the mean and the maximum of the same array |\n| 6 | **Sequential** | the *output of one is the input of the next* | `parse()` feeding `evaluate()` feeding `format()` |\n| 7 (best) | **Functional** | they all contribute to exactly *one* well-defined task | `computeSquareRoot(x)` |\n\nRemember the ladder as **Co-Lo-Te-Pro-Com-Se-Fun**. Object-oriented treatments sometimes insert **informational cohesion** (a module with several entry points, each performing one function, all sharing one data structure — essentially an abstract data type) between sequential and functional, and Pressman's component-level list uses the shorter set *functional, layer, communicational*. If an option list has eight entries, informational is the extra one.\n\nThe two most confused neighbours are **procedural** and **sequential**. Both involve order. The test is: does data flow from one element to the next? If the second element consumes what the first produced, it is sequential; if they merely have to run in that order but pass nothing, it is procedural. Similarly **communicational** and **sequential** both involve shared data — but in communicational the elements all touch the same data independently, while in sequential they form a chain."
+    },
+    {
+     "t": "md",
+     "text": "## Coupling — the six levels, worst to best\n\n**Coupling** measures the interdependence *between* modules. Low coupling is desired.\n\n| Rank | Level | Nature of the dependency | Example |\n|---|---|---|---|\n| 1 (worst) | **Content** (pathological) | one module modifies or relies on the internal workings of another — branches into its middle, changes its local data | `goto` into another routine's body; altering another module's local variable |\n| 2 | **Common** (global) | two modules share global data | both read and write a global `config` record |\n| 3 | **External** | modules share an externally imposed item — a device, a protocol, a file format | two modules both bound to the same communication protocol |\n| 4 | **Control** | one module passes a flag that dictates the other's internal logic | `process(data, mode)` where `mode` selects which branch runs inside |\n| 5 | **Stamp** (data-structured) | modules share a composite data structure but each uses only part of it | passing a whole `Employee` record when only the salary is needed |\n| 6 (best) | **Data** | modules communicate only through simple parameters, each of which is used | `computeTax(income, rate)` |\n\nRemember **Content-Common-External-Control-Stamp-Data**. Beyond data coupling some texts list **message coupling** (communication via parameterless messages or events, as in pure object-oriented systems) and **no coupling** as still looser, and place **subclass coupling** and **temporal coupling** among the object-oriented varieties. The six above are the classical Stevens–Myers–Constantine set.\n\nContent and common are the pair that kill maintainability, because a change in one module silently breaks another. Control coupling is the one candidates misclassify: the giveaway is a parameter that is a *switch* rather than *data*. Stamp versus data is decided by whether the argument is a composite structure of which only part is used.\n\n### Using both together\n\nFunctional independence is high cohesion **and** low coupling simultaneously. An exam favourite is: which combination is best? **High cohesion, low coupling.** And which module has the best design characteristics? The one whose elements all serve one purpose and which talks to its neighbours only through simple parameters."
+    },
+    {
+     "t": "md",
+     "text": "## Architectural styles\n\nAn **architectural style** names a family of systems with a shared structural organisation. It defines a set of component types, a set of connectors, constraints on how they may be combined, and a semantic model.\n\n| Style | Organisation | Typical use |\n|---|---|---|\n| **Data-centred** (repository, blackboard) | a central data store that clients access; in the blackboard variant the store notifies clients of changes | database applications, AI problem solvers |\n| **Data-flow** (batch sequential, **pipe and filter**) | a chain of filters, each transforming its input stream; connectors are pipes | compilers, Unix shells, signal processing |\n| **Call and return** | main program/subprogram hierarchy or remote procedure call; control flows down and returns | classic procedural systems |\n| **Layered** | a hierarchy of layers, each using only the layer below; inner layers hold core functionality, outer layers interface with users | operating systems, network stacks |\n| **Object-oriented** | components encapsulate data and the operations on it; interaction by message passing | most modern business systems |\n\nRelated, commonly examined organisations: **client-server** (two-tier and three-tier: presentation, application logic, data), **MVC** (Model holds data and business rules, View renders, Controller interprets user input and selects the model behaviour), **broker** (a middleware component decouples clients and servers, as in CORBA), **publish-subscribe / event-driven**, and **microkernel**.\n\nArchitectural design also uses **archetypes** (abstractions central to the domain), **architectural context diagrams**, and evaluation methods such as **ATAM** (Architecture Trade-off Analysis Method).\n\n### Structured design: DFD to structure chart\n\nClassical structured design maps an analysis DFD onto a program structure chart:\n\n- **Transform mapping** — used when the DFD shows a clear *incoming flow* (afferent), a *central transform*, and an *outgoing flow* (efferent). The flow boundaries are drawn, the chart is factored into an input controller, a transform controller and an output controller under a top-level module, then refined.\n- **Transaction mapping** — used when a single data item, a **transaction**, triggers one of several possible action paths. The structure chart gets a *transaction centre* (dispatcher) with one branch per action path.\n\nStructure-chart vocabulary: **fan-out** is the number of modules directly controlled by a module; **fan-in** is the number of modules that control it; **depth** is the number of levels; **width** the maximum span at any level. The **scope of effect** of a decision (the modules affected by it) should lie **within the scope of control** of the module in which the decision is taken — a rule that shows up as a true/false statement."
+    },
+    {
+     "t": "md",
+     "text": "## Interface and component-level design\n\n**Interface design** covers the user interface, external interfaces to other systems, and internal interfaces between components. Theo Mandel's three **golden rules** are the examined part:\n\n1. **Place the user in control** — interaction modes should not force the user down a path; provide undo; allow interruption; hide technical internals.\n2. **Reduce the user's memory load** — set meaningful defaults, use recognisable shortcuts, disclose information progressively, make recent actions visible.\n3. **Make the interface consistent** — consistent visual layout, consistent input mechanisms, consistent navigation; preserve context when moving between tasks.\n\nThe user-interface design process is itself spiral: *interface analysis and modelling* (user, task, environment analysis) → *interface design* → *interface construction/prototype* → *interface validation*.\n\n**Component-level design** turns each architectural component into a procedural description. Its foundation is **structured programming**: only the three constructs **sequence, condition (if-then-else, case) and repetition (while, until)** are used, each with one entry and one exit, which guarantees the design is comprehensible and testable.\n\nThree notations are available:\n\n- **Graphical** — flowcharts, box (Nassi-Shneiderman/chapin) diagrams.\n- **Tabular** — **decision tables**, which pair a set of conditions with the actions each combination triggers, and are the right choice when a component is a tangle of conditions.\n- **Program design language (PDL)** — structured English, or \"pseudocode\": the control structures of a programming language with the descriptive freedom of prose.\n\n**Object-oriented design** replaces procedural decomposition with class decomposition. Its concepts are **classes and objects, encapsulation, inheritance, polymorphism, message passing** and **abstraction**. A design class comes in the five flavours listed earlier, and is refined until each class has a single, tight responsibility — the OO restatement of functional cohesion. Its structural principles are commonly examined as the **open-closed principle** (open for extension, closed for modification), the **Liskov substitution principle** (a subclass must be usable wherever its superclass is), **dependency inversion** (depend on abstractions, not concretions) and the **interface segregation principle**. The classic methodologies are **Booch**, **Rumbaugh's OMT** (object model, dynamic model, functional model), **Jacobson's OOSE** (use-case driven) and **Coad-Yourdon**, all of which converged into **UML**.\n\nDesign **patterns** are catalogued by the Gang of Four in three families: **creational** (Singleton, Factory Method, Abstract Factory, Builder, Prototype), **structural** (Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy) and **behavioural** (Observer, Strategy, Command, Iterator, State, Template Method, Visitor, Mediator, Memento, Chain of Responsibility, Interpreter) — 23 in all."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — classifying cohesion and coupling from code",
+     "text": "Classify each fragment. This is exactly the shape of the exam question.\n\n**(a)**\n```c\nvoid housekeeping(void) {\n    open_log_file();\n    reset_counters();\n    set_system_clock();\n    load_configuration();\n}\n```\nNothing here shares data and nothing feeds anything else — the four calls are grouped only because they all run at start-up. **Temporal cohesion.**\n\n**(b)**\n```c\ndouble stats(double a[], int n, int which) {\n    if (which == 1) return mean(a, n);\n    if (which == 2) return variance(a, n);\n    return maximum(a, n);\n}\n```\nTwo readings, and the exam expects you to choose by the *dominant* feature. Because a flag selects among functions of the same general kind, this is **logical cohesion** — the classic signature is a parameter that switches between alternatives. (Had the module computed mean, variance and maximum of `a` and returned all three, it would be **communicational**, since every element works on the same data.)\n\n**(c)**\n```c\nchar *report(struct Employee *e) {\n    return format_name(e->first, e->last);\n}\n```\nThe caller passes a whole `Employee` structure but `report` reads only two of its fields. Passing a composite structure of which only part is used is **stamp coupling**. Passing `e->first` and `e->last` directly would reduce it to **data coupling**.\n\n**(d)**\n```c\nint total_pay;              /* global */\nvoid add_bonus(void)  { total_pay += bonus(); }\nvoid add_salary(void) { total_pay += base();  }\n```\nTwo modules read and write the same global. **Common coupling.**\n\n**(e)** Module `A` calls `B(data, VERBOSE)` and inside `B` the constant `VERBOSE` chooses between two processing branches.\nThe second parameter is not data, it is an instruction about how `B` should behave. **Control coupling.**\n\n**(f)** `lexer()` produces a token stream which `parser()` consumes and turns into a tree which `codegen()` walks.\nEach stage's output is the next stage's input, so as a single module this is **sequential cohesion**; viewed as separate modules connected only by the stream they pass, the coupling between them is **data coupling** — and that combination (sequential-to-functional cohesion with data coupling) is what a pipe-and-filter architecture buys you.\n\n**Ranking check.** Order (a), (b), (f) by increasing cohesion: logical (2) < temporal (3) < sequential (6), so **(b) < (a) < (f)**. Order (c), (d), (e) by increasing coupling: data-structured/stamp (5) is looser than control (4), which is looser than common (2), so increasing coupling gives **(c) < (e) < (d)**."
+    },
+    {
+     "t": "cal",
+     "kind": "mnemonic",
+     "title": "Two ladders, memorised in one line each",
+     "text": "**Cohesion, worst → best (7):** **Co**incidental, **Lo**gical, **Te**mporal, **Pro**cedural, **Com**municational, **Se**quential, **Fun**ctional.\nRead the initials as *\"Co-Lo-Te-Pro-Com-Se-Fun\"*.\n\n**Coupling, worst → best (6):** **Co**ntent, **Co**mmon, **E**xternal, **C**ontrol, **S**tamp, **D**ata.\nRead the initials as *\"CoCECSD\"*, or remember that the two worst both start with *Co* and the best is the simplest word, *Data*.\n\nBoth ladders are conventionally written worst-first. If a question says \"increasing cohesion\" it wants this order; if it says \"decreasing cohesion\" reverse it. Check which direction the stem asks for before matching."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.4-1",
+     "q": "Arrange the following in order of increasing cohesion: (i) Procedural (ii) Coincidental (iii) Sequential (iv) Temporal",
+     "opts": [
+      "(ii), (iv), (i), (iii)",
+      "(ii), (i), (iv), (iii)",
+      "(iv), (ii), (i), (iii)",
+      "(iii), (i), (iv), (ii)"
+     ],
+     "ans": 0,
+     "exp": "The ladder from weakest to strongest is coincidental, logical, temporal, procedural, communicational, sequential, functional. Taking only the four listed, that gives coincidental (weakest), then temporal, then procedural, then sequential (strongest) — option (ii), (iv), (i), (iii)."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.4-2",
+     "q": "Module A passes module B a complete customer record, although B uses only the postcode field. The coupling between A and B is",
+     "opts": [
+      "Data coupling",
+      "Stamp coupling",
+      "Control coupling",
+      "Common coupling"
+     ],
+     "ans": 1,
+     "exp": "Stamp coupling is exactly this: a composite data structure is passed but the receiver uses only part of it, so B is exposed to changes in fields it never reads. Passing the postcode alone as a simple parameter would be data coupling, the loosest of the classical forms; control coupling needs a flag that directs B's internal logic, and common coupling needs shared global data."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.4-3",
+     "q": "Which statement about information hiding is correct?",
+     "opts": [
+      "It requires each module to expose all of its data so that others can reuse it",
+      "It means design decisions inside a module are inaccessible to other modules, so changes do not propagate",
+      "It is a synonym for abstraction",
+      "It increases coupling to improve performance"
+     ],
+     "ans": 1,
+     "exp": "Parnas's principle is that each module conceals its design decisions behind an interface, so a change to a hidden decision is confined to that module and cannot ripple through the system. That is why it is the justification for modularity's maintainability benefits. Abstraction is a related but distinct concept: it suppresses detail at a level of description, whereas information hiding enforces inaccessibility."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "The ladder order is worth more marks than the definitions",
+     "body": "Three or four questions a year ask only for the order. Drill 'Co-Lo-Te-Pro-Com-Se-Fun' for cohesion and 'Content-Common-External-Control-Stamp-Data' for coupling until you can write both without thinking, then classify from the definitions only when the stem gives code."
+    },
+    {
+     "title": "Procedural vs sequential: does data flow?",
+     "body": "Both imply an order of execution. If module element 2 consumes what element 1 produced, it is sequential (higher). If they just have to happen in that order but exchange nothing, it is procedural (lower)."
+    },
+    {
+     "title": "A flag parameter is always control coupling",
+     "body": "Any argument whose purpose is to select behaviour inside the callee — a mode, a type, a switch, a boolean that gates a branch — is control coupling, no matter how simple it looks. A flag that is merely stored or returned unexamined is data."
+    },
+    {
+     "title": "Cohesion is within, coupling is between",
+     "body": "If the question describes what is inside one module, it is a cohesion question; if it describes how two modules talk, it is coupling. Candidates lose marks by reading a coupling stem and answering from the cohesion ladder."
+    },
+    {
+     "title": "Transform vs transaction mapping by DFD shape",
+     "body": "If the DFD is a straight pipeline with an identifiable centre, use transform mapping. If one incoming item fans out to several mutually exclusive action paths, use transaction mapping and expect a dispatcher module in the structure chart."
+    }
+   ],
+   "traps": [
+    {
+     "title": "More modules is not always better",
+     "body": "The total cost curve is U-shaped: module cost falls with $m$ but interface cost rises, so beyond the region of minimum cost, adding modules increases total effort. 'Modularity always reduces development cost' is false."
+    },
+    {
+     "title": "Coincidental cohesion is worst, functional is best — not the reverse",
+     "body": "Because coupling's best value is 'data' and cohesion's best is 'functional', candidates sometimes assume both ladders are printed best-first. Both are conventionally printed worst-first. Always check the direction word in the stem."
+    },
+    {
+     "title": "Common coupling is not the worst",
+     "body": "Global data is bad but content coupling is worse, because a content-coupled module reaches inside another's implementation — branching into its code or altering its local data — which breaks the callee even when its interface is unchanged."
+    },
+    {
+     "title": "Architecture is not the same as the design pattern list",
+     "body": "An architectural style constrains the whole system's component and connector types (pipe-and-filter, layered, repository). A design pattern solves a localised recurring problem (Observer, Factory). Questions mixing 'Singleton' into a list of architectural styles are testing this."
+    }
+   ]
+  },
+  {
+   "id": "6.5",
+   "title": "Software Quality and Risk Management",
+   "summary": "McCall's eleven factors in three categories, ISO 9126, quality control versus assurance, risk identification and projection with numeric risk exposure, the RMMM plan, and reliability with MTTF, MTBF and availability.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## What software quality means\n\nThe working definition used throughout the syllabus is Pressman's: software quality is **an effective software process applied in a manner that creates a useful product that provides measurable value for those who produce it and those who use it**. Three parts, each doing work. *Effective process* supplies the framework in which quality can be engineered rather than tested in afterwards. *Useful product* means the product delivers the content, functions and features the end user wants, reliably and error-free. *Adding value* means it makes the producer and the user better off — faster delivery for one, lower cost of ownership for the other.\n\nGarvin's five views of quality are worth knowing because they explain why stakeholders disagree: the **transcendental** view (you recognise it when you see it), the **user** view (fitness for purpose), the **manufacturer** view (conformance to specification), the **product** view (inherent characteristics), and the **value-based** view (what a customer will pay).\n\nTwo definitions are routinely confused and routinely tested.\n\n**Quality assurance (QA)** is *process*-oriented and *preventive*. It establishes and audits the processes, standards and procedures that will produce a quality product: process definition, audits, training, standards compliance, metrics collection. It asks \"are we doing the right things, the right way?\" and is the responsibility of the whole organisation.\n\n**Quality control (QC)** is *product*-oriented and *corrective*. It is the series of inspections, reviews and tests applied to each work product to find defects: reviews, walkthroughs, inspections, testing. It asks \"does this artefact meet its specification?\"\n\nA third term, **quality cost**, splits into **prevention costs** (planning, reviews training, tooling), **appraisal costs** (in-process inspection, equipment calibration, testing), and **failure costs** — **internal failure** (rework, repair, failure-mode analysis, found before shipping) and **external failure** (complaint resolution, product return, help-line support, warranty work, found after shipping). External failure cost is by far the largest, which is the economic argument for reviews."
+    },
+    {
+     "t": "md",
+     "text": "## McCall's quality factors — eleven in three categories\n\nMcCall, Richards and Walters (1977) classified quality factors by what the software must do *over its life*. The three-way grouping and the membership of each group are asked directly.\n\n### Product Operation — how well it runs now (5 factors)\n\n| Factor | Question it answers |\n|---|---|\n| **Correctness** | Does it do what the specification says? |\n| **Reliability** | Does it do it accurately every time, without failing? |\n| **Efficiency** | How much computing resource and code does it need? |\n| **Integrity** | Can unauthorised access to software and data be controlled? |\n| **Usability** | What is the effort to learn, operate, prepare input and interpret output? |\n\n### Product Revision — how well it can be changed (3 factors)\n\n| Factor | Question it answers |\n|---|---|\n| **Maintainability** | What is the effort to locate and fix a fault? |\n| **Flexibility** | What is the effort to modify an operational program? |\n| **Testability** | What is the effort to test it and confirm it performs its function? |\n\n### Product Transition — how well it can be moved (3 factors)\n\n| Factor | Question it answers |\n|---|---|\n| **Portability** | What is the effort to move it to another hardware or software environment? |\n| **Reusability** | Can it (or parts of it) be used in another application? |\n| **Interoperability** | What is the effort to couple it to another system? |\n\nBeneath the eleven factors McCall places a set of **quality criteria** (traceability, completeness, consistency, accuracy, error tolerance, execution efficiency, storage efficiency, access control, access audit, operability, training, communicativeness, simplicity, conciseness, instrumentation, self-documentation, expandability, generality, modularity, software system independence, machine independence, communications commonality, data commonality) which are given numeric grades 0 to 10 and combined with weights to score each factor.\n\n**FURPS** (Hewlett-Packard) is a rival scheme: **Functionality, Usability, Reliability, Performance, Supportability**. **FURPS+** adds design, implementation, interface and physical constraints."
+    },
+    {
+     "t": "md",
+     "text": "## ISO 9126 and ISO 25010\n\n**ISO/IEC 9126** defines **six** quality characteristics, each with sub-characteristics. Remember the six as **F-R-U-E-M-P**.\n\n| Characteristic | Sub-characteristics |\n|---|---|\n| **Functionality** | suitability, accuracy, interoperability, security, compliance |\n| **Reliability** | maturity, fault tolerance, recoverability |\n| **Usability** | understandability, learnability, operability, attractiveness |\n| **Efficiency** | time behaviour, resource utilisation |\n| **Maintainability** | analysability, changeability, stability, testability |\n| **Portability** | adaptability, installability, co-existence, replaceability |\n\nTwo facts that separate 9126 from McCall in a question: **security is a sub-characteristic of Functionality in 9126**, whereas McCall gives it a top-level factor called Integrity; and **testability sits under Maintainability in 9126**, whereas McCall makes it a factor in its own right under Product Revision.\n\n**ISO/IEC 25010**, the successor standard, raises the count to **eight** product quality characteristics by splitting out **Security** and **Compatibility** as top-level items: Functional suitability, Performance efficiency, Compatibility, Usability, Reliability, Security, Maintainability, Portability. If an option list has eight entries including Security, the standard being tested is 25010, not 9126."
+    },
+    {
+     "t": "md",
+     "text": "## Software risk management\n\nA **risk** is a potential problem: it has a **probability** of occurring and a **loss** (impact) if it does. Risk management is proactive when it identifies and plans for risks before they bite, and reactive — \"firefighting\", or the *Indiana Jones school* of risk management — when it responds only after the fact.\n\n### Risk categories\n\nBy *what is threatened*:\n\n- **Project risks** — threaten the plan: budget, schedule, staffing, resources, customer and requirements problems.\n- **Technical risks** — threaten the quality and timeliness of the product: design, implementation, interface, verification and maintenance difficulties; leading-edge technology; ambiguous specification.\n- **Business risks** — threaten the viability of the product. Five named sub-types: **market risk** (building something nobody wants), **strategic risk** (building something that no longer fits the business strategy), **sales risk** (building something the sales force does not know how to sell), **management risk** (losing the support of senior management), **budget risk** (losing budget or personnel commitment).\n\nBy *how well they can be foreseen*:\n\n- **Known risks** — uncovered by careful evaluation of the plan, the environment and reliable information (unrealistic delivery date, no documented requirements, poor environment).\n- **Predictable risks** — extrapolated from past project experience (staff turnover, poor customer communication).\n- **Unpredictable risks** — can and do occur but are extremely hard to identify in advance.\n\n### Risk identification and projection\n\nRisk identification often uses a **risk item checklist** organised around product size, business impact, stakeholder characteristics, process definition, development environment, technology to be built, and staff size and experience. A *risk components and drivers* analysis assesses performance, cost, support and schedule risk, each rated for impact as **1 negligible, 2 marginal, 3 critical, 4 catastrophic** (note that on this scale the *lower* number is the *worse* outcome in some texts and the reverse in others — read the table given in the question).\n\n**Risk projection (risk estimation)** has four activities: establish a scale reflecting the perceived likelihood of the risk; delineate the consequences; estimate the impact on the project and the product; and assess the overall accuracy of the projection so that misunderstandings do not follow.\n\n### Risk exposure\n\nThe single computable quantity in the whole topic:\n\n$$RE = P \\times C$$\n\nwhere $P$ is the probability the risk occurs and $C$ is the cost to the project if it does. $RE$ is in money, and it is the number used to rank the **risk table** and to justify how much may be spent on mitigation — spending more than $RE$ to avoid a risk is not rational.\n\nThe **risk table** lists each risk with its category, probability, impact and $RE$, sorted by probability and impact. A horizontal **cut-off line** is drawn; risks above it are actively managed, risks below it are re-evaluated periodically but not planned for."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — risk exposure and the risk table",
+     "text": "A project plans to build 60 reusable components. Three risks are identified.\n\n**Risk R1.** Only 45 of the 60 components will actually be available for reuse; the remaining 15 must be built from scratch. Each component averages 120 LOC and costs \\$16 per LOC. The probability of this risk is estimated at 60%.\n\n$$C_1 = 15 \\times 120 \\times 16 = 15 \\times 1920 = \\$28{,}800$$\n$$RE_1 = 0.60 \\times 28{,}800 = \\$17{,}280$$\n\n**Risk R2.** A key database developer leaves during the project, costing 8 person-weeks of recovery at \\$2,500 per person-week. Probability 25%.\n\n$$C_2 = 8 \\times 2500 = \\$20{,}000, \\qquad RE_2 = 0.25 \\times 20{,}000 = \\$5{,}000$$\n\n**Risk R3.** The customer changes the reporting requirements late, forcing 200 LOC of rework at \\$16 per LOC plus \\$4,000 of re-testing. Probability 70%.\n\n$$C_3 = 200 \\times 16 + 4000 = 3200 + 4000 = \\$7{,}200, \\qquad RE_3 = 0.70 \\times 7{,}200 = \\$5{,}040$$\n\n**Risk table, sorted by $RE$:**\n\n| Risk | $P$ | $C$ | $RE$ |\n|---|---|---|---|\n| R1 reuse shortfall | 0.60 | \\$28,800 | **\\$17,280** |\n| R2 staff turnover | 0.25 | \\$20,000 | \\$5,000 |\n| R3 requirements change | 0.70 | \\$7,200 | \\$5,040 |\n\n**Total risk exposure** $= 17{,}280 + 5{,}000 + 5{,}040 = \\$27{,}320$, which is the amount that should be carried as a risk reserve.\n\nTwo readings the examiner wants you to make. First, **R3 is the most likely risk but not the most serious one** — 70% probability with a small loss ranks third. Ranking by probability alone is the classic error; rank by $RE$. Second, it is worth spending up to \\$17,280 to eliminate R1 entirely, and no more; a mitigation costing \\$20,000 makes the project worse off."
+    },
+    {
+     "t": "md",
+     "text": "## RMMM\n\nThe **RMMM plan** — **Risk Mitigation, Monitoring and Management** — documents all of the risk work. It can be a standalone document or a section of the software project plan; many teams instead keep a one-page **RIS (Risk Information Sheet)** per risk, holding the risk id, date, probability, impact, description, refinement, mitigation and monitoring approach, management/contingency plan and trigger, current status and the responsible person.\n\nThe three M's differ and are examined as a triple:\n\n- **Mitigation** — act now to *reduce the probability or the impact*. For staff turnover: meet with staff to find causes, act on the controllable ones, organise teams so information is dispersed, define documentation standards, review work so that more than one person knows each module, assign a backup to every critical role.\n- **Monitoring** — watch for indicators that tell you whether the risk is becoming more or less likely: team attitude, cohesion, relationships, availability of jobs elsewhere. Monitoring also checks whether the mitigation steps are being applied correctly.\n- **Management** — assume the risk has occurred and execute the **contingency plan**: bring the backup person in, rely on the dispersed documentation, adjust the schedule.\n\nA **risk trigger** is the observable event that says \"switch from monitoring to management now\". A useful rule of thumb is that RMMM costs should stay near 3–5% of total project cost.\n\nOnce a risk has been mitigated, the mitigation itself becomes a cost, so risk management adds project cost — and the judgement that must be made is whether the reduction in expected loss exceeds it."
+    },
+    {
+     "t": "md",
+     "text": "## Software reliability\n\n**Software reliability** is the probability of failure-free operation of a computer program in a specified environment for a specified time. Unlike hardware, software does not wear out, so its failures come from latent design faults, not from physical degradation — which is why the software failure-rate curve is an *idealised* falling curve, and the *actual* curve rises in steps each time a change introduces new faults before falling again.\n\nThe measurable quantities:\n\n| Symbol | Name | Meaning |\n|---|---|---|\n| **MTTF** | mean time to failure | average operating time before a failure occurs |\n| **MTTR** | mean time to repair | average time to diagnose and correct a failure |\n| **MTBF** | mean time between failures | $\\text{MTTF} + \\text{MTTR}$ |\n\n$$\\text{MTBF} = \\text{MTTF} + \\text{MTTR}$$\n\n$$\\text{Availability} = \\frac{\\text{MTTF}}{\\text{MTTF} + \\text{MTTR}} \\times 100\\% = \\frac{\\text{MTTF}}{\\text{MTBF}} \\times 100\\%$$\n\nFor a constant failure rate $\\lambda$ (the exponential failure model):\n\n$$\\lambda = \\frac{1}{\\text{MTTF}}, \\qquad R(t) = e^{-\\lambda t} = e^{-t/\\text{MTTF}}$$\n\nOther reliability metrics used in the syllabus: **POFOD** (probability of failure on demand — the right metric for a protection system that is idle most of the time), **ROCOF** (rate of occurrence of failures — the right metric for a transaction system), **AVAIL** (availability, for a continuously running system).\n\n**Software safety** is a related but distinct discipline: it identifies **hazards** (conditions that can cause an accident) and analyses them with fault tree analysis, real-time logic or petri nets. A system can be reliable and unsafe — it can execute its specification perfectly and still cause harm because the specification was wrong."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — MTTF, MTBF, availability and reliability",
+     "text": "A transaction server runs for 1,000 hours and records 5 failures. The total downtime for repairs across those failures was 20 hours.\n\n**Uptime** $= 1000 - 20 = 980$ hours.\n\n$$\\text{MTTF} = \\frac{\\text{total uptime}}{\\text{number of failures}} = \\frac{980}{5} = 196 \\text{ hours}$$\n$$\\text{MTTR} = \\frac{\\text{total downtime}}{\\text{number of failures}} = \\frac{20}{5} = 4 \\text{ hours}$$\n$$\\text{MTBF} = 196 + 4 = 200 \\text{ hours}$$\n$$\\text{Availability} = \\frac{196}{200} \\times 100\\% = 98\\%$$\n\nSanity check from the other direction: total time $1000 = 5 \\times \\text{MTBF} = 5 \\times 200$. Consistent.\n\n**Failure rate.** $\\lambda = 1/196 \\approx 0.0051$ failures per hour, i.e. about 5.1 failures per 1000 operating hours.\n\n**Reliability over a 24-hour mission.**\n$$R(24) = e^{-24/196} = e^{-0.1224} = 0.8848$$\nso there is an 88.5% chance of running a full day without a failure.\n\n**A second version.** Suppose instead MTTF = 900 hours and MTTR = 100 hours.\n$$\\text{MTBF} = 1000 \\text{ h}, \\qquad \\text{Availability} = \\frac{900}{1000} = 90\\%$$\nNotice that availability fell from 98% to 90% even though the *reliability* per hour of operation is far better in the second system ($\\lambda = 1/900$ against $1/196$). Availability rewards fast repair; reliability rewards not failing. A question that gives MTTF and MTTR and asks for \"reliability\" almost always wants availability — read which one it defines."
+    },
+    {
+     "t": "cal",
+     "kind": "trap",
+     "title": "MTBF is not MTTF",
+     "text": "$\\text{MTBF} = \\text{MTTF} + \\text{MTTR}$. MTTF measures only the *running* interval; MTBF measures the full cycle from one failure to the next, including the repair.\n\nAvailability uses **MTTF in the numerator and MTBF in the denominator** — never MTBF over MTTF, which would exceed 1, and never MTTR anywhere in the numerator.\n\nWhen a question gives 'operating time' and 'number of failures' with no downtime mentioned, MTTF and MTBF coincide and availability is 100%; that is the degenerate case, not an error."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.5-1",
+     "q": "Maintainability, Flexibility and Testability are the three McCall quality factors in the category",
+     "opts": [
+      "Product Operation",
+      "Product Revision",
+      "Product Transition",
+      "Product Conformance"
+     ],
+     "ans": 1,
+     "exp": "Product Operation holds five factors (correctness, reliability, efficiency, integrity, usability); Product Revision holds the three that concern changing the software (maintainability, flexibility, testability); Product Transition holds the three that concern moving it (portability, reusability, interoperability). There is no category called Product Conformance."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.5-2",
+     "q": "A risk has a 40% probability of occurring and would cost the project $75,000. Which mitigation decision is economically justified?",
+     "opts": [
+      "Spend up to $75,000 to eliminate it",
+      "Spend up to $30,000 to eliminate it",
+      "Spend nothing, because the probability is below 50%",
+      "Spend $40,000 because that matches the probability"
+     ],
+     "ans": 1,
+     "exp": "Risk exposure is $RE = P \\times C = 0.40 \\times 75{,}000 = \\$30{,}000$, the expected loss. Spending more than the expected loss to remove the risk leaves the project worse off, so $30,000 is the ceiling. Probability alone never decides the question — a 40% risk of a large loss can outrank a 90% risk of a trivial one."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.5-3",
+     "q": "A system has MTTF = 450 hours and MTTR = 50 hours. Its availability is",
+     "opts": [
+      "11.1%",
+      "90%",
+      "88.9%",
+      "100%"
+     ],
+     "ans": 1,
+     "exp": "MTBF = MTTF + MTTR = 450 + 50 = 500 hours, and availability = MTTF/MTBF = 450/500 = 0.90, i.e. 90%. The distractor 88.9% comes from dividing by MTTF+2·MTTR or from using 400/450; 11.1% is the complement of 88.9% and corresponds to computing MTTR/MTTF."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "McCall 5-3-3",
+     "body": "Operation has five factors, Revision three, Transition three — eleven in total. If you can recall only the counts, the three-item groups are the changeability group (maintainability, flexibility, testability) and the movability group (portability, reusability, interoperability); everything else is Operation."
+    },
+    {
+     "title": "9126 has six, 25010 has eight",
+     "body": "Count the options. Six characteristics with security buried under Functionality means ISO 9126. Eight characteristics with Security and Compatibility standing alone means ISO 25010. Any list containing 'Correctness' or 'Integrity' is McCall, not ISO."
+    },
+    {
+     "title": "Rank risks by RE, never by probability",
+     "body": "Every risk-table question includes one high-probability, low-cost risk as a decoy for first place. Compute $P \\times C$ for every row before answering, and remember the answer to 'how much may we spend' is exactly $RE$."
+    },
+    {
+     "title": "Availability = MTTF / (MTTF + MTTR)",
+     "body": "Write MTBF underneath before dividing. From raw data, MTTF = total uptime / failures and MTTR = total downtime / failures, so the number of failures cancels and availability is simply uptime / total time."
+    },
+    {
+     "title": "QA prevents, QC detects",
+     "body": "Any activity that defines, audits or trains on a process is assurance; any activity that inspects a specific artefact — review, walkthrough, inspection, test — is control. A single keyword in the option usually settles it."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Reliability and safety are not the same thing",
+     "body": "Reliability is conformance to the specification over time; safety is freedom from hazardous behaviour. A program can be perfectly reliable and still unsafe if the specification itself allows a dangerous state. Options equating the two are wrong."
+    },
+    {
+     "title": "Software does not wear out — but its failure rate is not flat",
+     "body": "The idealised curve falls and then stays flat; the actual curve steps upward at each change because maintenance introduces new faults, then decays again. 'Software failure rate stays constant after release' is false in the realistic model."
+    },
+    {
+     "title": "Risk exposure is money, not a probability",
+     "body": "$RE$ has the units of the cost $C$. A question offering an $RE$ between 0 and 1 is offering the probability back to you as a distractor."
+    },
+    {
+     "title": "Testability appears in both schemes, at different levels",
+     "body": "McCall makes testability a top-level factor under Product Revision; ISO 9126 makes it a sub-characteristic of Maintainability. Similarly, McCall's Integrity corresponds to 9126's Security sub-characteristic of Functionality. Answer according to the scheme the question names."
+    }
+   ]
+  },
+  {
+   "id": "6.6",
+   "title": "Estimation and Scheduling: LOC, FP, COCOMO",
+   "summary": "Sizing with LOC and a fully worked function point count, the three COCOMO modes with exact coefficients, COCOMO II, the Putnam software equation, and scheduling with the 40-20-40 rule.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## The estimation chain\n\nEvery estimate in software engineering follows the same three links: **size → effort → schedule and cost**. You cannot estimate effort without first estimating size, and you cannot lay out a schedule without first estimating effort. Every model in this topic sits at one of those links.\n\n| Link | Techniques |\n|---|---|\n| Size | LOC, function points, object points, Halstead's length |\n| Effort | COCOMO (basic, intermediate, detailed), COCOMO II, Putnam/SLIM, empirical productivity, expert judgement, Delphi |\n| Schedule | COCOMO duration equation, Putnam's time-effort trade-off, timeline chart / Gantt, PERT and CPM |\n\nEstimation options in decreasing order of reliability are: delay the estimate until late in the project (accurate but useless), base it on similar completed projects, decompose the problem, or use an empirical model. In practice you decompose *and* apply a model, and cross-check one against the other.\n\n**Three-point (PERT-style) size estimation** smooths the guesswork. With an optimistic size $a$, a most likely size $m$ and a pessimistic size $b$, the expected value is\n\n$$EV = \\frac{a + 4m + b}{6}$$\n\nFor example, with $a = 4600$, $m = 6900$ and $b = 8600$ LOC, $EV = (4600 + 27600 + 8600)/6 = 40800/6 = \\mathbf{6800}$ LOC."
+    },
+    {
+     "t": "md",
+     "text": "## LOC as a size measure\n\nLines of code is the oldest and simplest size metric: count delivered source statements, usually excluding comments and blank lines, and quote it in **KLOC** (thousands of lines). From it come the standard productivity and quality metrics:\n\n$$\\text{Productivity} = \\frac{\\text{KLOC}}{\\text{person-months}}, \\qquad \\text{Cost per LOC} = \\frac{\\text{total cost}}{\\text{LOC}}, \\qquad \\text{Defect density} = \\frac{\\text{defects}}{\\text{KLOC}}$$\n\nLOC has two structural defects. It is **language dependent** — the same functionality takes about four times as many lines in C as in a fourth-generation language, so a productive team using a better language scores worse. And it is **not available until the code is written**, which makes it useless at the time an estimate is actually needed, unless historical LOC-per-function figures are used.\n\n**Halstead's software science** derives size and effort from operator and operand counts. With $n_1$ distinct operators, $n_2$ distinct operands, $N_1$ total operator occurrences and $N_2$ total operand occurrences:\n\n$$n = n_1 + n_2 \\ \\text{(vocabulary)}, \\qquad N = N_1 + N_2 \\ \\text{(length)}$$\n$$\\hat{N} = n_1 \\log_2 n_1 + n_2 \\log_2 n_2 \\ \\text{(estimated length)}, \\qquad V = N \\log_2 n \\ \\text{(volume)}$$\n$$D = \\frac{n_1}{2} \\cdot \\frac{N_2}{n_2} \\ \\text{(difficulty)}, \\qquad E = D \\times V \\ \\text{(effort)}, \\qquad T = \\frac{E}{18} \\ \\text{seconds}$$\n\nFor the fragment `a = b + c; d = a * b;` the distinct operators are `=`, `+`, `*`, `;` so $n_1 = 4$ with $N_1 = 2+1+1+2 = 6$; the distinct operands are `a`, `b`, `c`, `d` so $n_2 = 4$ with $N_2 = 2+2+1+1 = 6$. Then $n = 8$, $N = 12$, $V = 12\\log_2 8 = 36$, $D = (4/2)(6/4) = 3$, $E = 108$ and $T = 6$ seconds."
+    },
+    {
+     "t": "md",
+     "text": "## Function points\n\nAlbrecht's function point metric measures size in terms of **functionality delivered to the user**, which makes it language independent and — crucially — computable from the requirements, before any code exists.\n\n### The five information domain values\n\n| Value | What it counts |\n|---|---|\n| **External Inputs (EI)** | distinct user or control data items that enter and alter internal data |\n| **External Outputs (EO)** | derived data leaving the system — reports, screens, error messages (a report is one EO, not one per data item) |\n| **External Inquiries (EQ)** | an online input that causes an immediate response with no derivation and no update of internal files |\n| **Internal Logical Files (ILF)** | logical groupings of data maintained *inside* the application boundary |\n| **External Interface Files (EIF)** | logical groupings of data read from, but maintained by, another application |\n\n### The weighting table\n\nEach count is placed in one of three complexity bands:\n\n| Information domain value | Simple | Average | Complex |\n|---|---|---|---|\n| External Inputs (EI) | 3 | 4 | 6 |\n| External Outputs (EO) | 4 | 5 | 7 |\n| External Inquiries (EQ) | 3 | 4 | 6 |\n| Internal Logical Files (ILF) | 7 | 10 | 15 |\n| External Interface Files (EIF) | 5 | 7 | 10 |\n\nThe weighted sum is the **Unadjusted Function Point count, UFP** (also called the count total).\n\n### The fourteen general system characteristics\n\nEach of the fourteen is rated **0 (no influence) to 5 (essential)**, so $\\sum F_i$ ranges from 0 to 70.\n\n1. Data communications\n2. Distributed data processing\n3. Performance requirements\n4. Heavily used configuration\n5. Transaction rate\n6. Online data entry\n7. End-user efficiency\n8. Online update\n9. Complex processing\n10. Reusability\n11. Installation ease\n12. Operational ease\n13. Multiple sites / organisations\n14. Facilitate change\n\n### The final formula\n\n$$\\text{VAF} = 0.65 + 0.01 \\sum_{i=1}^{14} F_i, \\qquad \\boxed{\\text{FP} = \\text{UFP} \\times \\left(0.65 + 0.01 \\sum F_i\\right)}$$\n\nBecause $\\sum F_i \\in [0, 70]$, the value adjustment factor lies in $[0.65, 1.35]$: the adjustment can move the count by at most **±35%**. Those three numbers — 0.65, 0.01, 14 — are the ones examiners check.\n\nFunction points convert into LOC through published **backfiring** factors: roughly 320 LOC/FP in assembly, 128 in C, 105 in COBOL, 53 in Java, 29 in C++, 15 in SQL. Productivity and quality can then be quoted per function point: FP per person-month, cost per FP, defects per FP, pages of documentation per FP.\n\n**Feature points** and **3D function points** extend the idea to algorithmically intensive and real-time software by adding an algorithm count and control-dimension counts. **Object points** (used by COCOMO II's application composition model) count screens, reports and 3GL components, weighted simple/medium/difficult."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — a complete function point count",
+     "text": "A claims-processing application is analysed and the following counts are obtained.\n\n| Domain value | Simple | Average | Complex |\n|---|---|---|---|\n| External Inputs | 8 | 6 | 2 |\n| External Outputs | 0 | 5 | 3 |\n| External Inquiries | 10 | 2 | 0 |\n| Internal Logical Files | 0 | 3 | 1 |\n| External Interface Files | 2 | 0 | 0 |\n\n**Step 1 — apply the weights row by row.**\n\n$$\\text{EI} = 8(3) + 6(4) + 2(6) = 24 + 24 + 12 = 60$$\n$$\\text{EO} = 0(4) + 5(5) + 3(7) = 0 + 25 + 21 = 46$$\n$$\\text{EQ} = 10(3) + 2(4) + 0(6) = 30 + 8 + 0 = 38$$\n$$\\text{ILF} = 0(7) + 3(10) + 1(15) = 0 + 30 + 15 = 45$$\n$$\\text{EIF} = 2(5) + 0(7) + 0(10) = 10$$\n\n**Step 2 — unadjusted function points.**\n\n$$\\text{UFP} = 60 + 46 + 38 + 45 + 10 = \\mathbf{199}$$\n\n**Step 3 — the fourteen characteristics.** Suppose the ratings are\n\n| # | Characteristic | $F_i$ | # | Characteristic | $F_i$ |\n|---|---|---|---|---|---|\n| 1 | Data communications | 4 | 8 | Online update | 4 |\n| 2 | Distributed processing | 2 | 9 | Complex processing | 3 |\n| 3 | Performance | 4 | 10 | Reusability | 2 |\n| 4 | Heavily used configuration | 3 | 11 | Installation ease | 3 |\n| 5 | Transaction rate | 5 | 12 | Operational ease | 4 |\n| 6 | Online data entry | 5 | 13 | Multiple sites | 2 |\n| 7 | End-user efficiency | 4 | 14 | Facilitate change | 1 |\n\n$$\\sum F_i = 4+2+4+3+5+5+4+4+3+2+3+4+2+1$$\n\nAdd in pairs: $(4+2)=6$, $(4+3)=7 \\Rightarrow 13$, $(5+5)=10 \\Rightarrow 23$, $(4+4)=8 \\Rightarrow 31$, $(3+2)=5 \\Rightarrow 36$, $(3+4)=7 \\Rightarrow 43$, $(2+1)=3 \\Rightarrow \\mathbf{46}$.\n\n**Step 4 — value adjustment factor and final count.**\n\n$$\\text{VAF} = 0.65 + 0.01(46) = 0.65 + 0.46 = 1.11$$\n$$\\text{FP} = 199 \\times 1.11 = \\mathbf{220.89} \\approx 221$$\n\n**Step 5 — use the number.** If the organisation's historical productivity on similar work is 6.5 FP per person-month and the loaded labour rate is \\$4,000 per person-month:\n\n$$\\text{Effort} = \\frac{220.89}{6.5} = 33.98 \\approx 34 \\text{ person-months}, \\qquad \\text{Cost} = 34 \\times 4000 = \\$136{,}000$$\n$$\\text{Cost per FP} = \\frac{136{,}000}{220.89} = \\$615.7$$\n\n**Step 6 — convert to LOC if a LOC-driven model is wanted.** In Java at 53 LOC/FP:\n\n$$\\text{LOC} = 220.89 \\times 53 = 11{,}707 \\approx \\mathbf{11.7\\ KLOC}$$\n\nwhich is the size that would then be fed to COCOMO."
+    },
+    {
+     "t": "md",
+     "text": "## COCOMO — the Constructive Cost Model\n\nBoehm's 1981 model estimates effort in **person-months (PM)** and development time in **months** from size in **KLOC**. Three *modes* describe the project, and three *levels* describe how much detail the model uses.\n\n### The three modes\n\n| Mode | Team and problem | Typical size |\n|---|---|---|\n| **Organic** | small team, familiar application, flexible requirements, in-house | under about 50 KLOC |\n| **Semi-detached** | mixed experience, mix of rigid and flexible requirements | 50–300 KLOC |\n| **Embedded** | tight hardware, software and operational constraints; a change is very expensive | over about 300 KLOC |\n\nThe size boundaries are indicative only; the mode is really determined by constraint and familiarity, not by size, and a question that describes \"real-time software embedded in hardware with tight coupling\" means the embedded mode regardless of the KLOC given.\n\n### Basic COCOMO\n\n$$E = a\\,(\\text{KLOC})^{b} \\ \\text{person-months}, \\qquad D = c\\,(E)^{d} \\ \\text{months}, \\qquad N = \\frac{E}{D} \\ \\text{persons}$$\n\n| Mode | $a$ | $b$ | $c$ | $d$ |\n|---|---|---|---|---|\n| **Organic** | **2.4** | **1.05** | **2.5** | **0.38** |\n| **Semi-detached** | **3.0** | **1.12** | **2.5** | **0.35** |\n| **Embedded** | **3.6** | **1.20** | **2.5** | **0.32** |\n\nEvery exponent $b$ exceeds 1, so effort grows **superlinearly** with size — doubling the code more than doubles the effort. Every $c$ is 2.5 and every $d$ is less than 1, so schedule grows **sublinearly** with effort, which is why huge projects take only moderately longer but cost enormously more. Memorise the column $c = 2.5$ for all three modes; it is free marks.\n\n### Intermediate COCOMO\n\nAdds an **Effort Adjustment Factor (EAF)**, the product of 15 cost drivers each rated very low to extra high:\n\n$$E = a\\,(\\text{KLOC})^{b} \\times \\text{EAF}$$\n\n| Mode | $a$ | $b$ |\n|---|---|---|\n| **Organic** | **3.2** | 1.05 |\n| **Semi-detached** | **3.0** | 1.12 |\n| **Embedded** | **2.8** | 1.20 |\n\nNote the pattern flip: the exponents are unchanged but the multipliers now *decrease* from organic to embedded, because the harshness of an embedded project is carried by the cost drivers instead. A nominal project has EAF = 1.0; a typical EAF range is about 0.9 to 1.4.\n\nThe 15 cost drivers fall into four groups: **product attributes** (RELY required reliability, DATA database size, CPLX product complexity), **hardware/computer attributes** (TIME execution time constraint, STOR main storage constraint, VIRT virtual machine volatility, TURN turnaround time), **personnel attributes** (ACAP analyst capability, AEXP applications experience, PCAP programmer capability, VEXP virtual machine experience, LEXP language experience), and **project attributes** (MODP modern programming practices, TOOL use of software tools, SCED required development schedule).\n\n**Detailed (complete) COCOMO** applies the cost drivers **phase by phase** — requirements, design, coding, integration and test — rather than to the whole project, and adds a three-level hierarchy of module, subsystem and system."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — COCOMO for all three modes at 32 KLOC",
+     "text": "A system is estimated at **32 KLOC**. Compute basic COCOMO effort, duration and average staffing for each mode. (All logarithms base $e$; results rounded to two decimals.)\n\n### Organic: $a=2.4,\\ b=1.05,\\ c=2.5,\\ d=0.38$\n\n$$E = 2.4 \\times 32^{1.05}$$\n$\\ln 32 = 3.4657$, so $32^{1.05} = e^{1.05 \\times 3.4657} = e^{3.6390} = 38.05$.\n$$E = 2.4 \\times 38.05 = \\mathbf{91.33 \\text{ PM}}$$\n$$D = 2.5 \\times 91.33^{0.38}$$\n$\\ln 91.33 = 4.5146$, so $91.33^{0.38} = e^{1.7155} = 5.559$.\n$$D = 2.5 \\times 5.559 = \\mathbf{13.90 \\text{ months}}$$\n$$N = \\frac{91.33}{13.90} = 6.57 \\approx \\mathbf{7 \\text{ people}}$$\n\n### Semi-detached: $a=3.0,\\ b=1.12,\\ c=2.5,\\ d=0.35$\n\n$32^{1.12} = e^{1.12 \\times 3.4657} = e^{3.8816} = 48.50$.\n$$E = 3.0 \\times 48.50 = \\mathbf{145.51 \\text{ PM}}$$\n$\\ln 145.51 = 4.9802$, so $145.51^{0.35} = e^{1.7431} = 5.714$.\n$$D = 2.5 \\times 5.714 = \\mathbf{14.29 \\text{ months}}, \\qquad N = \\frac{145.51}{14.29} = 10.18 \\approx \\mathbf{11 \\text{ people}}$$\n\n### Embedded: $a=3.6,\\ b=1.20,\\ c=2.5,\\ d=0.32$\n\nHere the arithmetic is exact: $32 = 2^5$, so $32^{1.2} = 2^{6} = 64$.\n$$E = 3.6 \\times 64 = \\mathbf{230.4 \\text{ PM}}$$\n$\\ln 230.4 = 5.4399$, so $230.4^{0.32} = e^{1.7408} = 5.701$.\n$$D = 2.5 \\times 5.701 = \\mathbf{14.25 \\text{ months}}, \\qquad N = \\frac{230.4}{14.25} = 16.17 \\approx \\mathbf{17 \\text{ people}}$$\n\n### Reading the table\n\n| Mode | Effort (PM) | Duration (mo) | Staff |\n|---|---|---|---|\n| Organic | 91.33 | 13.90 | 7 |\n| Semi-detached | 145.51 | 14.29 | 11 |\n| Embedded | 230.40 | 14.25 | 17 |\n\nThe effort ratio embedded : organic is $230.4/91.33 = 2.52$ — two and a half times the cost for the same 32 KLOC — while the durations differ by less than half a month. The mode changes **how many people you need**, not **how long it takes**. That is the single most useful observation in the topic.\n\n### Adding an EAF (intermediate COCOMO)\n\nSuppose the same 32 KLOC is organic but has high reliability requirements (RELY = 1.15), an experienced team (ACAP = 0.86) and heavy use of tools (TOOL = 0.91). Then\n\n$$\\text{EAF} = 1.15 \\times 0.86 \\times 0.91 = 0.900$$\n$$E = 3.2 \\times 32^{1.05} \\times 0.900 = 3.2 \\times 38.05 \\times 0.900 = 121.76 \\times 0.900 = \\mathbf{109.58 \\text{ PM}}$$\n\nusing the intermediate organic coefficient $a = 3.2$, not the basic $2.4$. Mixing those two coefficients is the most common arithmetic error in this topic."
+    },
+    {
+     "t": "md",
+     "text": "## COCOMO II\n\nThe 1990s revision replaces the single model with **three** models used at different points in the life cycle:\n\n| Model | When used | Size measured in |\n|---|---|---|\n| **Application composition** | early prototyping, integration-intensive work | **object points** |\n| **Early design** | after requirements are stable, before architecture | **function points** converted to KSLOC; **7** effort multipliers |\n| **Post-architecture** | after the architecture is defined | KSLOC or FP; **17** effort multipliers and **5** scale factors |\n\nThe application composition model computes new object points as $\\text{NOP} = \\text{object points} \\times (1 - \\% \\text{reuse}/100)$ and divides by a productivity rate (4 for very low developer experience and maturity, 7 low, 13 nominal, 25 high, 50 very high NOP per person-month).\n\nThe post-architecture effort equation is\n\n$$\\text{PM} = A \\times (\\text{Size})^{E} \\times \\prod_{i=1}^{17} \\text{EM}_i, \\qquad E = B + 0.01 \\sum_{j=1}^{5} SF_j$$\n\nwith $A = 2.94$ and $B = 0.91$. The five **scale factors** are **PREC** (precedentedness), **FLEX** (development flexibility), **RESL** (architecture and risk resolution), **TEAM** (team cohesion) and **PMAT** (process maturity); each is rated very low to extra high, contributing between 0 and about 6.2 points. So $E$ ranges roughly from 0.91 to 1.23 — the exponent is *estimated*, not fixed by a mode, which is COCOMO II's main conceptual advance over COCOMO 81.\n\nFor example, with $\\sum SF = 15$, $E = 0.91 + 0.15 = 1.06$; at 100 KSLOC and nominal multipliers, $\\text{PM} = 2.94 \\times 100^{1.06} = 2.94 \\times 131.83 = 387.6$ person-months."
+    },
+    {
+     "t": "md",
+     "text": "## The Putnam model (SLIM) and the software equation\n\nPutnam's model comes from fitting a **Rayleigh curve** to the manpower build-up observed on large projects. The **software equation** in its classic form is\n\n$$L = C_k \\, K^{1/3} \\, t_d^{4/3}$$\n\nwhere $L$ is size in LOC, $C_k$ is a **technology constant** (about 2,000 for a poor environment, 8,000 for a good one, 11,000 for an excellent one), $K$ is the **total life-cycle effort in person-years**, and $t_d$ is the **development time in years**. Rearranged for effort:\n\n$$K = \\frac{L^3}{C_k^{3} \\, t_d^{4}}$$\n\nThe exponent 4 on $t_d$ is the whole point and is known as the **fourth power trade-off law**: effort varies inversely with the *fourth power* of the development time. Shortening the schedule by a modest amount multiplies the effort enormously, which is Putnam's quantitative version of Brooks's observation that adding people to a late project makes it later.\n\nPressman's equivalent statement uses a productivity parameter $P$ and a special skills factor $B$:\n\n$$E = \\left[\\frac{\\text{LOC} \\times B^{0.333}}{P}\\right]^{3} \\times \\frac{1}{t^{4}}$$\n\nand the minimum development time is $t_{\\min} = 8.14 (\\text{LOC}/P)^{0.43}$ months for $t_{\\min} > 6$ months.\n\nCOCOMO carries the same warning in a different form: the schedule should not be compressed below about **75% of the nominal** duration, because below that the required effort rises faster than the saving in time."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — the fourth power trade-off",
+     "text": "A project is sized at **50,000 LOC** in an environment with technology constant $C_k = 10{,}000$.\n\n**At $t_d = 2$ years:**\n\n$$K = \\frac{L^3}{C_k^3 t_d^4} = \\frac{(5 \\times 10^4)^3}{(10^4)^3 \\times 2^4} = \\frac{1.25 \\times 10^{14}}{10^{12} \\times 16} = \\frac{1.25 \\times 10^{14}}{1.6 \\times 10^{13}} = \\mathbf{7.81 \\text{ person-years}}$$\n\n**Management now asks for delivery in 1.5 years.**\n\n$$K = \\frac{1.25 \\times 10^{14}}{10^{12} \\times (1.5)^4} = \\frac{1.25 \\times 10^{14}}{10^{12} \\times 5.0625} = \\frac{1.25 \\times 10^{14}}{5.0625 \\times 10^{12}} = \\mathbf{24.69 \\text{ person-years}}$$\n\n**The ratio.** Cutting the schedule by 25% multiplied the effort by\n\n$$\\frac{24.69}{7.81} = 3.16 = \\left(\\frac{2}{1.5}\\right)^4 = \\left(\\frac{4}{3}\\right)^4 = \\frac{256}{81} = 3.16$$\n\nThree times the cost for one quarter less time. Notice the shortcut: you never need the absolute numbers to answer a ratio question — the effort ratio is simply the inverse fourth power of the time ratio.\n\n**Going the other way.** If the schedule were relaxed to 2.5 years,\n$$K = \\frac{1.25 \\times 10^{14}}{10^{12} \\times 39.0625} = 3.2 \\text{ person-years},$$\na 59% saving for 6 extra months. That asymmetry is why Putnam's model is used to argue *against* compression rather than to plan it."
+    },
+    {
+     "t": "md",
+     "text": "## Scheduling\n\nOnce effort is known it must be distributed over time and over people. The principles are:\n\n- **Compartmentalisation** — divide the product and process into a manageable number of activities and tasks.\n- **Interdependency** — determine which tasks must be sequential and which may run in parallel.\n- **Time allocation** — give every task a start date, an end date and a number of work units.\n- **Effort validation** — never allocate more people at any point than are available.\n- **Defined responsibilities, defined outcomes, defined milestones** — every task has an owner, a work product and a reviewable end point.\n\n### The 40-20-40 rule\n\nThe classic distribution of effort across the life cycle is **40% front end (analysis and design), 20% coding, 40% testing and debugging**. In more detail: 2–3% planning, 10–25% requirements analysis, 20–25% design, 15–20% coding, 30–40% testing and debugging. The rule's real message is that **coding is the smallest of the three phases** and that testing consumes as much as analysis and design together — the opposite of the naive assumption. Only the 40-20-40 split needs memorising; the percentages within the front end vary by source.\n\n### Tools\n\nA **work breakdown structure (WBS)** decomposes the project into tasks. A **task network (activity network)** shows their dependencies and yields the **critical path** — the longest chain of dependent tasks, which fixes the minimum project duration and has zero slack. A **timeline chart** or **Gantt chart** plots each task as a horizontal bar against a calendar, with **milestones** as diamonds; it shows what runs in parallel and where the slack is. **PERT** and **CPM** add the quantitative machinery: earliest and latest start and finish times, total float, and the probabilistic three-point duration estimate.\n\nProgress is tracked by **earned value analysis**: with BCWS (budgeted cost of work scheduled), BCWP (budgeted cost of work performed) and ACWP (actual cost of work performed),\n\n$$\\text{SPI} = \\frac{\\text{BCWP}}{\\text{BCWS}}, \\qquad \\text{CPI} = \\frac{\\text{BCWP}}{\\text{ACWP}}, \\qquad \\text{SV} = \\text{BCWP} - \\text{BCWS}, \\qquad \\text{CV} = \\text{BCWP} - \\text{ACWP}$$\n\nAn index above 1 is good; below 1 means behind schedule (SPI) or over budget (CPI)."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — distributing effort and reading a schedule",
+     "text": "Take the organic 32 KLOC estimate from above: $E = 91.33$ PM over $D = 13.90$ months with an average of 7 people.\n\n**Apply 40-20-40.**\n\n$$\\text{Analysis and design} = 0.40 \\times 91.33 = 36.53 \\text{ PM}$$\n$$\\text{Coding} = 0.20 \\times 91.33 = 18.27 \\text{ PM}$$\n$$\\text{Testing and debugging} = 0.40 \\times 91.33 = 36.53 \\text{ PM}$$\n\nCheck: $36.53 + 18.27 + 36.53 = 91.33$. ✓\n\n**Convert to calendar time at constant staffing of 7 people.** Analysis and design: $36.53/7 = 5.22$ months. Coding: $18.27/7 = 2.61$ months. Testing: $5.22$ months. Total $13.05$ months, slightly under the 13.90 the model predicts — the difference is the staffing ramp-up and ramp-down that a constant headcount ignores.\n\n**A schedule-compression question.** Management wants delivery in 10 months instead of 13.90. That is $10/13.90 = 72\\%$ of nominal, below COCOMO's 75% floor, so the answer expected is that the compression is **not feasible**; the achievable minimum is $0.75 \\times 13.90 = 10.4$ months, and even that costs extra effort.\n\n**Earned value at month 7.** Suppose BCWS = 45 PM, BCWP = 40 PM and ACWP = 48 PM.\n\n$$\\text{SPI} = 40/45 = 0.89 \\ (\\text{behind schedule}), \\qquad \\text{CPI} = 40/48 = 0.83 \\ (\\text{over budget})$$\n$$\\text{SV} = 40 - 45 = -5 \\text{ PM}, \\qquad \\text{CV} = 40 - 48 = -8 \\text{ PM}$$\n\nBoth indices below 1 and both variances negative: the project has done less work than planned and spent more than it should have for the work it did."
+    },
+    {
+     "t": "cal",
+     "kind": "formula",
+     "title": "The formula sheet for this topic",
+     "text": "$$\\text{FP} = \\text{UFP} \\times (0.65 + 0.01\\textstyle\\sum F_i), \\qquad \\textstyle\\sum F_i \\in [0,70], \\ \\text{VAF} \\in [0.65, 1.35]$$\n\nWeights: EI 3/4/6, EO 4/5/7, EQ 3/4/6, ILF 7/10/15, EIF 5/7/10.\n\n**Basic COCOMO** $E = a(\\text{KLOC})^b$, $D = 2.5\\,E^{\\,d}$, $N = E/D$:\n\n| | $a$ | $b$ | $d$ | (intermediate $a$) |\n|---|---|---|---|---|\n| Organic | 2.4 | 1.05 | 0.38 | 3.2 |\n| Semi-detached | 3.0 | 1.12 | 0.35 | 3.0 |\n| Embedded | 3.6 | 1.20 | 0.32 | 2.8 |\n\n**COCOMO II** $\\text{PM} = 2.94 \\times \\text{Size}^{E} \\times \\prod \\text{EM}$, $E = 0.91 + 0.01 \\sum SF$.\n\n**Putnam** $L = C_k K^{1/3} t_d^{4/3}$, so $K = L^3 / (C_k^3 t_d^4)$ and $K_1/K_2 = (t_2/t_1)^4$.\n\n**Three-point** $EV = (a + 4m + b)/6$. **Effort split** 40-20-40."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.6-1",
+     "q": "An application has UFP = 300 and all fourteen general system characteristics rated 3. Its adjusted function point count is",
+     "opts": [
+      "300",
+      "321",
+      "324",
+      "348"
+     ],
+     "ans": 1,
+     "exp": "$\\sum F_i = 14 \\times 3 = 42$, so VAF $= 0.65 + 0.01 \\times 42 = 1.07$ and FP $= 300 \\times 1.07 = 321$. The distractor 324 comes from using 0.68 as the base constant, and 348 from adding 0.01 times 48. Always compute $\\sum F_i$ first and check it lies between 0 and 70."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.6-2",
+     "q": "For a 32 KLOC embedded-mode project, basic COCOMO gives an effort of",
+     "opts": [
+      "91.33 person-months",
+      "145.51 person-months",
+      "230.40 person-months",
+      "256.00 person-months"
+     ],
+     "ans": 2,
+     "exp": "Embedded uses $a = 3.6$ and $b = 1.20$, so $E = 3.6 \\times 32^{1.2}$. Since $32 = 2^5$, $32^{1.2} = 2^6 = 64$ exactly, giving $E = 3.6 \\times 64 = 230.4$ PM. The other options are the organic (2.4, 1.05) and semi-detached (3.0, 1.12) results for the same size."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.6-3",
+     "q": "Using Putnam's software equation, if the development time is reduced from 3 years to 2 years with size and technology constant unchanged, the required effort is multiplied by approximately",
+     "opts": [
+      "1.5",
+      "2.25",
+      "3.375",
+      "5.06"
+     ],
+     "ans": 3,
+     "exp": "Effort varies as $1/t_d^4$, so the multiplier is $(3/2)^4 = 81/16 = 5.0625$. The distractors are the ratio itself (1.5), its square (2.25) and its cube (3.375) — the exponent on time in $K = L^3/(C_k^3 t_d^4)$ is 4, not 1, 2 or 3."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Pick powers of two for COCOMO arithmetic",
+     "body": "When KLOC is a power of two the embedded exponent 1.20 often lands exactly: $32^{1.2} = 2^{6} = 64$, $64^{1.2} = 2^{7.2}$, $16^{1.2}=2^{4.8}$. Check for that before reaching for logarithms; exam setters choose sizes that make one mode come out clean."
+    },
+    {
+     "title": "c = 2.5 in every mode",
+     "body": "The duration coefficient is 2.5 for organic, semi-detached and embedded alike. Only the exponent $d$ changes: 0.38, 0.35, 0.32 — decreasing as the mode gets harder, which is why durations barely differ between modes while efforts differ by a factor of two and a half."
+    },
+    {
+     "title": "Putnam ratios need no absolute numbers",
+     "body": "For 'by what factor does effort change if the schedule changes', use $K_1/K_2 = (t_2/t_1)^4$ directly. Size and $C_k$ cancel, so you never compute $L^3$."
+    },
+    {
+     "title": "VAF is bounded, so sanity-check the answer",
+     "body": "FP can be at most $1.35 \\times$ UFP and at least $0.65 \\times$ UFP. If your adjusted count is more than 35% away from the unadjusted one, you have mis-added $\\sum F_i$ or used the wrong constants."
+    },
+    {
+     "title": "Basic a versus intermediate a",
+     "body": "Basic COCOMO multipliers go up with difficulty (2.4, 3.0, 3.6); intermediate multipliers go down (3.2, 3.0, 2.8). Semi-detached is 3.0 in both, which is the anchor. If the question mentions an EAF or cost drivers, it is intermediate; if it gives only size and mode, it is basic."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Do not multiply UFP by the wrong constant",
+     "body": "The formula is $0.65 + 0.01\\sum F_i$, not $0.65 + 0.001\\sum F_i$ and not $0.65 \\times \\sum F_i$. With all fourteen factors at their maximum of 5, $\\sum F_i = 70$ and VAF $= 1.35$; with all at 0, VAF $= 0.65$. Any answer outside that band is arithmetically impossible."
+    },
+    {
+     "title": "An external output is one report, not one field",
+     "body": "Counting information domain values is where marks are lost. One screen or report is one EO regardless of how many data items it shows; one logical file is one ILF regardless of how many physical tables implement it; and an EQ is an input-plus-response pair with no derivation and no file update, so a query that also writes an audit record is an EI, not an EQ."
+    },
+    {
+     "title": "COCOMO's D uses effort, not size",
+     "body": "$D = 2.5 E^{d}$ takes the effort you just computed as its argument. Substituting KLOC into the duration equation is a standard error and produces a duration that is far too small for large projects."
+    },
+    {
+     "title": "40-20-40 is not 40% coding",
+     "body": "The middle number is coding and it is the smallest: 40% analysis and design, 20% coding, 40% testing and debugging. An option reading '40-40-20' with testing last is the distractor."
+    },
+    {
+     "title": "Person-months are not interchangeable with months",
+     "body": "Effort $E$ and duration $D$ are different quantities and $N = E/D$ is the average team size, not the total. Doubling the team does not halve the duration — COCOMO's own floor of 75% of nominal duration says so explicitly."
+    }
+   ]
+  },
+  {
+   "id": "6.7",
+   "title": "Software Testing",
+   "summary": "Verification versus validation, error-fault-failure, unit and integration strategies with stubs and drivers, white-box testing with cyclomatic complexity three ways and basis paths, black-box techniques, and the system-level tests.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## Verification, validation, and what testing can prove\n\nTwo questions look alike and are not.\n\n**Verification** — *are we building the product right?* It checks each work product against its specification. It is largely **static**: reviews, walkthroughs, inspections, desk checks, static analysis. It happens continuously, from the SRS onwards.\n\n**Validation** — *are we building the right product?* It checks the finished system against the customer's actual needs. It is largely **dynamic**: you run the software. Acceptance testing is the canonical validation activity.\n\nVerification catches an SRS requirement implemented incorrectly. Validation catches a requirement that was implemented perfectly and was the wrong requirement. A system can pass every verification step and still fail validation.\n\nThe other vocabulary distinction, from IEEE 610.12 and ISO 24765:\n\n| Term | Where it lives | Definition |\n|---|---|---|\n| **Error** (mistake) | in a person's head | a human action that produces an incorrect result |\n| **Fault / Defect / Bug** | in the artefact | the incorrect step, process or data definition that the error produced |\n| **Failure** | in the behaviour | the inability of the system to perform a required function — an observed deviation from expected behaviour |\n\nThe causal chain is **error → fault → failure**. A fault that is never executed, or is executed without propagating to output, produces no failure — which is why testing can show the presence of faults but never their absence (Dijkstra). *Error* is also used loosely for the difference between a computed and a correct value; in the exam, if the options include all three terms, use the chain above.\n\nTesting objectives, stated in Glen Myers's classic form: testing is a process of executing a program with the **intent of finding an error**; a good test case has a high probability of finding an as-yet-undiscovered error; a successful test is one that **uncovers** an undiscovered error. So a test that passes has, in this vocabulary, failed in its objective — a favourite true/false item."
+    },
+    {
+     "t": "md",
+     "text": "## Testability and the strategy\n\nSoftware testability is how easily a program can be tested. Bach's attributes: **operability** (it works well enough to be tested), **observability** (results are visible), **controllability** (inputs and states can be set), **decomposability** (it can be tested in pieces), **simplicity**, **stability** (changes are infrequent and controlled) and **understandability**.\n\nThe overall strategy is a spiral read from the inside out: **unit testing → integration testing → validation testing → system testing**. The scope widens at each turn and so does who runs it — the developer runs unit and most integration tests; an independent test group (ITG) runs validation and system tests; the customer runs acceptance tests.\n\n### Unit testing\n\nThe unit is the smallest testable component: a function, a procedure, a class method. What is tested: the **module interface** (parameters in and out), **local data structures**, **boundary conditions**, **independent paths** through the control structure, and all **error-handling paths**.\n\nBecause a unit is not a program, it needs scaffolding:\n\n- A **driver** is a \"main program\" that accepts test data, passes it to the unit under test and prints the results. It **replaces the caller**.\n- A **stub** is a dummy that replaces a module the unit under test **calls**. It may do nothing, print a trace, or return a canned value.\n\n**Driver = above, stub = below.** That one line answers most questions on this topic.\n\n### Integration testing\n\nAssembling units reveals interface faults: data lost across an interface, one module adversely affecting another, imprecision accumulated across combined sub-functions, global data structures causing problems.\n\n| Strategy | Order | Scaffolding needed | Character |\n|---|---|---|---|\n| **Big bang** (non-incremental) | combine everything at once | both, minimal | chaos: faults hard to isolate, correction hard, endless loop of fix-and-retest |\n| **Top-down** | main control module first, then downwards **depth-first** or **breadth-first** | **stubs** (the lower modules do not exist yet) | major control and decision points tested early; lower-level processing tested last; stubs may have to do real work |\n| **Bottom-up** | lowest-level modules first, combined into **clusters** or **builds** | **drivers** (no caller exists yet) | no stubs needed; the program as an entity does not exist until the last module is added |\n| **Sandwich / hybrid** | top-down on the upper layers, bottom-up on the lower layers, meeting at a **target layer** | both | combines the advantages; the usual choice in practice |\n| **Regression** | re-run a subset after every change | existing suite | guards against side effects of the fix |\n| **Smoke** | build daily and run a rapid \"does it catch fire\" test | build harness | keeps integration risk visible |\n\nA **critical module** — one that addresses several requirements, has a high level of control, is complex or error-prone, or has definite performance requirements — should be integrated and tested as early as possible, which is an argument for a top-down bias.\n\n**Regression testing** re-runs three kinds of test after a change: a representative sample of all tests, tests that focus on the software functions likely to be affected, and tests on the components that were actually changed. Its purpose is to catch the side effects of a correction, not to re-find the original fault."
+    },
+    {
+     "t": "md",
+     "text": "## White-box (glass-box, structural) testing\n\nWhite-box testing derives test cases from the internal structure of the code. Its guarantees are precise: exercise every independent path at least once, exercise all logical decisions on their true and false sides, execute all loops at their boundaries and within their operational bounds, and exercise internal data structures to assure their validity.\n\n### The flow graph\n\nTranslate the code into a **flow graph**: each node is one or more sequential statements collapsed together, each edge (link) is a transfer of control. A node containing a condition is a **predicate node** and has two or more edges leaving it. An area bounded by edges and nodes, plus the unbounded area outside the graph, is a **region**.\n\nCompound conditions must be split: `if (a && b)` becomes two predicate nodes, not one, because each simple condition contributes an independent decision.\n\n### Cyclomatic complexity, three ways\n\nMcCabe's metric $V(G)$ gives the number of **independent paths** in the basis set and therefore an **upper bound on the number of tests** needed to guarantee that every statement is executed at least once and every condition is exercised both ways.\n\n$$\\textbf{(1)} \\quad V(G) = E - N + 2P$$\n\nwhere $E$ is edges, $N$ is nodes and $P$ is connected components — for a single program $P = 1$, so $V(G) = E - N + 2$.\n\n$$\\textbf{(2)} \\quad V(G) = \\text{number of predicate nodes} + 1$$\n\n$$\\textbf{(3)} \\quad V(G) = \\text{number of regions in the planar flow graph}$$\n\nAll three must agree; computing two of them is the cheapest possible check on your own arithmetic. Guideline: keep $V(G) \\le 10$ per module; above that, the module is a maintenance and testing risk.\n\nAn **independent path** is any path through the program that introduces at least one new set of processing statements or a new condition — in flow-graph terms, at least one edge not traversed by any previously defined path. The set of $V(G)$ such paths is a **basis set**."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — cyclomatic complexity and basis path derivation",
+     "text": "Consider this procedure.\n\n```\n 1   read n\n 2   i = 1\n 3   sum = 0\n 4   while (i <= n) {\n 5       if (a[i] > 0)\n 6           sum = sum + a[i]\n 7       else\n 8           sum = sum - a[i]\n 9       i = i + 1\n10   }\n11   if (sum > 100)\n12       print \"high\"\n13   print sum\n```\n\n### Step 1 — build the flow graph\n\nSequential statements collapse into one node.\n\n| Node | Statements |\n|---|---|\n| **1** | lines 1–3 (read, initialise) |\n| **2** | line 4 — `while` predicate |\n| **3** | line 5 — `if` predicate |\n| **4** | line 6 — `sum = sum + a[i]` |\n| **5** | line 8 — `sum = sum - a[i]` |\n| **6** | line 9 — `i = i + 1` (join of 4 and 5) |\n| **7** | line 11 — `if` predicate |\n| **8** | line 12 — `print \"high\"` |\n| **9** | line 13 — `print sum` (join of 7 and 8) |\n\nEdges:\n\n$$1\\!\\to\\!2,\\quad 2\\!\\to\\!3,\\quad 2\\!\\to\\!7,\\quad 3\\!\\to\\!4,\\quad 3\\!\\to\\!5,\\quad 4\\!\\to\\!6,\\quad 5\\!\\to\\!6,\\quad 6\\!\\to\\!2,\\quad 7\\!\\to\\!8,\\quad 7\\!\\to\\!9,\\quad 8\\!\\to\\!9$$\n\nSo $E = 11$ and $N = 9$.\n\n### Step 2 — compute $V(G)$ three ways\n\n**(1) Edges and nodes.**\n$$V(G) = E - N + 2P = 11 - 9 + 2(1) = \\mathbf{4}$$\n\n**(2) Predicate nodes.** The predicate nodes are 2 (`while`), 3 (`if a[i] > 0`) and 7 (`if sum > 100`) — three of them.\n$$V(G) = 3 + 1 = \\mathbf{4}$$\n\n**(3) Regions.** Draw the graph in the plane. The `while` loop $2 \\to 3 \\to 4 \\to 6 \\to 2$ and $2 \\to 3 \\to 5 \\to 6 \\to 2$ enclose two bounded areas; the `if` at node 7 with edges $7\\to8\\to9$ and $7\\to9$ encloses a third; plus the unbounded outer region.\n$$V(G) = 3 \\text{ bounded} + 1 \\text{ unbounded} = \\mathbf{4}$$\n\nAll three agree: $V(G) = 4$.\n\n### Step 3 — derive the basis set\n\nFour independent paths, each adding at least one previously untraversed edge.\n\n| Path | Route | New edges introduced |\n|---|---|---|\n| **P1** | 1–2–7–9 | $1\\!\\to\\!2$, $2\\!\\to\\!7$, $7\\!\\to\\!9$ |\n| **P2** | 1–2–7–8–9 | $7\\!\\to\\!8$, $8\\!\\to\\!9$ |\n| **P3** | 1–2–3–4–6–2–7–9 | $2\\!\\to\\!3$, $3\\!\\to\\!4$, $4\\!\\to\\!6$, $6\\!\\to\\!2$ |\n| **P4** | 1–2–3–5–6–2–7–9 | $3\\!\\to\\!5$, $5\\!\\to\\!6$ |\n\nCoverage check: the four paths together use $1\\!\\to\\!2$, $2\\!\\to\\!3$, $2\\!\\to\\!7$, $3\\!\\to\\!4$, $3\\!\\to\\!5$, $4\\!\\to\\!6$, $5\\!\\to\\!6$, $6\\!\\to\\!2$, $7\\!\\to\\!8$, $7\\!\\to\\!9$, $8\\!\\to\\!9$ — all 11 edges. ✓\n\n### Step 4 — turn paths into test cases\n\n| Path | Input | Expected |\n|---|---|---|\n| P1 | `n = 0` | prints `0`, no \"high\" |\n| P2 | not realisable by itself — with `n = 0`, `sum = 0`, so `sum > 100` is false | see note |\n| P3 | `n = 1, a = [200]` | prints `high`, then `200` (covers P3's loop body plus the P2 edges) |\n| P4 | `n = 1, a = [-5]` | prints `-5` |\n\n**Important note.** P2 as written is *not executable* — the loop must run at least once for `sum` to exceed 100. A basis path need not be individually realisable; the basis set is a mathematical construct over the graph. In practice the tester replaces an unrealisable basis path with a realisable path that covers the same new edges, which is what the `n = 1, a = [200]` case does above. Recognising this is what separates a mechanical answer from an understood one."
+    },
+    {
+     "t": "md",
+     "text": "## Control structure testing\n\nBasis path testing alone is not enough, so three further white-box families refine it.\n\n**Condition testing** exercises the logical conditions in a module. A *simple condition* is $E_1 \\langle \\text{relational operator} \\rangle E_2$ or a boolean variable, possibly negated; a *compound condition* joins simple conditions with `AND`, `OR`, `NOT`. Strategies: **branch testing** (each condition's true and false outcomes, and every simple condition inside a compound one, taken at least once); **domain testing** (for a relational expression $E_1 \\langle \\text{rel} \\rangle E_2$, three tests — $E_1 > E_2$, $E_1 = E_2$, $E_1 < E_2$ — catch relational-operator and expression faults); and **BRO (branch and relational operator) testing**, which uses a condition constraint set to detect branch and relational operator errors.\n\n**Data flow testing** selects paths according to the locations of **definitions** and **uses** of variables. For a statement $S$, $\\text{DEF}(S)$ is the set of variables defined there and $\\text{USE}(S)$ the set used. A **definition-use (DU) chain** $[X, S, S']$ means $X$ is defined at $S$, used at $S'$, and no intervening statement redefines $X$. The **DU testing strategy** requires every DU chain to be covered at least once.\n\n**Loop testing** focuses on the constructs where the most faults hide.\n\n- **Simple loop** with maximum $n$ passes: skip the loop entirely; **one** pass; **two** passes; $m$ passes where $m < n$; $n-1$, $n$ and $n+1$ passes.\n- **Nested loops**: start at the innermost loop, set all outer loops to their minimum values, test the inner one as a simple loop; then work outward, holding the loops already tested at typical values and the outer ones at minimum; continue until all loops are done.\n- **Concatenated loops**: if the loops are independent, test each as a simple loop; if the second loop's counter depends on the first, treat them as nested.\n- **Unstructured loops**: do not test them — redesign the code to use structured constructs.\n\nCoverage criteria form a hierarchy, each implying the ones above it: **statement coverage** ⊂ **branch (decision) coverage** ⊂ **condition coverage** — with the caution that condition coverage does not always imply branch coverage, which is why **condition/decision coverage** and **MC/DC (modified condition/decision coverage)** are defined; path coverage is the strongest and is usually infeasible."
+    },
+    {
+     "t": "md",
+     "text": "## Black-box (behavioural, functional) testing\n\nBlack-box testing derives test cases from the specification, ignoring internal structure. It attacks categories of error that white-box testing tends to miss: incorrect or missing functions, interface errors, errors in data structures or external database access, behaviour and performance errors, and initialisation and termination errors.\n\n### Equivalence partitioning\n\nDivide the input domain into classes such that any member of a class should be handled identically, then test one value from each class. Guidelines for forming classes: for a **range** $a..b$, one valid class ($a \\le x \\le b$) and two invalid ones ($x < a$, $x > b$); for a **specific value**, one valid and two invalid classes; for a **set of values**, one valid class per member and one invalid class; for a **boolean**, one valid and one invalid class. The pay-off is a huge reduction in test count for a small loss in fault-finding power.\n\n### Boundary value analysis\n\nFaults cluster at the edges, not in the middle, so test the edges. For a variable with range $a..b$, test $a-1$, $a$, $a+1$, $b-1$, $b$, $b+1$ — and also a nominal value in the middle. The standard test-count formulas for $n$ input variables, with the rule that all variables but one are held at their nominal value:\n\n| Variant | Values tested per variable | Test cases |\n|---|---|---|\n| **Boundary value analysis (normal)** | $\\text{min}, \\text{min}^+, \\text{max}^-, \\text{max}$ | $4n + 1$ |\n| **Robust BVA** | adds $\\text{min}-1$ and $\\text{max}+1$ | $6n + 1$ |\n| **Worst-case BVA** | all combinations of 5 values | $5^n$ |\n| **Robust worst-case BVA** | all combinations of 7 values | $7^n$ |\n\nThe $+1$ in the first two is the single all-nominal test case. These four formulas are asked directly, so memorise the pattern: normal $4n+1$, robust $6n+1$, worst-case $5^n$, robust worst-case $7^n$.\n\n### Cause-effect graphing\n\nEquivalence partitioning and BVA look at inputs one at a time and miss faults that arise from **combinations**. Cause-effect graphing fixes that. The procedure: list the **causes** (input conditions) and **effects** (actions or output conditions) for a module and give each an identifier; build a **cause-effect graph** linking them with the boolean operators identity, NOT, OR and AND, and annotate it with **constraints** (E exclusive, I inclusive/at-least-one, O one-and-only-one, R requires, M masks); convert the graph into a **limited-entry decision table**, each column of which becomes a test case.\n\n### Decision tables\n\nA decision table has four quadrants: **condition stub** and **condition entries** above, **action stub** and **action entries** below. Each column (rule) is a combination of condition outcomes with the actions it triggers. For $n$ binary conditions there are $2^n$ rules before simplification, and each surviving rule becomes one test case. Decision tables are also a component-level *design* notation, which is why they appear in both topics.\n\n### Other black-box techniques\n\n- **Comparison testing (back-to-back)** — run redundant independently developed versions on the same input and compare, used for safety-critical systems.\n- **Orthogonal array testing** — for a small input domain with many parameters, select a statistically balanced subset of combinations giving pairwise coverage with far fewer tests than exhaustive testing.\n- **State transition testing** — derive tests from a finite state model: valid transitions, invalid transitions, and unreachable states.\n- **Error guessing** — experience-driven; not systematic but empirically productive.\n- **Graph-based testing** — model objects and their relationships, then cover nodes and links."
+    },
+    {
+     "t": "md",
+     "text": "## Validation, system and acceptance testing\n\n**Validation testing** begins where integration ends: the software is assembled, interface errors have been removed, and it is tested as a package against the **validation criteria** in the SRS. The outcome of each test is either that the function or performance conforms, or a **deficiency list** entry, negotiated with the customer.\n\n**Alpha and beta testing**, the pair most often confused:\n\n| | Alpha | Beta |\n|---|---|---|\n| Where | **developer's site** | **customer's / end user's site** |\n| Who runs it | the customer or a representative user | end users |\n| Developer present? | **yes**, recording errors and usage problems | **no** |\n| Environment | controlled | live, uncontrolled |\n| Order | first | after alpha |\n\n**Acceptance testing** is the customer's formal validation against the contract; for a product with many customers, alpha and beta testing take its place.\n\n**System testing** exercises the software as part of the whole computer-based system, and has named varieties:\n\n- **Recovery testing** — force failures and verify that recovery is correct: for automated recovery, check reinitialisation, checkpointing, data recovery and restart; for manual recovery, measure MTTR against its specified bound.\n- **Security testing** — attempt to penetrate; the tester plays the attacker. The guiding principle is that given enough time and resource, good security testing will *always* break in, so the goal is to make penetration cost more than the information is worth.\n- **Stress testing** — demand abnormal quantity, frequency or volume of resource: ten interrupts per second where one or two is normal, input data rates increased by an order of magnitude, maximum memory, thrashing the disk. **Sensitivity testing** is the variant that hunts for the small band of input data inside a valid class that causes instability.\n- **Performance testing** — measure run-time performance in an integrated system; it is coupled with stress testing and usually needs instrumentation.\n- **Deployment / configuration testing** — exercise the software across each environment it must run in.\n\n**Debugging** is not testing; it follows testing. Its three strategies are **brute force** (memory dumps, run-time traces, print statements — the least efficient and most common), **backtracking** (from the symptom, walk the source backwards until the cause is found; works only for small programs), and **cause elimination** (binary partitioning: form a hypothesis from the data, prove or disprove it, halving the suspect region each time). Debugging outcomes: the cause is found and corrected, or it is not found, and in the latter case the fix that \"makes the symptom go away\" is the one that later produces two new faults — always ask what other defect the same fix might introduce and what regression tests must be re-run."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — black-box test design for a date validator",
+     "text": "A function accepts a day $d$, month $m$ and year $y$ and reports whether the date is valid. Constraints: $1 \\le d \\le 31$, $1 \\le m \\le 12$, $1900 \\le y \\le 2100$.\n\n**Equivalence classes for $m$:** valid $\\{1..12\\}$; invalid $\\{m \\le 0\\}$; invalid $\\{m \\ge 13\\}$. That is 1 valid and 2 invalid classes, matching the range rule. Same shape for $d$ and $y$.\n\n**Normal BVA.** With $n = 3$ variables, the count is $4n + 1 = 4(3) + 1 = \\mathbf{13}$ test cases. Taking nominal values $d = 15$, $m = 6$, $y = 2000$:\n\n| # | $d$ | $m$ | $y$ | Which boundary |\n|---|---|---|---|---|\n| 1 | 1 | 6 | 2000 | $d$ min |\n| 2 | 2 | 6 | 2000 | $d$ min$^+$ |\n| 3 | 30 | 6 | 2000 | $d$ max$^-$ |\n| 4 | 31 | 6 | 2000 | $d$ max |\n| 5–8 | 15 | 1, 2, 11, 12 | 2000 | $m$ boundaries |\n| 9–12 | 15 | 6 | 1900, 1901, 2099, 2100 | $y$ boundaries |\n| 13 | 15 | 6 | 2000 | all nominal |\n\n**Robust BVA** adds $\\text{min}-1$ and $\\text{max}+1$ for each variable: $6n + 1 = 6(3) + 1 = \\mathbf{19}$ test cases, adding $d = 0, 32$; $m = 0, 13$; $y = 1899, 2101$.\n\n**Worst-case BVA** takes all combinations of the five values $\\{\\text{min}, \\text{min}^+, \\text{nom}, \\text{max}^-, \\text{max}\\}$ for every variable: $5^n = 5^3 = \\mathbf{125}$ test cases. **Robust worst case** gives $7^3 = \\mathbf{343}$.\n\n**What all of these miss.** None of them tests 29 February. The rule \"29 February is valid iff the year is a leap year\" is a *combination* of month, day and year, so it needs **cause-effect graphing** or a **decision table**:\n\n| Condition | R1 | R2 | R3 | R4 |\n|---|---|---|---|---|\n| $m = 2$ | T | T | T | F |\n| $d = 29$ | T | T | F | – |\n| $y$ divisible by 4 and (not by 100 or by 400) | T | F | – | – |\n| **Action: valid** | ✓ | ✗ | ✓ | (other rules) |\n\nThat is the lesson of the technique: partitioning and BVA test each variable's edges, but only a combinational technique catches a rule that spans several variables. It also shows why the day range should really be equivalence-partitioned per month (28/29, 30, 31) rather than treated as a flat 1..31."
+    },
+    {
+     "t": "cal",
+     "kind": "trap",
+     "title": "Stubs, drivers and which integration needs which",
+     "text": "A **stub** stands in for a module that is **called** by the module under test — it is *below* it in the call hierarchy.\nA **driver** stands in for the module that **calls** the module under test — it is *above* it.\n\nTherefore:\n\n| Strategy | Needs |\n|---|---|\n| **Top-down integration** | **stubs** (the lower levels are not built yet) |\n| **Bottom-up integration** | **drivers** (there is no caller yet) |\n| **Sandwich** | both |\n| **Unit testing a single module** | both, if it calls others and is called |\n\nThe question is usually phrased as \"top-down integration requires ___\", and the wrong answer is always \"drivers\". Remember: **top-down needs stubs**."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.7-1",
+     "q": "A program's flow graph has 14 edges and 11 nodes and is a single connected component. Its cyclomatic complexity is",
+     "opts": [
+      "3",
+      "4",
+      "5",
+      "25"
+     ],
+     "ans": 2,
+     "exp": "$V(G) = E - N + 2P = 14 - 11 + 2(1) = 5$. Cross-check with the other formulas: the graph must contain 4 predicate nodes ($4 + 1 = 5$) and, drawn in the plane, 5 regions including the unbounded one. Any two of the three formulas agreeing confirms the answer."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.7-2",
+     "q": "A module accepts four independent input variables. The number of test cases required by robust boundary value analysis is",
+     "opts": [
+      "17",
+      "25",
+      "625",
+      "2401"
+     ],
+     "ans": 1,
+     "exp": "Robust BVA tests six values per variable (min−1, min, min⁺, max⁻, max, max+1) while holding the other variables at nominal, plus one all-nominal case: $6n + 1 = 6(4) + 1 = 25$. The distractor 17 is normal BVA ($4n+1$), 625 is worst-case BVA ($5^4$) and 2401 is robust worst-case ($7^4$)."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.7-3",
+     "q": "Which statement correctly distinguishes alpha and beta testing?",
+     "opts": [
+      "Alpha is at the customer site with the developer absent; beta is at the developer site",
+      "Alpha is at the developer site with the developer present; beta is at the customer site with the developer absent",
+      "Both are conducted by the development team at the developer site",
+      "Beta testing precedes alpha testing"
+     ],
+     "ans": 1,
+     "exp": "Alpha testing is conducted at the developer's site by a customer representative, in a controlled environment, with the developer looking over the shoulder and recording problems. Beta testing happens later at one or more end-user sites, in a live environment, with the developer absent; users report problems back at intervals. The order is alpha then beta."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Compute V(G) two ways, always",
+     "body": "Count predicate nodes and add one, then check with $E - N + 2$. They must agree. If they do not, you have either missed an edge or forgotten that a compound condition `if (a && b)` splits into two predicate nodes."
+    },
+    {
+     "title": "The four BVA counts",
+     "body": "Normal $4n+1$, robust $6n+1$, worst case $5^n$, robust worst case $7^n$. The linear forms hold all but one variable at nominal and add one all-nominal case; the exponential forms take all combinations. Spot 'robust' (adds the two out-of-range values) and 'worst case' (combinations) independently."
+    },
+    {
+     "title": "V(G) is an upper bound on tests, a lower bound on paths",
+     "body": "It bounds the number of tests needed for branch coverage from above and the number of paths needed for full path coverage from below. If a question asks 'minimum tests to cover every statement', the answer is usually smaller than $V(G)$ — $V(G)$ answers 'independent paths in the basis set'."
+    },
+    {
+     "title": "Read the scaffolding question backwards",
+     "body": "Ask which end of the hierarchy is missing. Missing children → stubs → top-down. Missing parent → driver → bottom-up. This also settles unit-test questions: a leaf function needs only a driver, an intermediate function needs both."
+    },
+    {
+     "title": "Verification is static, validation is dynamic",
+     "body": "If the activity is a review, inspection, walkthrough or static analysis, it is verification. If it runs the program against user expectations — acceptance, alpha, beta — it is validation. That heuristic handles nearly every V&V option list."
+    }
+   ],
+   "traps": [
+    {
+     "title": "Error, fault and failure are three different things",
+     "body": "A human makes an **error**, which puts a **fault** in the artefact, which on execution may cause a **failure**. A fault that is never executed causes no failure, and a failure can be caused by more than one fault. Options that use the three words interchangeably are wrong by construction."
+    },
+    {
+     "title": "Basis paths need not all be executable",
+     "body": "The basis set is derived from the graph, not from the semantics, so some paths may be infeasible (a loop guard that cannot be false on the first pass, mutually exclusive conditions). The tester substitutes realisable paths that cover the same edges; the count $V(G)$ does not change."
+    },
+    {
+     "title": "Top-down integration uses stubs, not drivers",
+     "body": "The mnemonic reads 'top-down, stubs down'. Bottom-up needs drivers because there is nothing above the module to call it. Half the marks on integration questions turn on this one pairing."
+    },
+    {
+     "title": "Condition coverage does not guarantee branch coverage",
+     "body": "For `if (a || b)`, the two tests (a=T, b=F) and (a=F, b=T) give full condition coverage but take the same branch both times, leaving the false branch untested. That is why condition/decision coverage and MC/DC exist, and why 'condition coverage subsumes decision coverage' is false."
+    },
+    {
+     "title": "Regression testing is not re-running everything",
+     "body": "Re-running the full suite after every change is usually infeasible. Regression testing selects a representative sample plus tests focused on the changed function and the changed components. An option describing it as 'complete retesting of the entire system' misses the point of selection."
+    }
+   ]
+  },
+  {
+   "id": "6.8",
+   "title": "Configuration Management, Reuse and Re-engineering",
+   "summary": "Baselines and SCIs, the five SCM tasks and the change control process, versions versus revisions and variants, maintenance categories, software reuse economics, and re-engineering with reverse engineering and restructuring.",
+   "blocks": [
+    {
+     "t": "md",
+     "text": "## Why configuration management exists\n\nThe **first law of system engineering**, as Bersoff puts it, is that no matter where you are in the system life cycle, the system will change, and the desire to change it will persist throughout the life cycle. Change is not a failure of planning; it is the permanent condition. Software configuration management (SCM) is the umbrella activity that makes change *controlled* rather than chaotic: it identifies what can change, controls how it changes, ensures the change is properly implemented, and reports the change to everyone who needs to know.\n\nNote the scope boundary that examiners test: **SCM is applied throughout the life cycle** as an umbrella activity, whereas **software maintenance** is a set of engineering activities that occur after the software has been delivered. SCM is not a phase.\n\n### Configuration items and baselines\n\nA **software configuration item (SCI)** is any information item created as part of the software engineering process that is placed under configuration control. The set of SCIs is the **software configuration**, and it is much wider than source code: the system specification, the software project plan, the SRS with prototypes, the design specification with data design and architectural design, source code listings, test plans and procedures and test cases, operation and installation manuals, executable programs, database descriptions, user manuals, maintenance documents (change requests, change reports, engineering change orders), and the standards and procedures for software engineering. Tools used to build the system are increasingly placed under control too, so that a five-year-old release can still be rebuilt.\n\nA **baseline**, in IEEE's words, is a specification or product that has been **formally reviewed and agreed upon**, that thereafter serves as the **basis for further development**, and that can be **changed only through formal change control procedures**. The three-part definition is quoted in questions almost verbatim.\n\nThe mechanism is simple and worth picturing. An SCI under development sits in a private workspace where the engineer may change it freely. When it passes a formal technical review it is **approved** and moves into the **project database**, becoming a baseline. From that moment nobody edits it in place: to change it you **check out** a copy (which may lock the master), make the change, have it reviewed, and **check in**, creating a new version. The typical baselines are the System Specification, the Software Requirements Specification, the Design Specification, the Source Code, the Test Plans/Procedures/Data, and the Operational System."
+    },
+    {
+     "t": "md",
+     "text": "## The five SCM tasks\n\n| Task | What it does |\n|---|---|\n| **Identification** | name and structure the SCIs, define their relationships, establish an object-oriented naming and evolution scheme |\n| **Version control** | combine procedures and tools to manage the versions of configuration objects that are created during the process |\n| **Change control** | authorise, evaluate, implement and verify changes to baselined items |\n| **Configuration auditing** | confirm that a change has been properly implemented — a formal technical review plus a configuration audit |\n| **Status reporting (status accounting)** | tell everyone what changed, who did it, when it happened and what else it affects |\n\nIdentification distinguishes **basic objects** (a unit of text created by an engineer — a section of a specification, a source listing, a test case) from **aggregate objects** (a collection of basic objects and other aggregate objects — the *Design Specification* is an aggregate of the data model, component model and interface model). Relationships between objects are recorded as `<part-of>` links and `<interrelated>` links, so that an impact analysis can traverse them.\n\n### Version control, revisions and variants\n\nThree words that are routinely swapped in options:\n\n- A **version** is an instance of a configuration item that differs in some way from other instances. Versions are what version control stores.\n- A **revision** is a version created to **correct faults in or improve on** a previous version; it is intended to **replace** its predecessor. Revisions form a sequence — 1.0, 1.1, 1.2 — along an evolution path.\n- A **variant** is a version that is **functionally equivalent** but built for a different environment or configuration, and it **co-exists** with its siblings rather than superseding them: the same release compiled for Windows and for Linux, or with and without a particular feature.\n- A **release** is a version distributed to customers, as opposed to an internal build.\n\nThe picture is an **evolution graph**: a trunk of successive revisions with branches for variants, each node labelled with its version number and attributes. Version control systems use **check-in/check-out** with either **pessimistic locking** (only one writer at a time) or **optimistic concurrency** (parallel edits, merge on check-in).\n\nA **configuration** is a named set of specific versions of SCIs that together make a consistent whole; a **build** produces an executable from a configuration. Conventional numbering `major.minor.patch` maps onto this: a major number change signals incompatible functional change, a minor number signals added functionality, a patch number signals a corrective revision."
+    },
+    {
+     "t": "md",
+     "text": "## The change control process\n\nChange control balances two opposing needs: uncontrolled change produces chaos, and excessive control produces bureaucracy that engineers route around. The formal sequence for a change to a **baselined** item is:\n\n1. A **change request** is submitted and evaluated for technical merit, potential side effects, overall impact on other configuration objects and system functions, and projected cost.\n2. A **change report** records the results of that evaluation.\n3. The **change control authority (CCA)** — often a **change control board (CCB)** — makes the final decision on status and priority, weighing the technical and business impact.\n4. If approved, an **engineering change order (ECO)** is generated, describing the change to be made, the constraints, and the criteria for review and audit.\n5. The object to be changed is **checked out** of the project database; access control and synchronisation control govern who may do so and prevent two engineers from overwriting each other.\n6. The change is made, and the modified object is **reviewed** (a formal technical review) and **audited** (a configuration audit).\n7. The object is **checked in**, the new version is **baselined** for testing, and after testing the appropriate version is **promoted** and eventually **released**.\n\nBefore an item is baselined, only **informal change control** applies — the developer simply makes the change. Between baselining and release, **project-level change control** applies. After release, **formal change control** with a CCB applies. A question asking \"what level of change control applies to an object that has not yet been baselined?\" wants *informal*.\n\n**Configuration auditing** complements the formal technical review by asking the procedural questions the review does not: was the change specified in the ECO actually made, and were any additional modifications incorporated? Was a formal technical review conducted? Were SCM procedures for noting, recording and reporting the change followed? Have all related SCIs been properly updated?\n\n**Status reporting (CSR)** answers: what happened, who did it, when did it happen, and what else will be affected. Its purpose is to prevent the classic failure in which two people solve the same problem in incompatible ways because neither knew the other was working on it.\n\nThe governing standard is **IEEE 828** (Software Configuration Management Plans); IEEE 1042 is its guide."
+    },
+    {
+     "t": "md",
+     "text": "## Software maintenance\n\nMaintenance consumes between 60% and 70% of the total life-cycle cost of a software product, which is why it, not construction, dominates the economics. Four categories, with their approximate shares from the Lientz and Swanson survey:\n\n| Category | What it is | Share |\n|---|---|---|\n| **Corrective** | fix defects found after delivery | ~21% |\n| **Adaptive** | adjust to a changed environment — new OS, new hardware, new regulation | ~25% |\n| **Perfective** (enhancement) | add or improve function at user request | ~50% |\n| **Preventive** (re-engineering) | change to improve future maintainability, before a problem occurs | ~4% |\n\nThe key reading is that **perfective maintenance is the largest category**, not corrective — maintenance is mostly enhancement, not bug-fixing. Options claiming corrective is the biggest are the standard distractor.\n\n**Lehman's laws of software evolution** describe what happens to a program that is used in a real environment (an *E-type* system):\n\n1. **Continuing change** — it must be continually adapted or it becomes progressively less satisfactory.\n2. **Increasing complexity** — as it evolves its complexity increases unless work is done to reduce it.\n3. **Self-regulation** — the evolution process is self-regulating, with measures of product and process attributes near normal distributions.\n4. **Conservation of organisational stability** — the average effective global activity rate is invariant over the product's lifetime.\n5. **Conservation of familiarity** — the incremental growth in each release tends to remain constant.\n6. **Continuing growth** — functional content must be continually increased to maintain user satisfaction.\n7. **Declining quality** — quality appears to decline unless the system is rigorously maintained and adapted.\n8. **Feedback system** — evolution processes are multi-level, multi-loop, multi-agent feedback systems.\n\nMaintainability is measured by **MTTC (mean time to change)**: the average time to analyse a change request, design a modification, implement it, test it and distribute it. Boehm's maintenance effort model uses the **annual change traffic (ACT)** — the fraction of source instructions that undergo change in a year — with $\\text{AME} = \\text{ACT} \\times \\text{development effort} \\times \\text{EAF}$."
+    },
+    {
+     "t": "md",
+     "text": "## Software reuse\n\nReuse is the deliberate use of existing assets to build new systems. It pays off in reduced cost and schedule, improved reliability (a component used many times has been tested many times), and reduced process risk — but it imposes its own costs and must be justified numerically.\n\n**Levels of reuse**, from largest unit to smallest:\n\n- **Application system reuse** — reuse the whole application, either unchanged (a COTS product) or as a **product line** with configurable variants.\n- **Component reuse** — reuse subsystems or single components.\n- **Object and function reuse** — reuse individual classes or library functions.\n\n**The reuse process.** Component-based development qualifies, adapts and composes:\n\n1. **Qualification** — establish that a candidate component really does what is needed, including its interface, performance, reliability and any hidden assumptions.\n2. **Adaptation** — wrap or modify the component so that conflicts with its new context are removed. White-box wrapping modifies the internals; grey-box uses an extension language or API; **black-box wrapping** changes only the interface and is the preferred technique.\n3. **Composition** — bind components into a working architecture using an infrastructure (a broker, a bus, a framework).\n4. **Update** — maintain a component that a third party supplied, usually by requesting a new release rather than editing it.\n\nThe counterpart process is **domain engineering** — analysing an application domain, identifying the reusable elements common to its members, and building a reusable library — which runs in parallel with software (application) engineering. Its outputs are a domain analysis model, a structural model and structure points, and the reuse library itself.\n\n**Barriers to reuse**: increased maintenance costs when the source is unavailable; lack of tool support; the *not-invented-here* syndrome; the cost of creating, maintaining and searching a component library; and the difficulty of finding, understanding and adapting a component. A component must be **generic enough to be reusable and specific enough to be useful** — the central tension.\n\n**Reuse metrics** include the percentage of reused LOC or function points, the number of reuses per component, and the **cost of reuse** relative to the cost of building new."
+    },
+    {
+     "t": "ex",
+     "title": "Worked example — is building for reuse worth it?",
+     "text": "Let $C$ be the cost of building a component for a single use. Building the same component to a reusable standard — generalised interface, full documentation, extra testing, no hidden assumptions about its context — typically costs more. Take the common planning figure of a **50% premium**, so the reusable version costs $1.5C$. Each time it is reused, qualification, adaptation and integration cost **20%** of $C$.\n\n**Cost of $n$ applications building it from scratch each time:**\n$$\\text{Cost}_{\\text{new}} = nC$$\n\n**Cost of building it once for reuse and using it $n$ times:**\n$$\\text{Cost}_{\\text{reuse}} = 1.5C + 0.2Cn$$\n\n**Break-even.** Set them equal:\n$$1.5C + 0.2Cn = nC \\;\\Longrightarrow\\; 1.5 = 0.8n \\;\\Longrightarrow\\; n = 1.875$$\n\nSo reuse pays from the **second** application onwards (since $n$ must be a whole number, $n = 2$ is the first profitable point).\n\n**Check the numbers.**\n\n| $n$ | Build new | Build for reuse | Saving |\n|---|---|---|---|\n| 1 | $1.0C$ | $1.7C$ | $-0.7C$ (a loss) |\n| 2 | $2.0C$ | $1.9C$ | $+0.1C$ |\n| 3 | $3.0C$ | $2.1C$ | $+0.9C$ |\n| 5 | $5.0C$ | $2.5C$ | $+2.5C$ |\n| 10 | $10.0C$ | $3.5C$ | $+6.5C$ |\n\n**Reading the table.** The first user of a reusable component always loses money — which is exactly why reuse programmes fail when the cost is charged to the first project rather than to the organisation. The saving then grows almost linearly, so the decision variable is not whether reuse is cheaper in principle but **how many times you honestly expect the component to be used**.\n\n**A concrete instance.** Suppose $C = \\$40{,}000$ and the component is planned for four applications.\n$$\\text{Cost}_{\\text{new}} = 4 \\times 40{,}000 = \\$160{,}000$$\n$$\\text{Cost}_{\\text{reuse}} = 1.5(40{,}000) + 0.2(40{,}000)(4) = 60{,}000 + 32{,}000 = \\$92{,}000$$\n$$\\text{Saving} = \\$68{,}000, \\text{ i.e. } 42.5\\%$$\n\n**Sensitivity.** If adaptation turns out to cost 50% of $C$ rather than 20% — a badly documented component, or a poor architectural fit — then $\\text{Cost}_{\\text{reuse}} = 1.5C + 0.5Cn$ and break-even moves to $1.5 = 0.5n$, i.e. $n = 3$. Adaptation cost, not build cost, is what usually destroys the business case."
+    },
+    {
+     "t": "md",
+     "text": "## Re-engineering\n\n**Business process reengineering (BPR)** sits above software: it redesigns the business processes the software supports, on the principle that automating a bad process only makes it fail faster. Its hierarchy is **business → business system → process → sub-process** and its iterative model is business definition, process identification, process evaluation, process specification and design, prototyping, refinement and instantiation.\n\n**Software re-engineering** is the examination and alteration of a legacy system to reconstitute it in a new form. The **software re-engineering process model** is a cycle of six activities, and the order is examinable:\n\n1. **Inventory analysis** — build a table of every application with its business criticality, current maintainability, longevity, expected change frequency and so on; sort it and pick the candidates. Do not attempt to re-engineer everything.\n2. **Document restructuring** — decide how much documentation to recreate; options range from leaving it alone, through documenting only the parts that change, to fully re-documenting a business-critical system.\n3. **Reverse engineering** — extract design information from the source code.\n4. **Code restructuring** — analyse the source, violations of structured programming are noted and the code is restructured (automatically, in the usual case) while preserving behaviour; then review and test.\n5. **Data restructuring** — usually the most far-reaching change, since data architecture drives program architecture: analyse the source code, refine the data model, and migrate the data.\n6. **Forward engineering** (also **renovation** or **reclamation**) — recover design information and use it to reconstitute the existing system, improving its quality and adding new capability.\n\n### Reverse engineering\n\n**Reverse engineering** is the process of analysing a program in an effort to create a representation of it at a **higher level of abstraction** than the source code — a design recovery process. Its inputs are the source code (and possibly the executable); its outputs are the design, the data structures and the processing logic. Three dimensions are recovered: **data** (internal data structures and the database), **processing** (from statement-level through component-level to program-level abstraction), and **user interfaces**.\n\nKey properties: reverse engineering **does not change the system**, and it moves from a *lower* level of abstraction to a *higher* one. Its counterpart, forward engineering, moves from a higher level to a lower one. **Restructuring** stays at the *same* level of abstraction — it changes the form of the code or data without changing its behaviour or raising its abstraction. That three-way distinction is the most commonly examined point in this section.\n\n$$\\text{reverse engineering: code} \\longrightarrow \\text{design} \\qquad \\text{forward engineering: design} \\longrightarrow \\text{code} \\qquad \\text{restructuring: code} \\longrightarrow \\text{better code}$$\n\nReverse engineering can be **interactive** (a human guides the tool) or automatic; the **directionality** of a tool is one-way (produce information for the maintainer) or two-way (feed the information to a re-engineering tool). Extracting abstractions is easy at the statement level and progressively harder at the component and program levels; the practical limit is that **design intent** — *why* the code is as it is — is generally unrecoverable.\n\n### Economics\n\nReengineering is justified when the cost of continuing to maintain exceeds the cost of rebuilding. Pressman's cost-benefit form compares the current annual maintenance cost against the re-engineered one over the remaining life, and the standard benefit expression is\n\n$$\\text{Cost benefit} = [P_4 - P_3] + [(P_6 - P_7) \\times L] - [P_5 \\times (P_8/P_9)]$$\n\nwhere the $P_i$ are the current and re-engineered costs, error rates and lifetimes. In practice the decision rests on four questions: how business-critical is the application, how long will it remain in service, how maintainable is it now, and how much will a rebuild cost?"
+    },
+    {
+     "t": "cal",
+     "kind": "note",
+     "title": "The abstraction-level test",
+     "text": "One question settles most re-engineering items: **does the abstraction level go up, down or stay the same?**\n\n| Activity | Direction | Does it change the system? |\n|---|---|---|\n| **Reverse engineering** | up (code → design) | no |\n| **Forward engineering** | down (design → code) | yes, produces a new system |\n| **Restructuring** | sideways (same level) | yes, form only; behaviour preserved |\n| **Re-engineering** | up then down | yes — it is reverse engineering *followed by* forward engineering |\n\nSo re-engineering **contains** reverse engineering; they are not synonyms. And restructuring is not reverse engineering, because no higher-level representation is produced."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.8-1",
+     "q": "An SCI that has been formally reviewed and agreed upon, and can subsequently be changed only through formal change control procedures, is called",
+     "opts": [
+      "a version",
+      "a baseline",
+      "a variant",
+      "a build"
+     ],
+     "ans": 1,
+     "exp": "That is the IEEE definition of a baseline, in three parts: formally reviewed and agreed, serving as the basis for further development, and changeable only through formal change control. A version is any distinguishable instance of an item, a variant is a functionally equivalent instance for a different environment, and a build is the act of producing an executable from a configuration."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.8-2",
+     "q": "Which sequence correctly orders the change control process for a baselined item?",
+     "opts": [
+      "Change request → ECO → change report → CCA decision → check out",
+      "Change request → change report → CCA decision → ECO → check out",
+      "ECO → change request → check out → change report → CCA decision",
+      "Check out → change request → change report → ECO → CCA decision"
+     ],
+     "ans": 1,
+     "exp": "The request is evaluated first, producing a change report that estimates technical merit, side effects, impact and cost. The change control authority then decides, and only if it approves is an engineering change order generated. The object is checked out after the ECO exists, changed, reviewed, audited and checked in."
+    },
+    {
+     "t": "check",
+     "id": "chk-6.8-3",
+     "q": "Re-engineering an existing system differs from reverse engineering in that re-engineering",
+     "opts": [
+      "only recovers design information without altering the system",
+      "operates at the same level of abstraction as the source code",
+      "recovers design information and then uses it to rebuild the system",
+      "is performed before the system is first delivered"
+     ],
+     "ans": 2,
+     "exp": "Reverse engineering is a pure analysis activity: it raises the abstraction level from code to design and leaves the system untouched. Re-engineering uses reverse engineering as one of its six activities and then applies forward engineering to reconstitute the system in a better form, so it both recovers and rebuilds. Restructuring, by contrast, is the activity that stays at the same abstraction level."
+    }
+   ],
+   "tricks": [
+    {
+     "title": "Revision replaces, variant co-exists",
+     "body": "If the new instance is meant to supersede the old one because it fixes or improves it, it is a revision. If both instances remain in service because they serve different environments or configurations, it is a variant. That single test settles every version-control terminology question."
+    },
+    {
+     "title": "Baseline-before-baseline decides the control level",
+     "body": "Not yet baselined → informal change control (the developer just changes it). Baselined but not released → project-level change control. Released → formal change control with a change control board. Read the stem for which side of the baseline the item is on."
+    },
+    {
+     "title": "Perfective is the biggest maintenance category",
+     "body": "The order by share is perfective (~50%) > adaptive (~25%) > corrective (~21%) > preventive (~4%). Candidates guess corrective first; the survey figure says enhancement dominates. Remember the definitions by their triggers: defect → corrective, environment → adaptive, user request → perfective, future maintainability → preventive."
+    },
+    {
+     "title": "Use the abstraction arrow for re-engineering questions",
+     "body": "Up means reverse engineering, down means forward engineering, sideways means restructuring, and up-then-down means re-engineering. Draw the arrow before reading the options."
+    },
+    {
+     "title": "Reuse break-even is a two-line algebra",
+     "body": "With a build premium $p$ (as a multiple of single-use cost) and a per-reuse cost $r$, break-even is $p + rn = n$, i.e. $n = p/(1-r)$. With $p = 1.5$ and $r = 0.2$ that gives $1.5/0.8 = 1.875$, so the second use pays."
+    }
+   ],
+   "traps": [
+    {
+     "title": "SCM is not maintenance and not a phase",
+     "body": "SCM is an umbrella activity applied throughout the life cycle, starting before any code exists; maintenance is a set of activities after delivery. A question asking when SCM begins wants 'at the start of the project', not 'after release'."
+    },
+    {
+     "title": "An SCI is not just source code",
+     "body": "Specifications, plans, design documents, test cases, manuals, databases, executables and even the tools used to build the system are configuration items. Options restricting the term to programs are wrong."
+    },
+    {
+     "title": "Restructuring is not reverse engineering",
+     "body": "Restructuring changes the form of code or data while preserving behaviour, at the same abstraction level; it produces no higher-level representation. Reverse engineering produces a design from code and changes nothing. Do not treat the words as synonyms."
+    },
+    {
+     "title": "Configuration audit and technical review answer different questions",
+     "body": "A formal technical review asks whether the changed SCI is technically correct. A configuration audit asks whether the change specified in the ECO was actually made, whether procedure was followed and whether related SCIs were updated. Both are needed; one does not replace the other."
+    },
+    {
+     "title": "Building for reuse costs more, not less, the first time",
+     "body": "Generalisation, documentation and extra testing add a premium of roughly 50%, so a single-use project that builds for reuse loses money. Reuse economics only turn positive across several applications, which is why reuse is an organisational investment rather than a project-level optimisation."
+    }
+   ]
+  }
+ ]
+}

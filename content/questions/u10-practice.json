@@ -1,0 +1,535 @@
+[
+ {
+  "id": "prac-u10-001",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.1",
+  "q": "A* search is guaranteed to find an optimal solution provided the heuristic is",
+  "opts": [
+   "admissible — it never overestimates the true cost to the goal",
+   "always zero",
+   "monotonically increasing",
+   "consistent but not necessarily admissible"
+  ],
+  "ans": 0,
+  "exp": "Admissibility ($h(n) \\le h^*(n)$) guarantees optimality for tree search. Consistency is the stronger condition needed for graph search without re-expansion, and every consistent heuristic is admissible but not conversely.",
+  "trick": "Admissible ⇒ optimal for tree search. Consistent ⇒ optimal for graph search. Consistency is strictly stronger.",
+  "diff": "medium",
+  "tags": [
+   "A star",
+   "heuristic search"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-002",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.1",
+  "q": "Which search strategy is complete and optimal when all step costs are equal?",
+  "opts": [
+   "Hill climbing",
+   "Depth-first search",
+   "Breadth-first search",
+   "Greedy best-first search"
+  ],
+  "ans": 2,
+  "exp": "BFS expands the shallowest unexpanded node, so it finds a shallowest goal — which is the cheapest one when every step costs the same. DFS is neither complete (on infinite branches) nor optimal, and greedy search follows the heuristic without regard to path cost.",
+  "trick": "Equal step costs ⇒ BFS is optimal. Unequal ⇒ you need uniform cost search.",
+  "diff": "easy",
+  "tags": [
+   "search"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-003",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.1",
+  "q": "The space complexity of depth-first search on a tree with branching factor $b$ and depth $m$ is",
+  "opts": [
+   "$O(bm)$",
+   "$O(b^d)$",
+   "$O(m)$",
+   "$O(b^m)$"
+  ],
+  "ans": 0,
+  "exp": "DFS stores only the current path plus the unexpanded siblings at each level along it, giving $b$ nodes per level over $m$ levels. That linear space is DFS's one decisive advantage over BFS, which needs $O(b^d)$.",
+  "trick": "",
+  "diff": "medium",
+  "tags": [
+   "DFS",
+   "complexity"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-004",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.2",
+  "q": "With perfect move ordering, alpha–beta pruning examines approximately how many leaf nodes compared with plain minimax at depth $d$ and branching factor $b$?",
+  "opts": [
+   "$b^{d}$",
+   "$b^{d/2}$",
+   "$d^{b}$",
+   "$b^{2d}$"
+  ],
+  "ans": 1,
+  "exp": "Ideal ordering lets alpha–beta examine roughly the square root of the nodes minimax would, effectively doubling the searchable depth for the same effort. Worst-case ordering gives no saving at all.",
+  "trick": "Alpha–beta never changes the minimax VALUE — only the work. Compute the value by plain minimax, then reason about pruning separately.",
+  "diff": "medium",
+  "tags": [
+   "alpha beta"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-005",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.2",
+  "q": "Alpha–beta pruning occurs at a node when",
+  "opts": [
+   "$\\alpha = 0$",
+   "$\\alpha < \\beta$",
+   "$\\alpha \\ge \\beta$",
+   "the node is a leaf"
+  ],
+  "ans": 2,
+  "exp": "Alpha is the best value the maximiser can already guarantee and beta the best the minimiser can. Once alpha reaches or exceeds beta, the opponent would never allow play to reach this node, so the remaining siblings cannot affect the result and are cut off.",
+  "trick": "",
+  "diff": "easy",
+  "tags": [
+   "alpha beta"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-006",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.3",
+  "q": "In resolution-based theorem proving, to prove that $KB \\models \\alpha$ one shows that",
+  "opts": [
+   "$\\alpha$ alone is a tautology",
+   "$KB \\vee \\alpha$ is valid",
+   "$KB \\wedge \\alpha$ is satisfiable",
+   "$KB \\wedge \\neg\\alpha$ is unsatisfiable"
+  ],
+  "ans": 3,
+  "exp": "Resolution is a refutation procedure: negate the goal, add it to the knowledge base, convert everything to clause form and derive the empty clause. Deriving a contradiction shows the negated goal is incompatible with the KB, hence the goal follows.",
+  "trick": "Resolution always works by contradiction. Negate the goal first — every time.",
+  "diff": "medium",
+  "tags": [
+   "resolution"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-007",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.3",
+  "q": "Unification of the literals $P(x, f(y))$ and $P(a, f(b))$ yields the substitution",
+  "opts": [
+   "$\\{x/a,\\ y/b\\}$",
+   "$\\{a/x,\\ b/y\\}$",
+   "the terms do not unify",
+   "$\\{x/a,\\ y/f(b)\\}$"
+  ],
+  "ans": 0,
+  "exp": "Matching argument by argument: $x$ unifies with the constant $a$, and $f(y)$ unifies with $f(b)$ by matching $y$ with $b$. The substitution is written variable/term, so $\\{x/a, y/b\\}$.",
+  "trick": "Substitutions are written variable/term, never term/variable. Options with that reversed are distractors.",
+  "diff": "medium",
+  "tags": [
+   "unification"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-008",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.3",
+  "q": "A semantic network represents knowledge as",
+  "opts": [
+   "a decision tree",
+   "a fixed-length attribute vector",
+   "nodes for concepts connected by labelled arcs for relations",
+   "a set of production rules"
+  ],
+  "ans": 2,
+  "exp": "Semantic networks use a graph whose nodes are objects or concepts and whose arcs carry relation labels such as *is-a* and *has-part*, which makes inheritance of properties a simple graph traversal.",
+  "trick": "",
+  "diff": "easy",
+  "tags": [
+   "knowledge representation"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-009",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.4",
+  "q": "Goal stack planning applied to the Sussman anomaly demonstrates",
+  "opts": [
+   "that hierarchical planning is unnecessary",
+   "that STRIPS is complete",
+   "that planning is decidable",
+   "that achieving subgoals independently can undo previously achieved subgoals"
+  ],
+  "ans": 3,
+  "exp": "The Sussman anomaly is the standard three-block problem where solving one subgoal first destroys the other, so no ordering of the two independent subgoals works. It motivates interleaving and partial order planning, which do not commit to a total order prematurely.",
+  "trick": "",
+  "diff": "medium",
+  "tags": [
+   "planning",
+   "Sussman anomaly"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-010",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.4",
+  "q": "A STRIPS operator is defined by",
+  "opts": [
+   "only preconditions",
+   "preconditions, an add list and a delete list",
+   "a utility function",
+   "a probability distribution over states"
+  ],
+  "ans": 1,
+  "exp": "Preconditions state what must hold for the operator to apply; the add list gives the literals it makes true and the delete list those it makes false. Everything not mentioned is assumed unchanged — the STRIPS assumption.",
+  "trick": "",
+  "diff": "easy",
+  "tags": [
+   "STRIPS"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-011",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.5",
+  "q": "In natural language processing, the sentence \"I saw the man with the telescope\" illustrates",
+  "opts": [
+   "phonetic ambiguity",
+   "referential ambiguity",
+   "lexical ambiguity",
+   "syntactic (structural) ambiguity"
+  ],
+  "ans": 3,
+  "exp": "Every word has a settled meaning; what is uncertain is whether the prepositional phrase attaches to the verb or to the noun, which is a question of parse structure. Lexical ambiguity would require a word with two senses.",
+  "trick": "Two possible parse trees ⇒ syntactic. One word, two meanings ⇒ lexical. Unclear pronoun ⇒ referential.",
+  "diff": "medium",
+  "tags": [
+   "NLP",
+   "ambiguity"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-012",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.7",
+  "q": "For fuzzy sets, the standard (Zadeh) intersection is defined by",
+  "opts": [
+   "$\\mu_{A \\cap B}(x) = \\min(\\mu_A(x), \\mu_B(x))$",
+   "$\\mu_A(x) \\times \\mu_B(x)$",
+   "$\\mu_A(x) + \\mu_B(x)$",
+   "$\\max(\\mu_A(x), \\mu_B(x))$"
+  ],
+  "ans": 0,
+  "exp": "Zadeh's standard operators are min for intersection, max for union and $1 - \\mu$ for complement. The product is the *algebraic* t-norm, an alternative but not the standard one.",
+  "trick": "Standard fuzzy ops: min, max, 1−μ. Product and probabilistic sum are the algebraic alternatives.",
+  "diff": "easy",
+  "tags": [
+   "fuzzy sets"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-013",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.7",
+  "q": "In fuzzy logic, an $\\alpha$-cut of a fuzzy set $A$ is",
+  "opts": [
+   "the set of elements with membership exactly $\\alpha$",
+   "the fuzzy set scaled by $\\alpha$",
+   "the crisp set of elements whose membership is at least $\\alpha$",
+   "the complement of $A$"
+  ],
+  "ans": 2,
+  "exp": "$A_\\alpha = \\{x \\mid \\mu_A(x) \\ge \\alpha\\}$ — and the result is a *crisp* set, which is the point: alpha-cuts are the bridge between fuzzy and classical set theory. A strong alpha-cut uses strict inequality.",
+  "trick": "",
+  "diff": "medium",
+  "tags": [
+   "alpha cut"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-014",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.7",
+  "q": "Which is NOT a defuzzification method?",
+  "opts": [
+   "Mean of maximum",
+   "Fuzzification of maximum",
+   "Height method",
+   "Centre of area"
+  ],
+  "ans": 1,
+  "exp": "The standard defuzzification methods are centroid (centre of area), mean of maximum, smallest and largest of maximum, weighted average and the height method. \"Fuzzification of maximum\" is not a method — fuzzification is the opposite direction of the process.",
+  "trick": "",
+  "diff": "easy",
+  "tags": [
+   "defuzzification"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-015",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.8",
+  "q": "In a genetic algorithm, crossover is the operator that",
+  "opts": [
+   "selects individuals proportional to fitness",
+   "evaluates the objective function",
+   "combines genetic material from two parent chromosomes to produce offspring",
+   "randomly alters a single gene"
+  ],
+  "ans": 2,
+  "exp": "Crossover is the recombination operator and is the main source of exploitation in a GA. Mutation alters individual genes and provides exploration; selection chooses which individuals reproduce.",
+  "trick": "Selection picks, crossover combines, mutation perturbs. One sentence answers most GA questions.",
+  "diff": "easy",
+  "tags": [
+   "genetic algorithm"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-016",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.8",
+  "q": "Roulette wheel selection in a genetic algorithm assigns each individual a selection probability",
+  "opts": [
+   "proportional to its fitness relative to the population total",
+   "inversely proportional to its fitness",
+   "proportional to its rank only",
+   "equal for all individuals"
+  ],
+  "ans": 0,
+  "exp": "Fitness-proportionate selection gives individual $i$ probability $f_i / \\sum_j f_j$, so fitter individuals occupy a larger arc of the wheel. Rank selection uses position rather than raw fitness and is preferred when one individual would otherwise dominate.",
+  "trick": "",
+  "diff": "medium",
+  "tags": [
+   "selection"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-017",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.9",
+  "q": "A single-layer perceptron cannot learn the XOR function because",
+  "opts": [
+   "XOR requires continuous outputs",
+   "XOR has two inputs",
+   "the perceptron learning rule does not converge for binary inputs",
+   "XOR is not linearly separable"
+  ],
+  "ans": 3,
+  "exp": "A perceptron computes a single linear decision boundary, but no straight line separates the XOR outputs $\\{(0,1),(1,0)\\}$ from $\\{(0,0),(1,1)\\}$. Adding one hidden layer supplies the second boundary and solves it.",
+  "trick": "Perceptron = one hyperplane. Any problem needing more than one boundary needs a hidden layer.",
+  "diff": "easy",
+  "tags": [
+   "perceptron",
+   "XOR"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-018",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.9",
+  "q": "The backpropagation algorithm adjusts weights by",
+  "opts": [
+   "randomly perturbing weights and keeping improvements",
+   "propagating the output error backwards and applying gradient descent",
+   "clustering the training data",
+   "solving a system of linear equations"
+  ],
+  "ans": 1,
+  "exp": "Backpropagation computes the partial derivative of the error with respect to each weight using the chain rule, moving from the output layer backwards, and then steps each weight against its gradient. It requires a differentiable activation function, which is why the step function is replaced by the sigmoid.",
+  "trick": "Backpropagation needs a DIFFERENTIABLE activation. That is why sigmoid replaced the hard threshold.",
+  "diff": "medium",
+  "tags": [
+   "backpropagation"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-019",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.9",
+  "q": "A Hopfield network with $N$ neurons can reliably store approximately how many patterns?",
+  "opts": [
+   "0.15N",
+   "N",
+   "$2^N$",
+   "$N^2$"
+  ],
+  "ans": 0,
+  "exp": "The classical capacity result for a Hopfield associative memory is about $0.138N$ to $0.15N$ patterns before crosstalk causes spurious attractors and retrieval breaks down.",
+  "trick": "Hopfield capacity ≈ 0.15N. It is one of the few numeric facts in the ANN topic and it is asked regularly.",
+  "diff": "hard",
+  "tags": [
+   "Hopfield"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-020",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.9",
+  "q": "Self-organising maps (Kohonen networks) perform",
+  "opts": [
+   "symbolic reasoning",
+   "supervised classification with labelled data",
+   "reinforcement learning with a reward signal",
+   "unsupervised learning, preserving topological relationships in a lower-dimensional map"
+  ],
+  "ans": 3,
+  "exp": "A SOM adapts a grid of neurons to the input distribution with no labels, and because neighbouring neurons are updated together, nearby points in the input space map to nearby neurons — the topology-preserving property that defines it.",
+  "trick": "Supervised needs labels; unsupervised finds structure; reinforcement needs a reward. Kohonen is squarely unsupervised.",
+  "diff": "medium",
+  "tags": [
+   "SOM"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-021",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.6",
+  "q": "An agent differs from an ordinary object primarily in that an agent",
+  "opts": [
+   "has methods and state",
+   "is autonomous and decides for itself whether to act on a request",
+   "can be instantiated",
+   "is written in an object-oriented language"
+  ],
+  "ans": 1,
+  "exp": "Objects invoke each other's methods directly — control passes on demand. Agents are autonomous: a request is a message they may reason about and decline, and they typically also have their own thread of control and a degree of reactivity and pro-activeness.",
+  "trick": "The slogan: objects do it for free, agents do it for money. Autonomy is the dividing line.",
+  "diff": "medium",
+  "tags": [
+   "multi agent systems"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u10-022",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 10,
+  "topic": "10.1",
+  "q": "The Turing test evaluates a machine's intelligence by",
+  "opts": [
+   "examining its internal representations",
+   "checking whether it can solve NP-complete problems",
+   "whether a human interrogator can distinguish its responses from a human's",
+   "measuring its processing speed"
+  ],
+  "ans": 2,
+  "exp": "Turing deliberately replaced the question \"can machines think?\" with an operational, behavioural test conducted through text so that appearance and voice cannot influence the judgement. It says nothing about how the machine works internally — a common criticism.",
+  "trick": "",
+  "diff": "easy",
+  "tags": [
+   "Turing test"
+  ],
+  "srcUrl": ""
+ }
+]

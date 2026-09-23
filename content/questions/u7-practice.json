@@ -1,0 +1,1709 @@
+[
+ {
+  "id": "prac-u7-0001",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.1",
+  "q": "An array `A[1..10][1..15]` of 2-byte elements is stored in **row-major** order with base address 100. The address of `A[5][8]` is",
+  "opts": [
+   "244",
+   "234",
+   "210",
+   "330"
+  ],
+  "ans": 1,
+  "exp": "Count the elements stored before `A[5][8]`: four complete rows of 15 give 60, plus 7 elements of row 5, so $k=(5-1)\\times15+(8-1)=67$. The address is $B+wk=100+2\\times67=100+134=234$.",
+  "trick": "Never memorise two formulas — count how many elements precede the target and multiply by the element size.",
+  "diff": "easy",
+  "tags": [
+   "array addressing",
+   "row-major"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0002",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.1",
+  "q": "A circular queue is held in an array of size 12, with `front` indexing the first element and `rear` indexing the last. If `front = 9` and `rear = 3`, the number of elements in the queue is",
+  "opts": [
+   "7",
+   "5",
+   "9",
+   "6"
+  ],
+  "ans": 0,
+  "exp": "With this convention the count is $(\\text{rear}-\\text{front}+n)\\bmod n+1=(3-9+12)\\bmod 12+1=6+1=7$. Checking by hand, the occupied slots are 9, 10, 11, 0, 1, 2, 3 — seven of them.",
+  "trick": "If instead the question says one slot is kept vacant (capacity $n-1$), drop the $+1$ and use $(r-f+n)\\bmod n$.",
+  "diff": "medium",
+  "tags": [
+   "circular queue",
+   "queue"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0003",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.1",
+  "q": "Evaluate the postfix expression `6 2 3 + - 3 8 2 / + *`.",
+  "opts": [
+   "21",
+   "7",
+   "9",
+   "-7"
+  ],
+  "ans": 1,
+  "exp": "Push 6, 2, 3. The `+` pops 3 and 2 giving 5, leaving [6, 5]. The `-` pops 5 then 6; the **second** value popped is the left operand, so the result is $6-5=1$. Push 3, 8, 2. The `/` gives $8/2=4$, then `+` gives $3+4=7$, leaving [1, 7]. Finally `*` gives $1\\times7=\\mathbf{7}$.",
+  "trick": "For `a b -` the answer is $a-b$: the second value popped is on the left. Subtraction and division are where this costs marks.",
+  "diff": "medium",
+  "tags": [
+   "postfix evaluation",
+   "stack"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0004",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.1",
+  "q": "Consider the following statements.\n\n(a) Insertion at the front of a singly linked list is $O(1)$.\n(b) With a tail pointer, deleting the **last** node of a singly linked list is $O(1)$.\n(c) In a circular singly linked list with a pointer to the **last** node, insertion at both ends is $O(1)$.\n(d) A stack built from two queues can achieve $O(1)$ worst case for both push and pop.\n\nWhich are true?",
+  "opts": [
+   "All four",
+   "(a), (b) and (c) only",
+   "(a) and (c) only",
+   "(a), (c) and (d) only"
+  ],
+  "ans": 2,
+  "exp": "(a) is true — relink the head. (b) is false: a tail pointer reaches the last node but not its predecessor, so the walk to find it costs $\\Theta(n)$; only a doubly linked list makes this $O(1)$. (c) is true because `last->next` is the head, giving both ends in constant time. (d) is false — a stack from two queues is $\\Theta(n)$ on whichever of push or pop you choose to make expensive, with no amortised escape.",
+  "trick": "A queue from two stacks is $O(1)$ amortised; a stack from two queues is not. The asymmetry is asked directly.",
+  "diff": "hard",
+  "tags": [
+   "linked list",
+   "stack",
+   "queue"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0005",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.2",
+  "q": "A strict (full) binary tree, in which every node has either 0 or 2 children, has 20 leaves. The total number of nodes in the tree is",
+  "opts": [
+   "40",
+   "41",
+   "20",
+   "39"
+  ],
+  "ans": 3,
+  "exp": "In a strict binary tree $n_0=n_2+1$, so with $n_0=20$ leaves there are $n_2=19$ internal nodes. The total is $20+19=\\mathbf{39}$. (Every node except the root has one incoming edge, giving $n-1$ edges, while each degree-2 node emits two, so $2n_2=n_0+n_2-1$.)",
+  "trick": "A strict binary tree always has an odd number of nodes, $2n_0-1$. Any even option can be rejected at once.",
+  "diff": "easy",
+  "tags": [
+   "binary tree",
+   "counting"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0006",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.2",
+  "q": "What is the maximum possible height of an AVL tree containing 30 nodes? (A single node has height 0.)",
+  "opts": [
+   "6",
+   "4",
+   "7",
+   "5"
+  ],
+  "ans": 3,
+  "exp": "The minimum number of nodes in an AVL tree of height $h$ satisfies $N(h)=N(h-1)+N(h-2)+1$ with $N(0)=1$, $N(1)=2$, giving $1,2,4,7,12,20,33,\\ldots$. We need the largest $h$ with $N(h)\\le 30$: $N(5)=20\\le30$ but $N(6)=33>30$. So the height cannot exceed $\\mathbf{5}$.",
+  "trick": "Memorise $N(h)=1,2,4,7,12,20,33,54$ and scan the list; no formula manipulation is needed.",
+  "diff": "medium",
+  "tags": [
+   "avl tree",
+   "height bound"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0007",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.2",
+  "q": "The postorder traversal of a binary search tree is 5, 12, 10, 22, 30, 25, 15. Its preorder traversal is",
+  "opts": [
+   "15, 10, 5, 12, 25, 22, 30",
+   "15, 25, 30, 22, 10, 12, 5",
+   "5, 10, 12, 15, 22, 25, 30",
+   "15, 10, 12, 5, 25, 30, 22"
+  ],
+  "ans": 0,
+  "exp": "Sorting the keys gives the inorder traversal 5, 10, 12, 15, 22, 25, 30. The last element of the postorder is the root, 15; keys below it (5, 12, 10) form the left subtree and keys above it (22, 30, 25) the right. Recursing, the left subtree's postorder 5, 12, 10 has root 10 with children 5 and 12; the right subtree's postorder 22, 30, 25 has root 25 with children 22 and 30. Preorder (root, left, right) is therefore **15, 10, 5, 12, 25, 22, 30**.",
+  "trick": "For a BST you are always handed two traversals: the one printed and the sorted key list, which is the inorder. That pair reconstructs the tree uniquely.",
+  "diff": "medium",
+  "tags": [
+   "bst",
+   "traversal reconstruction"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0008",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.2",
+  "q": "A disk block holds 1024 bytes. In a B+ tree index, a key is 10 bytes and a block pointer is 6 bytes. The maximum order of an internal node is",
+  "opts": [
+   "65",
+   "64",
+   "62",
+   "63"
+  ],
+  "ans": 1,
+  "exp": "An internal node with $m$ block pointers stores $m-1$ separator keys, so $6m+10(m-1)\\le1024$, i.e. $16m\\le1034$ and $m\\le64.6$. The order (maximum number of children) is therefore $\\mathbf{64}$, with at most 63 keys per node.",
+  "trick": "Order counts **children**, so the inequality is (pointers $\\times$ $m$) + (keys $\\times$ ($m-1$)) $\\le$ block size. Leaf capacity uses record pointers instead and is computed separately.",
+  "diff": "medium",
+  "tags": [
+   "b+ tree",
+   "order",
+   "block size"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0009",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.2",
+  "q": "A B-tree of order 5 stores 1000 keys. Its **minimum** possible height is (root at height 0)",
+  "opts": [
+   "5",
+   "3",
+   "4",
+   "6"
+  ],
+  "ans": 2,
+  "exp": "Minimum height means every node is completely full: 4 keys and 5 children each. A tree of height $h$ then holds $4(1+5+5^2+\\cdots+5^h)=5^{h+1}-1$ keys. For $h=3$ this is $625-1=624<1000$, and for $h=4$ it is $3125-1=3124\\ge1000$. So the height is at least $\\mathbf{4}$.",
+  "trick": "For minimum height fill everything to $m-1$ keys; for maximum height give the root 1 key and every other node $\\lceil m/2\\rceil-1$. Both are one geometric series.",
+  "diff": "hard",
+  "tags": [
+   "b-tree",
+   "height"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0010",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.2",
+  "q": "The keys 30, 10 and 20 are inserted in that order into an initially empty AVL tree. Which rebalancing occurs, and what is the resulting root?",
+  "opts": [
+   "Single right rotation; root becomes 10",
+   "Single left rotation; root becomes 20",
+   "Left–right double rotation; root becomes 20",
+   "Right–left double rotation; root becomes 20"
+  ],
+  "ans": 2,
+  "exp": "After 30 and 10 the tree is 30 with left child 10. Inserting 20 places it as the right child of 10. Node 30 now has a left subtree of height 1 and an empty right subtree, so its balance factor is $1-(-1)=+2$. Travelling from 30 towards 20 the two steps are **left then right**, so this is the **LR** case: left-rotate at 10, then right-rotate at 30. The result is 20 as root with children 10 and 30.",
+  "trick": "Name the case by the two directions from the lowest unbalanced node to the new key. Same letters means one rotation, different letters means two.",
+  "diff": "medium",
+  "tags": [
+   "avl tree",
+   "rotation"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0011",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.2",
+  "q": "The bottom-up `BUILD-HEAP` procedure is applied to the array $A=[3,9,2,1,4,5]$ using 1-based indexing to build a **max-heap**. The resulting array is",
+  "opts": [
+   "[9, 5, 4, 1, 3, 2]",
+   "[9, 4, 5, 1, 3, 2]",
+   "[9, 4, 5, 3, 1, 2]",
+   "[9, 3, 5, 1, 4, 2]"
+  ],
+  "ans": 1,
+  "exp": "`BUILD-HEAP` sifts down from $i=\\lfloor6/2\\rfloor=3$ to 1. At $i=3$, $A[3]=2$ has one child $A[6]=5$, so they swap: $[3,9,5,1,4,2]$. At $i=2$, $A[2]=9$ already exceeds its children 1 and 4 — no change. At $i=1$, $A[1]=3$ has children 9 and 5; swap with 9 to get $[9,3,5,1,4,2]$, then continue sifting the 3 at index 2, whose children are 1 and 4; swap with 4 to get $\\mathbf{[9,4,5,1,3,2]}$, and index 5 is a leaf.",
+  "trick": "Only nodes at indices $1\\ldots\\lfloor n/2\\rfloor$ need sifting; everything beyond is already a valid one-node heap.",
+  "diff": "medium",
+  "tags": [
+   "heap",
+   "build-heap"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0012",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.2",
+  "q": "Match List I with List II.\n\n**List I**\n(A) Number of distinct BSTs on $n$ distinct keys\n(B) Number of NULL pointers in an $n$-node binary tree\n(C) Minimum nodes in an AVL tree of height $h$\n(D) Number of leaves in a complete binary tree of $n$ nodes\n\n**List II**\n(I) $\\lceil n/2\\rceil$\n(II) $n+1$\n(III) $\\frac{1}{n+1}\\binom{2n}{n}$\n(IV) $N(h-1)+N(h-2)+1$",
+  "opts": [
+   "(A)-(III), (B)-(II), (C)-(IV), (D)-(I)",
+   "(A)-(IV), (B)-(II), (C)-(III), (D)-(I)",
+   "(A)-(III), (B)-(I), (C)-(IV), (D)-(II)",
+   "(A)-(II), (B)-(III), (C)-(I), (D)-(IV)"
+  ],
+  "ans": 0,
+  "exp": "The number of BSTs on $n$ keys equals the number of binary tree **shapes**, the Catalan number $C_n=\\frac{1}{n+1}\\binom{2n}{n}$, since the shape fixes the key placement. An $n$-node binary tree has $2n$ child pointers of which $n-1$ are used, leaving $n+1$ NULLs. The AVL minimum-node recurrence is $N(h)=N(h-1)+N(h-2)+1$. A complete binary tree of $n$ nodes has $\\lceil n/2\\rceil$ leaves, occupying array positions $\\lfloor n/2\\rfloor+1$ to $n$.",
+  "trick": "In a match-the-list item, fix the one pair you are certain of and use it to eliminate options before checking the rest.",
+  "diff": "hard",
+  "tags": [
+   "binary tree",
+   "catalan number",
+   "avl tree"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0013",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.3",
+  "q": "Keys 7, 18, 29 and 40 are inserted in that order into a hash table of size 11 using $h(k)=k\\bmod 11$ with **linear probing**. How many probes does the insertion of 40 require?",
+  "opts": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "ans": 3,
+  "exp": "All four keys hash to the same home slot: $7\\bmod11=7$, $18\\bmod11=7$, $29\\bmod11=7$ and $40\\bmod11=7$. So 7 goes to slot 7, 18 to slot 8, 29 to slot 9, and 40 probes slots 7, 8, 9 (all occupied) before landing in slot 10 — $\\mathbf{4}$ probes.",
+  "trick": "In a linear-probing table the probe count for a key is 1 plus the number of consecutive occupied slots from its home slot. Read it off the cluster rather than re-simulating.",
+  "diff": "easy",
+  "tags": [
+   "hashing",
+   "linear probing"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0014",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.3",
+  "q": "Under the uniform-hashing assumption, an open-addressed table has load factor $\\alpha=0.8$. The expected number of probes in an **unsuccessful** search is at most",
+  "opts": [
+   "8",
+   "5",
+   "4",
+   "2"
+  ],
+  "ans": 1,
+  "exp": "For an unsuccessful search under uniform hashing the bound is $\\dfrac{1}{1-\\alpha}=\\dfrac{1}{1-0.8}=\\mathbf{5}$. (The successful-search bound $\\frac1\\alpha\\ln\\frac{1}{1-\\alpha}=\\frac{1}{0.8}\\ln5\\approx2.01$ is much smaller — searches for keys that are present stop early.)",
+  "trick": "An insertion costs exactly what an unsuccessful search costs, since it probes until it finds an empty slot.",
+  "diff": "medium",
+  "tags": [
+   "hashing",
+   "load factor",
+   "probe count"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0015",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.3",
+  "q": "A table of size 13 uses double hashing with $h_1(k)=k\\bmod 13$ and $h_2(k)=7-(k\\bmod 7)$. The keys 18, 41, 22 and 44 are inserted in that order. Key 44 is placed in slot",
+  "opts": [
+   "12",
+   "6",
+   "10",
+   "7"
+  ],
+  "ans": 2,
+  "exp": "$18\\bmod13=5$, $41\\bmod13=2$ and $22\\bmod13=9$, so those three occupy slots 5, 2 and 9. For 44, $h_1=44\\bmod13=5$, which is occupied. Then $h_2(44)=7-(44\\bmod7)=7-2=5$, so the next probe is $(5+5)\\bmod13=\\mathbf{10}$, which is free.",
+  "trick": "Check first that $h_2(k)$ is coprime to $m$ — with $m$ prime and $h_2\\in\\{1,\\ldots,m-1\\}$ it always is, so the sequence covers the whole table.",
+  "diff": "medium",
+  "tags": [
+   "hashing",
+   "double hashing"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0016",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.3",
+  "q": "Consider the following statements about collision resolution.\n\n(a) Linear probing suffers from primary clustering.\n(b) Quadratic probing eliminates secondary clustering.\n(c) Double hashing needs $h_2(k)$ relatively prime to $m$ to probe every slot.\n(d) Deletion under open addressing is handled by marking the slot as DELETED rather than empty.\n\nWhich are true?",
+  "opts": [
+   "All four",
+   "(a), (b) and (c) only",
+   "(b), (c) and (d) only",
+   "(a), (c) and (d) only"
+  ],
+  "ans": 3,
+  "exp": "(a) is true: in linear probing, keys with **different** home slots merge into one long run. (b) is false and is the deliberate trap — quadratic probing removes *primary* clustering but creates *secondary* clustering, since keys sharing a home slot follow identical probe sequences. (c) is true; otherwise the sequence cycles through a proper subset of the slots. (d) is true: emptying a slot would break every probe sequence passing through it, so a tombstone is used.",
+  "trick": "Primary clustering = different home slots piling up (linear). Secondary clustering = same home slot, same route (quadratic). The two words are almost always swapped in one option.",
+  "diff": "hard",
+  "tags": [
+   "hashing",
+   "clustering",
+   "open addressing"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0017",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.4",
+  "q": "How many element exchanges does selection sort perform on an array of $n$ distinct elements?",
+  "opts": [
+   "Exactly $n-1$",
+   "$n(n-1)/2$ in the worst case",
+   "$\\Theta(n\\log n)$",
+   "It depends on the initial arrangement"
+  ],
+  "ans": 0,
+  "exp": "Selection sort makes exactly one swap per pass, placing the minimum of the unsorted suffix, and it runs $n-1$ passes. The **comparison** count is always $n(n-1)/2$ regardless of the data, but the swap count is fixed at $\\mathbf{n-1}$ — the fewest of any comparison sort, which is why it is used when writes are far costlier than reads.",
+  "trick": "Selection sort has no best case for comparisons and no worst case for swaps. Any option offering $\\Theta(n)$ best-case *time* for it is wrong.",
+  "diff": "easy",
+  "tags": [
+   "selection sort",
+   "swap count"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0018",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.4",
+  "q": "Insertion sort is applied to the array $[5, 1, 4, 2, 3]$. How many element shifts (equivalently, inversions) does it perform?",
+  "opts": [
+   "10",
+   "6",
+   "5",
+   "7"
+  ],
+  "ans": 1,
+  "exp": "Insertion sort performs exactly one shift per inversion. The inversions — pairs $(i,j)$ with $i<j$ and $A[i]>A[j]$ — are $(5,1), (5,4), (5,2), (5,3), (4,2)$ and $(4,3)$, giving $\\mathbf{6}$.",
+  "trick": "Count inversions instead of simulating. A sorted array has 0, a reverse-sorted array has $n(n-1)/2$, and a random permutation averages $n(n-1)/4$.",
+  "diff": "medium",
+  "tags": [
+   "insertion sort",
+   "inversions"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0019",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.4",
+  "q": "What is the exact maximum number of comparisons merge sort makes while sorting 16 elements?",
+  "opts": [
+   "49",
+   "64",
+   "65",
+   "32"
+  ],
+  "ans": 0,
+  "exp": "For $n$ a power of 2, merge sort's worst-case comparison count is exactly $n\\log_2 n-n+1$. With $n=16$: $16\\times4-16+1=64-16+1=\\mathbf{49}$. The looser bound $n\\log_2 n=64$ over-counts because each merge of runs of lengths $p$ and $q$ needs at most $p+q-1$, not $p+q$, comparisons.",
+  "trick": "$n\\log_2 n-n+1$: for $n=8$ it is 17 and for $n=16$ it is 49. When a question says 'maximum number of comparisons' it wants this exact figure, not $n\\log n$.",
+  "diff": "medium",
+  "tags": [
+   "merge sort",
+   "comparison count"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0020",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.4",
+  "q": "Quicksort always chooses the **first** element as pivot and is run on an array of $n$ distinct elements already sorted in ascending order. The total number of comparisons is",
+  "opts": [
+   "$n-1$",
+   "$2n$",
+   "$n(n-1)/2$",
+   "$n\\log_2 n$"
+  ],
+  "ans": 2,
+  "exp": "On sorted input a first-element pivot is the minimum, so partitioning splits the array into an empty part and a part of size $n-1$, after $n-1$ comparisons. The recurrence is $T(n)=T(n-1)+(n-1)$, giving $(n-1)+(n-2)+\\cdots+1=\\mathbf{n(n-1)/2}$ comparisons and $\\Theta(n^2)$ time.",
+  "trick": "Sorted or reverse-sorted input with a first- or last-element pivot is quicksort's worst case; randomised or median-of-three pivots make it vanishingly unlikely.",
+  "diff": "medium",
+  "tags": [
+   "quicksort",
+   "worst case"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0021",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.4",
+  "q": "LSD radix sort is applied to $[170, 45, 75, 90, 802, 24, 2, 66]$. The array **after the first pass** (sorting on the units digit) is",
+  "opts": [
+   "170, 90, 2, 802, 24, 75, 45, 66",
+   "90, 170, 2, 802, 24, 45, 75, 66",
+   "2, 24, 45, 66, 75, 90, 170, 802",
+   "170, 90, 802, 2, 24, 45, 75, 66"
+  ],
+  "ans": 3,
+  "exp": "The units digits are 170$\\to$0, 45$\\to$5, 75$\\to$5, 90$\\to$0, 802$\\to$2, 24$\\to$4, 2$\\to$2, 66$\\to$6. Because the per-digit sort is **stable**, items with the same digit keep their input order: bucket 0 holds 170 then 90, bucket 2 holds 802 then 2, bucket 4 holds 24, bucket 5 holds 45 then 75, and bucket 6 holds 66. Reading the buckets in order gives **170, 90, 802, 2, 24, 45, 75, 66**.",
+  "trick": "Stability is what makes LSD radix sort correct. If your pass output reorders two numbers that share the current digit, you have made an error.",
+  "diff": "medium",
+  "tags": [
+   "radix sort",
+   "stability"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0022",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.4",
+  "q": "One Lomuto partition, with the **last** element as pivot, is applied to $A=[9,4,7,2,8,5,3]$. The array afterwards is",
+  "opts": [
+   "[2, 3, 4, 9, 8, 5, 7]",
+   "[3, 2, 7, 9, 8, 5, 4]",
+   "[2, 3, 7, 9, 8, 5, 4]",
+   "[2, 3, 9, 7, 8, 5, 4]"
+  ],
+  "ans": 2,
+  "exp": "The pivot is 3. Scanning with boundary $i=-1$: 9, 4 and 7 all exceed 3 and stay put; $A[3]=2\\le3$, so $i$ becomes 0 and $A[0]$ swaps with $A[3]$, giving $[2,4,7,9,8,5,3]$; 8 and 5 exceed 3. Finally the pivot swaps with $A[i+1]=A[1]$, giving $\\mathbf{[2,3,7,9,8,5,4]}$. The pivot 3 now sits at index 1, its final sorted position.",
+  "trick": "Lomuto leaves the pivot at its final position; Hoare does not — it only returns a split point. A question asking 'where is the pivot' has different answers for the two schemes.",
+  "diff": "medium",
+  "tags": [
+   "quicksort",
+   "lomuto partition"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0023",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.4",
+  "q": "The minimum number of comparisons needed to find **both** the maximum and the minimum of 100 distinct elements is",
+  "opts": [
+   "150",
+   "198",
+   "149",
+   "148"
+  ],
+  "ans": 3,
+  "exp": "Comparing elements in pairs first costs $\\lfloor n/2\\rfloor$ comparisons and yields $n/2$ candidates for the maximum and $n/2$ for the minimum; each group then needs $n/2-1$ more comparisons. The total is $\\lceil 3n/2\\rceil-2$, which for $n=100$ is $150-2=\\mathbf{148}$. The naive approach of two separate scans costs $2n-2=198$.",
+  "trick": "Three standard counts: maximum alone $n-1$; maximum and minimum $\\lceil3n/2\\rceil-2$; second largest $n+\\lceil\\log_2 n\\rceil-2$.",
+  "diff": "hard",
+  "tags": [
+   "comparison count",
+   "selection"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0024",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.4",
+  "q": "An **unsuccessful** binary search in a sorted array of 500 elements makes at most how many comparisons?",
+  "opts": [
+   "9",
+   "10",
+   "8",
+   "500"
+  ],
+  "ans": 0,
+  "exp": "Each comparison halves the interval, so the count is $\\lfloor\\log_2 n\\rfloor+1$. Since $2^8=256\\le500<512=2^9$, we have $\\lfloor\\log_2 500\\rfloor=8$ and the maximum is $8+1=\\mathbf{9}$.",
+  "trick": "Anchors worth memorising: $n=100\\to7$, $n=1000\\to10$, $n=10^6\\to20$. Doubling the array adds exactly one comparison.",
+  "diff": "easy",
+  "tags": [
+   "binary search",
+   "comparison count"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0025",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.4",
+  "q": "Consider the following statements.\n\n(a) Heapsort uses $O(1)$ auxiliary space and is not stable.\n(b) Merge sort on a **linked list** can be implemented with $O(\\log n)$ auxiliary space.\n(c) Every comparison sort needs $\\Omega(n\\log n)$ comparisons in the worst case.\n(d) Counting sort is a comparison sort running in $\\Theta(n+k)$.\n\nWhich are true?",
+  "opts": [
+   "All four",
+   "(a), (b) and (c) only",
+   "(a), (c) and (d) only",
+   "(b), (c) and (d) only"
+  ],
+  "ans": 1,
+  "exp": "(a) is true — heapsort sorts in place and its sift operations move equal keys past one another. (b) is true: on a list the merge relinks nodes instead of copying, so only the recursion stack is extra. (c) is true by the decision-tree bound $\\lceil\\log_2 n!\\rceil=\\Omega(n\\log n)$. (d) is false: counting sort is **not** a comparison sort — it indexes an array by key value, which is exactly how it evades the $\\Omega(n\\log n)$ bound.",
+  "trick": "Any claim of $o(n\\log n)$ worst-case sorting must come with a non-comparison mechanism and a bounded key range.",
+  "diff": "hard",
+  "tags": [
+   "sorting properties",
+   "lower bound"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0026",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.5",
+  "q": "The solution of $T(n)=3T(n/2)+n^2$ is",
+  "opts": [
+   "$\\Theta(n^2)$",
+   "$\\Theta(n^2\\log n)$",
+   "$\\Theta(n^3)$",
+   "$\\Theta(n^{1.585})$"
+  ],
+  "ans": 0,
+  "exp": "Here $a=3$, $b=2$, so the watershed is $n^{\\log_2 3}=n^{1.585}$. Since $f(n)=n^2=\\Omega(n^{1.585+\\varepsilon})$ with, say, $\\varepsilon=0.3$, and the regularity condition $3(n/2)^2=\\tfrac34 n^2\\le c\\,n^2$ holds with $c=3/4<1$, this is **Case 3** and $T(n)=\\Theta(f(n))=\\mathbf{\\Theta(n^2)}$.",
+  "trick": "Write $n^{\\log_b a}$ before looking at $f$. Useful values: $\\log_2 3=1.585$, $\\log_2 5=2.322$, $\\log_2 7=2.807$.",
+  "diff": "easy",
+  "tags": [
+   "master theorem",
+   "recurrence"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0027",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.5",
+  "q": "The solution of $T(n)=4T(n/2)+n$ is",
+  "opts": [
+   "$\\Theta(n\\log n)$",
+   "$\\Theta(n^2\\log n)$",
+   "$\\Theta(n)$",
+   "$\\Theta(n^2)$"
+  ],
+  "ans": 3,
+  "exp": "$\\log_2 4=2$, so the watershed is $n^2$. The driving function $f(n)=n$ is polynomially smaller — $n=O(n^{2-1})$ — so **Case 1** applies and $T(n)=\\Theta(n^{\\log_b a})=\\mathbf{\\Theta(n^2)}$. Intuitively the $n^2$ leaves dominate the $n$ work at the root.",
+  "trick": "Case 1 answers are always the watershed itself, never involve $f$, and never carry a logarithm.",
+  "diff": "medium",
+  "tags": [
+   "master theorem",
+   "recurrence"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0028",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.5",
+  "q": "The solution of $T(n)=2T(n/4)+\\sqrt{n}$ is",
+  "opts": [
+   "$\\Theta(n\\log n)$",
+   "$\\Theta(\\sqrt n\\log n)$",
+   "$\\Theta(\\sqrt n)$",
+   "$\\Theta(n)$"
+  ],
+  "ans": 1,
+  "exp": "$\\log_4 2=1/2$, so the watershed is $n^{1/2}=\\sqrt n$, which is exactly $f(n)$. That is **Case 2 with $k=0$**, and the answer gains one logarithm: $T(n)=\\Theta(n^{1/2}\\log n)=\\mathbf{\\Theta(\\sqrt n\\log n)}$. Every level of the recursion tree costs the same $\\sqrt n$, and there are $\\Theta(\\log n)$ levels.",
+  "trick": "When $f$ equals the watershed exactly, multiply by $\\log n$. When it equals the watershed times $\\log^k n$, multiply by $\\log^{k+1} n$.",
+  "diff": "medium",
+  "tags": [
+   "master theorem",
+   "recurrence"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0029",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.5",
+  "q": "With $T(1)=1$, the recurrence $T(n)=T(n-1)+n^2$ solves to",
+  "opts": [
+   "$\\Theta(2^n)$",
+   "$\\Theta(n^2)$",
+   "$\\Theta(n^3)$",
+   "$\\Theta(n^2\\log n)$"
+  ],
+  "ans": 2,
+  "exp": "Expanding gives $T(n)=n^2+(n-1)^2+\\cdots+1=\\dfrac{n(n+1)(2n+1)}{6}=\\mathbf{\\Theta(n^3)}$. This is the subtract-and-conquer family $T(n)=aT(n-b)+\\Theta(n^k)$ with $a=1$, which always yields $\\Theta(n^{k+1})$ because there are $n$ levels rather than $\\log n$.",
+  "trick": "$T(n-1)$ means $n$ levels, so a $\\Theta(n^k)$ cost per level gives $\\Theta(n^{k+1})$ when $a=1$ and an exponential when $a\\ge2$. The Master theorem does not apply here at all.",
+  "diff": "medium",
+  "tags": [
+   "recurrence",
+   "subtract and conquer"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0030",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.5",
+  "q": "The recurrence $T(n)=2T(\\sqrt n)+\\log_2 n$, with $T(2)=1$, solves to",
+  "opts": [
+   "$\\Theta(\\sqrt n)$",
+   "$\\Theta(\\log n\\log\\log n)$",
+   "$\\Theta(\\log n)$",
+   "$\\Theta(\\log^2 n)$"
+  ],
+  "ans": 1,
+  "exp": "Substitute $n=2^m$ and let $S(m)=T(2^m)$. Then $\\sqrt n=2^{m/2}$ and $\\log_2 n=m$, so $S(m)=2S(m/2)+m$, a Case-2 Master recurrence with solution $\\Theta(m\\log m)$. Back-substituting $m=\\log_2 n$ gives $T(n)=\\mathbf{\\Theta(\\log n\\log\\log n)}$.",
+  "trick": "Any recurrence containing $T(\\sqrt n)$ becomes an ordinary divide-by-2 recurrence under $n=2^m$. Solve in $m$, then put $m=\\log n$ back.",
+  "diff": "hard",
+  "tags": [
+   "recurrence",
+   "change of variable"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0031",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.5",
+  "q": "Consider the following statements.\n\n(a) $n^{1.01}=\\Omega(n\\log n)$\n(b) $2^{2n}=O(2^n)$\n(c) $\\log(n!)=\\Theta(n\\log n)$\n(d) If $f(n)=O(g(n))$ then $2^{f(n)}=O(2^{g(n)})$\n\nWhich are true?",
+  "opts": [
+   "(c) and (d) only",
+   "(a), (c) and (d) only",
+   "(a) and (c) only",
+   "(a), (b) and (c) only"
+  ],
+  "ans": 2,
+  "exp": "(a) is true: $n^{1.01}/(n\\log n)=n^{0.01}/\\log n\\to\\infty$, since every positive power of $n$ eventually beats every power of $\\log n$. (b) is false — $2^{2n}/2^n=2^n\\to\\infty$; only a constant *additive* shift such as $2^{n+1}=2\\cdot2^n$ is absorbed. (c) is true by Stirling, which is why comparison sorting is $\\Omega(n\\log n)$. (d) is false: take $f(n)=2n$ and $g(n)=n$; then $f=O(g)$ but $2^{2n}\\ne O(2^n)$.",
+  "trick": "Exponentiating an $O$ bound is illegal; multiplying or adding bounds is fine. This single counterexample, $f=2n$, $g=n$, kills option (d) every time.",
+  "diff": "medium",
+  "tags": [
+   "asymptotic notation",
+   "growth rates"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0032",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.5",
+  "q": "Arrange $n^{1/3}$, $\\log_2 n$, $n\\log_2 n$ and $2^{\\log_2 n}$ in increasing order of growth.",
+  "opts": [
+   "$n^{1/3},\\ \\log_2 n,\\ 2^{\\log_2 n},\\ n\\log_2 n$",
+   "$\\log_2 n,\\ n^{1/3},\\ n\\log_2 n,\\ 2^{\\log_2 n}$",
+   "$\\log_2 n,\\ 2^{\\log_2 n},\\ n^{1/3},\\ n\\log_2 n$",
+   "$\\log_2 n,\\ n^{1/3},\\ 2^{\\log_2 n},\\ n\\log_2 n$"
+  ],
+  "ans": 3,
+  "exp": "First simplify: $2^{\\log_2 n}=n$. Now the four functions are $\\log n$, $n^{1/3}$, $n$ and $n\\log n$. Every positive power of $n$ beats every power of $\\log n$, so $\\log n\\prec n^{1/3}$; and $n^{1/3}\\prec n\\prec n\\log n$. The order is $\\log_2 n,\\ n^{1/3},\\ 2^{\\log_2 n},\\ n\\log_2 n$.",
+  "trick": "Simplify disguised forms first: $2^{\\log_2 n}=n$, $n^{\\log_2 2}=n$, $4^{\\log_2 n}=n^2$. Half of these ordering questions collapse immediately.",
+  "diff": "medium",
+  "tags": [
+   "growth ladder",
+   "asymptotic notation"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0033",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.5",
+  "q": "In the recursion tree for $T(n)=3T(n/4)+n$, the number of leaves is",
+  "opts": [
+   "$n^{0.792}$",
+   "$3n/4$",
+   "$\\log_4 n$",
+   "$n^{1.585}$"
+  ],
+  "ans": 0,
+  "exp": "The tree has branching factor $a=3$ and depth $\\log_4 n$, so it has $a^{\\log_b n}=3^{\\log_4 n}=n^{\\log_4 3}=\\mathbf{n^{0.792}}$ leaves. Since $f(n)=n$ is polynomially larger than $n^{0.792}$, the root dominates and $T(n)=\\Theta(n)$ — the leaves are numerous but each does constant work.",
+  "trick": "$a^{\\log_b n}=n^{\\log_b a}$ is the identity behind the whole Master theorem, and it is Case 1's answer directly.",
+  "diff": "hard",
+  "tags": [
+   "recursion tree",
+   "master theorem"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0034",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.6",
+  "q": "Strassen's algorithm multiplies two $n\\times n$ matrices in time",
+  "opts": [
+   "$\\Theta(n^2\\log n)$",
+   "$\\Theta(n^2)$",
+   "$\\Theta(n^3)$",
+   "$\\Theta(n^{2.807})$"
+  ],
+  "ans": 3,
+  "exp": "Splitting each matrix into four $n/2$ blocks, Strassen computes **seven** block products instead of eight (at the cost of 18 block additions rather than 4), giving $T(n)=7T(n/2)+\\Theta(n^2)$. Since $\\log_2 7=2.807$ exceeds the exponent 2 of the combine step, Case 1 applies and $T(n)=\\Theta(n^{\\log_2 7})=\\mathbf{\\Theta(n^{2.807})}$.",
+  "trick": "Only the number of recursive multiplications sits in the exponent; extra additions change the constant, not the growth rate.",
+  "diff": "easy",
+  "tags": [
+   "strassen",
+   "divide and conquer"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0035",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.6",
+  "q": "An algorithm divides a problem of size $n$ into 3 subproblems of size $n/3$ and combines their solutions in $\\Theta(n^2)$ time. Its running time is",
+  "opts": [
+   "$\\Theta(n^2)$",
+   "$\\Theta(n^2\\log n)$",
+   "$\\Theta(n\\log n)$",
+   "$\\Theta(n)$"
+  ],
+  "ans": 0,
+  "exp": "This is $T(n)=3T(n/3)+\\Theta(n^2)$, so $\\log_3 3=1$ and the watershed is $n$. The combine cost $n^2$ is polynomially larger, and regularity holds ($3(n/3)^2=n^2/3\\le c\\,n^2$ with $c=1/3$), so Case 3 gives $T(n)=\\Theta(n^2)$ — the root's work dominates everything below it.",
+  "trick": "'Divides into $a$ subproblems of size $n/b$ and combines in $f(n)$' is literally the Master theorem's input. Most divide-and-conquer items are Master-theorem items in disguise.",
+  "diff": "medium",
+  "tags": [
+   "divide and conquer",
+   "master theorem"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0036",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.6",
+  "q": "How many inversions does the array $[2, 3, 8, 6, 1]$ contain?",
+  "opts": [
+   "4",
+   "5",
+   "7",
+   "6"
+  ],
+  "ans": 1,
+  "exp": "Inversions are pairs $(i,j)$ with $i<j$ and $A[i]>A[j]$. Taking each element in turn: 2 beats 1 (one pair); 3 beats 1 (one); 8 beats 6 and 1 (two); 6 beats 1 (one). The total is $1+1+2+1=\\mathbf{5}$.",
+  "trick": "The merge-based method counts the same thing in $\\Theta(n\\log n)$: whenever an element is taken from the right half during a merge, add the number of elements still remaining in the left half.",
+  "diff": "medium",
+  "tags": [
+   "inversions",
+   "divide and conquer"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0037",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.6",
+  "q": "In the Tower of Hanoi problem with 5 disks, how many times is the **smallest** disk moved in the optimal solution?",
+  "opts": [
+   "15",
+   "8",
+   "16",
+   "31"
+  ],
+  "ans": 2,
+  "exp": "The optimal solution takes $2^n-1=31$ moves, and the smallest disk moves on every alternate move starting with the first — that is, on moves 1, 3, 5, …, 31, which is $2^{n-1}=2^4=\\mathbf{16}$ moves. In general disk $k$, counting the largest as disk 1, moves $2^{n-k}$ times; the largest moves exactly once.",
+  "trick": "Total moves $2^n-1$; the smallest disk accounts for $2^{n-1}$ of them, i.e. just over half.",
+  "diff": "hard",
+  "tags": [
+   "tower of hanoi",
+   "recurrence"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0038",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.7",
+  "q": "Items with (weight, value) $(10,60)$, $(20,100)$ and $(30,120)$ are offered to a **fractional** knapsack of capacity 50. The maximum value obtainable is",
+  "opts": [
+   "260",
+   "220",
+   "240",
+   "280"
+  ],
+  "ans": 2,
+  "exp": "Value densities are $60/10=6$, $100/20=5$ and $120/30=4$. Greedy by density takes the first item whole (value 60, weight used 10), the second whole (value 100, weight used 30), and then 20 of the remaining 30 units of the third, contributing $20\\times4=80$. The total is $60+100+80=\\mathbf{240}$.",
+  "trick": "For fractional knapsack greedy by density is provably optimal, so no table is needed. The same figure is an upper bound on the corresponding 0/1 answer.",
+  "diff": "easy",
+  "tags": [
+   "fractional knapsack",
+   "greedy"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0039",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.7",
+  "q": "Six symbols occur with frequencies 4, 7, 9, 12, 15 and 45. The total number of bits in the Huffman-encoded message is",
+  "opts": [
+   "202",
+   "224",
+   "189",
+   "197"
+  ],
+  "ans": 3,
+  "exp": "Merge the two smallest repeatedly: $4+7=11$; then $9+11=20$; then $12+15=27$; then $20+27=47$; then $45+47=92$. The total encoded length equals the sum of the internal node values: $11+20+27+47+92=\\mathbf{197}$ bits. (Cross-check: total frequency is 92, and a 3-bit fixed-length code would need $92\\times3=276$ bits.)",
+  "trick": "Never read depths off a drawn tree. Every merge you perform creates one internal node; add those numbers and you have $\\sum f_i d_i$.",
+  "diff": "medium",
+  "tags": [
+   "huffman coding",
+   "greedy"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0040",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.7",
+  "q": "For the same frequencies 4, 7, 9, 12, 15, 45, the length of the Huffman codeword assigned to the symbol of frequency 4 is",
+  "opts": [
+   "4",
+   "5",
+   "3",
+   "2"
+  ],
+  "ans": 0,
+  "exp": "The merges are $4{+}7=11$, $9{+}11=20$, $12{+}15=27$, $20{+}27=47$, $45{+}47=92$. Reading depths from the root 92: symbol 45 is at depth 1 and node 47 at depth 1; nodes 20 and 27 at depth 2; symbols 9, 12, 15 and node 11 at depth 3; symbols 4 and 7 at depth $\\mathbf{4}$. Verification: $45(1)+9(3)+12(3)+15(3)+4(4)+7(4)=45+108+44=197$, matching the total.",
+  "trick": "The two least frequent symbols are always siblings at the maximum depth — so the rarest symbol's codeword length is the tree height.",
+  "diff": "medium",
+  "tags": [
+   "huffman coding",
+   "code length"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0041",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.7",
+  "q": "Five unit-time jobs have (profit, deadline) $J_1(100,2)$, $J_2(19,1)$, $J_3(27,2)$, $J_4(25,1)$, $J_5(15,3)$. The maximum profit obtainable on a single machine is",
+  "opts": [
+   "152",
+   "142",
+   "127",
+   "115"
+  ],
+  "ans": 1,
+  "exp": "Sort by profit descending: $J_1(100,2)$, $J_3(27,2)$, $J_4(25,1)$, $J_2(19,1)$, $J_5(15,3)$, and place each in the **latest free slot** at or before its deadline. $J_1$ takes slot 2; $J_3$ finds slot 2 full and takes slot 1; $J_4$ and $J_2$ both need slot 1, which is taken, so both are rejected; $J_5$ takes slot 3. Profit $=100+27+15=\\mathbf{142}$.",
+  "trick": "Placing each job as late as its deadline allows keeps the early slots free for jobs with tight deadlines — filling the earliest slot instead loses profit.",
+  "diff": "medium",
+  "tags": [
+   "job sequencing",
+   "greedy"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0042",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.7",
+  "q": "Consider the following statements.\n\n(a) Dijkstra's shortest-path algorithm is greedy.\n(b) Greedy selection by value density solves 0/1 knapsack optimally.\n(c) Kruskal's algorithm is greedy and is justified by the cut property.\n(d) Greedy change-making is optimal for every set of coin denominations.\n\nWhich are true?",
+  "opts": [
+   "(a), (b) and (c) only",
+   "All four",
+   "(a) and (c) only",
+   "(c) and (d) only"
+  ],
+  "ans": 2,
+  "exp": "(a) is true — Dijkstra irrevocably finalises the nearest unfinalised vertex at each step. (b) is false: for capacity 8 with items $(2,3),(3,4),(4,5),(5,6)$, greedy by density scores 7 while the optimum is 10. (c) is true — both MST algorithms rest on the cut property, that the cheapest edge crossing any cut lies in some MST. (d) is false: with denominations $\\{1,3,4\\}$ and target 6, greedy gives $4+1+1$ (3 coins) against the optimal $3+3$ (2 coins).",
+  "trick": "Greedy is optimal for fractional knapsack and never guaranteed for 0/1 — the two problems differ by one word and by a whole complexity class.",
+  "diff": "hard",
+  "tags": [
+   "greedy",
+   "knapsack",
+   "coin change"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0043",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.8",
+  "q": "The length of the longest common subsequence of `ABCBDAB` and `BDCABA` is",
+  "opts": [
+   "4",
+   "3",
+   "6",
+   "5"
+  ],
+  "ans": 0,
+  "exp": "Filling the $7\\times6$ table with $c[i][j]=c[i-1][j-1]+1$ on a match and $\\max(c[i-1][j],c[i][j-1])$ otherwise gives $c[7][6]=\\mathbf{4}$. One witness is `BCBA`: it appears in `A**B**C**B**D**A**B` and in `**B**D**C**A**B**A`. `BDAB` and `BCAB` are two other subsequences of the same length, which is why LCS answers are not unique even though the length is.",
+  "trick": "A subsequence need not be contiguous. If the question says *substring*, the recurrence changes — a mismatch resets the cell to 0 and the answer is the table maximum.",
+  "diff": "easy",
+  "tags": [
+   "lcs",
+   "dynamic programming"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0044",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.8",
+  "q": "Matrices $A_1$ of order $10\\times20$, $A_2$ of order $20\\times30$ and $A_3$ of order $30\\times40$ are to be multiplied. The minimum number of scalar multiplications is",
+  "opts": [
+   "6000",
+   "24000",
+   "32000",
+   "18000"
+  ],
+  "ans": 3,
+  "exp": "Only two parenthesisations exist. $(A_1A_2)A_3$ costs $10\\cdot20\\cdot30=6000$ to form the $10\\times30$ product, then $10\\cdot30\\cdot40=12000$, total $\\mathbf{18000}$. $A_1(A_2A_3)$ costs $20\\cdot30\\cdot40=24000$ to form the $20\\times40$ product, then $10\\cdot20\\cdot40=8000$, total 32000. The minimum is 18000 — nearly half the work for the identical result.",
+  "trick": "Multiplying a $p\\times q$ by a $q\\times r$ matrix costs $pqr$. Grouping so that the large shared dimension is eliminated first is usually cheaper.",
+  "diff": "medium",
+  "tags": [
+   "matrix chain multiplication",
+   "dynamic programming"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0045",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.8",
+  "q": "A 0/1 knapsack of capacity 10 is offered items with (weight, value) $(5,10)$, $(4,40)$, $(6,30)$ and $(3,50)$. The optimal value is",
+  "opts": [
+   "110",
+   "90",
+   "80",
+   "100"
+  ],
+  "ans": 1,
+  "exp": "Enumerating the feasible subsets: $\\{4,3\\}$ weighs 7 and is worth $40+50=\\mathbf{90}$; $\\{3,6\\}$ weighs 9 and is worth 80; $\\{4,6\\}$ weighs exactly 10 and is worth 70; $\\{5,3\\}$ weighs 8 and is worth 60; $\\{5,4\\}$ weighs 9 and is worth 50. No three items fit ($4+3+5=12$). The optimum is **90**, using the items of weights 4 and 3 and leaving 3 units of capacity unused.",
+  "trick": "The optimum need not fill the knapsack. Greedy by density here would take the $(3,50)$ and $(4,40)$ items too — it happens to succeed on this instance, but it is not a method you can trust.",
+  "diff": "medium",
+  "tags": [
+   "0/1 knapsack",
+   "dynamic programming"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0046",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.8",
+  "q": "The edit distance (Levenshtein distance) between `SUNDAY` and `SATURDAY` is",
+  "opts": [
+   "5",
+   "3",
+   "4",
+   "2"
+  ],
+  "ans": 1,
+  "exp": "Align them as S | – | – | U | N | D | A | Y against S | A | T | U | R | D | A | Y. Two insertions (`A` and `T` after the initial `S`) and one substitution (`N`$\\to$`R`) transform the first into the second, so the distance is at most 3; and since the lengths differ by 2, at least 2 insertions are unavoidable and the mismatch forces a third operation. The distance is $\\mathbf{3}$.",
+  "trick": "The length difference $|m-n|$ is a lower bound on edit distance, and $\\max(m,n)$ is an upper bound. Those two bracket the answer before you fill any table.",
+  "diff": "medium",
+  "tags": [
+   "edit distance",
+   "dynamic programming"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0047",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.8",
+  "q": "The length of the longest increasing subsequence of $[10, 22, 9, 33, 21, 50, 41, 60, 80]$ is",
+  "opts": [
+   "6",
+   "5",
+   "8",
+   "7"
+  ],
+  "ans": 0,
+  "exp": "One longest increasing subsequence is $10, 22, 33, 50, 60, 80$, of length $\\mathbf{6}$. No longer one exists: any increasing subsequence using 9 or 21 must drop 10 or 22 without gaining anything, and 41 and 50 cannot both appear. The $\\Theta(n^2)$ recurrence $L[i]=1+\\max\\{L[j]:j<i,\\ A[j]<A[i]\\}$ gives the same maximum.",
+  "trick": "The $\\Theta(n\\log n)$ version maintains an array of smallest possible tails. Its final **length** is the answer, but its **contents** need not be an actual increasing subsequence.",
+  "diff": "medium",
+  "tags": [
+   "longest increasing subsequence",
+   "dynamic programming"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0048",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.8",
+  "q": "The matrix-chain multiplication dynamic program on $n$ matrices runs in time",
+  "opts": [
+   "$\\Theta(n!)$",
+   "$\\Theta(n^2)$",
+   "$\\Theta(2^n)$",
+   "$\\Theta(n^3)$"
+  ],
+  "ans": 3,
+  "exp": "The state is a pair $(i,j)$ with $i\\le j$, so there are $\\Theta(n^2)$ states, and each evaluates $\\min_{i\\le k<j}$ over up to $n$ split points, i.e. $O(n)$ work per state. Time is therefore $\\Theta(n^2)\\times O(n)=\\mathbf{\\Theta(n^3)}$, with $\\Theta(n^2)$ space. Exhaustive search would instead examine $C_{n-1}$ parenthesisations, which is exponential.",
+  "trick": "Complexity of any DP = (number of states) $\\times$ (work per state). You never need to analyse the loops.",
+  "diff": "medium",
+  "tags": [
+   "matrix chain multiplication",
+   "complexity"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0049",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.8",
+  "q": "Match List I with List II.\n\n**List I**\n(A) Longest common subsequence of strings of lengths $m$ and $n$\n(B) 0/1 knapsack with $n$ items and capacity $W$\n(C) Matrix chain multiplication of $n$ matrices\n(D) Floyd–Warshall on $V$ vertices\n\n**List II**\n(I) $\\Theta(V^3)$\n(II) $\\Theta(nW)$\n(III) $\\Theta(mn)$\n(IV) $\\Theta(n^3)$",
+  "opts": [
+   "(A)-(IV), (B)-(II), (C)-(III), (D)-(I)",
+   "(A)-(III), (B)-(IV), (C)-(II), (D)-(I)",
+   "(A)-(III), (B)-(II), (C)-(IV), (D)-(I)",
+   "(A)-(II), (B)-(III), (C)-(I), (D)-(IV)"
+  ],
+  "ans": 2,
+  "exp": "LCS has $mn$ states with $O(1)$ work each, so $\\Theta(mn)$. Knapsack has $(n+1)(W+1)$ states with $O(1)$ work, so $\\Theta(nW)$ — pseudo-polynomial, since $W$ is written in binary. Matrix chain has $\\Theta(n^2)$ states with $O(n)$ work, so $\\Theta(n^3)$. Floyd–Warshall has three nested loops over $V$, so $\\Theta(V^3)$.",
+  "trick": "Two of the four are distinguished only by whether the work per state is $O(1)$ or $O(n)$ — check that first and the matching falls out.",
+  "diff": "hard",
+  "tags": [
+   "dynamic programming",
+   "complexity"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0050",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.9",
+  "q": "The 8-queens problem has 92 solutions in total. How many of these are distinct **up to rotation and reflection**?",
+  "opts": [
+   "46",
+   "92",
+   "8",
+   "12"
+  ],
+  "ans": 3,
+  "exp": "The square has eight symmetries (four rotations and their reflections), so solutions come in orbits of size at most 8. Grouping the 92 solutions under those symmetries leaves $\\mathbf{12}$ fundamental ones — 11 orbits of size 8 plus one of size 4, since $11\\times8+4=92$.",
+  "trick": "Read whether the question says 'distinct', 'fundamental' or 'up to symmetry'. 92 is the raw count; 12 is the count modulo symmetry.",
+  "diff": "easy",
+  "tags": [
+   "n-queens",
+   "backtracking"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0051",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.9",
+  "q": "Consider the following statements.\n\n(a) Backtracking needs only $O(\\text{depth})$ space because it stores just the current root-to-node path.\n(b) Branch and bound solves 0/1 knapsack in polynomial time.\n(c) For a minimisation problem the bounding function must never exceed the true optimum of the subtree.\n(d) LIFO branch and bound is also known as D-search.\n\nWhich are true?",
+  "opts": [
+   "(a), (b) and (c) only",
+   "(a), (c) and (d) only",
+   "All four",
+   "(b), (c) and (d) only"
+  ],
+  "ans": 1,
+  "exp": "(a) is true — depth-first search keeps only the current path. (b) is false: pruning improves the *average* number of nodes explored but the pruned tree can still be exponential, and 0/1 knapsack remains NP-complete. (c) is true: the bound must be **optimistic**, or nodes containing the optimum get killed and the algorithm silently returns a wrong answer. (d) is true — LIFO (stack-based) branch and bound is the D-search variant, and it earns an incumbent early.",
+  "trick": "Neither backtracking nor branch and bound improves the worst case. Any option promising polynomial time for TSP or knapsack is wrong.",
+  "diff": "medium",
+  "tags": [
+   "branch and bound",
+   "backtracking"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0052",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.9",
+  "q": "A travelling-salesman instance on four cities has the cost matrix below ($\\infty$ on the diagonal).\n\n| | 1 | 2 | 3 | 4 |\n|---|---|---|---|---|\n| **1** | $\\infty$ | 20 | 30 | 10 |\n| **2** | 15 | $\\infty$ | 16 | 4 |\n| **3** | 3 | 5 | $\\infty$ | 2 |\n| **4** | 19 | 6 | 18 | $\\infty$ |\n\nThe lower bound at the root of the branch-and-bound tree, obtained by reducing the matrix, is",
+  "opts": [
+   "35",
+   "25",
+   "22",
+   "38"
+  ],
+  "ans": 0,
+  "exp": "Row minima are 10, 4, 2 and 6, summing to 22. After subtracting them the matrix reads row 1: $(\\infty,10,20,0)$; row 2: $(11,\\infty,12,0)$; row 3: $(1,3,\\infty,0)$; row 4: $(13,0,12,\\infty)$. Column minima are now 1, 0, 12 and 0, summing to 13. The root bound is $22+13=\\mathbf{35}$: every tour uses one entry from each row and each column, so no tour can cost less than the total subtracted.",
+  "trick": "Reduce all rows first, then all columns of the row-reduced matrix, and add the two totals. Mixing the order mid-calculation gives a different (wrong) figure.",
+  "diff": "hard",
+  "tags": [
+   "tsp",
+   "branch and bound",
+   "reduced cost matrix"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0053",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.10",
+  "q": "A connected undirected graph has 10 vertices and 15 edges. How many edges must be removed to leave a spanning tree?",
+  "opts": [
+   "10",
+   "9",
+   "6",
+   "5"
+  ],
+  "ans": 2,
+  "exp": "A spanning tree on $V$ vertices has exactly $V-1=9$ edges. Removing $15-9=\\mathbf{6}$ edges leaves a spanning tree. The number removed is the graph's cyclomatic number $E-V+1$, i.e. the number of independent cycles.",
+  "trick": "A forest with $c$ components has $V-c$ edges; a graph with $V$ vertices and $V$ edges has exactly one cycle. Many graph questions are pure arithmetic.",
+  "diff": "easy",
+  "tags": [
+   "spanning tree",
+   "graph counting"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0054",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.10",
+  "q": "A directed graph has edges $S\\to A=1$, $S\\to B=4$, $A\\to B=2$, $A\\to C=6$, $B\\to C=3$, $B\\to D=7$, $C\\to D=1$. The shortest distance from $S$ to $D$ found by Dijkstra's algorithm is",
+  "opts": [
+   "7",
+   "8",
+   "10",
+   "6"
+  ],
+  "ans": 0,
+  "exp": "Finalise $S$ at 0, then $A$ at 1. Relaxing from $A$ improves $B$ from 4 to $1+2=3$ and sets $C$ to $1+6=7$. Finalise $B$ at 3; relaxing gives $C=\\min(7,3+3)=6$ and $D=3+7=10$. Finalise $C$ at 6; relaxing gives $D=\\min(10,6+1)=\\mathbf{7}$ along $S\\to A\\to B\\to C\\to D$. Finalise $D$ at 7.",
+  "trick": "The direct edge is rarely the shortest path. Here both $B$ and $D$ improve after their first tentative value, which is exactly what relaxation is for.",
+  "diff": "medium",
+  "tags": [
+   "dijkstra",
+   "shortest path"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0055",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.10",
+  "q": "In a graph with $V$ vertices, how many relaxation passes over all edges does Bellman–Ford perform before the distances are final (excluding the extra pass used to detect negative cycles)?",
+  "opts": [
+   "$E$",
+   "$V$",
+   "$V-1$",
+   "$VE$"
+  ],
+  "ans": 2,
+  "exp": "After $k$ passes every vertex reachable by a shortest path of at most $k$ edges has its final distance. A simple shortest path visits each vertex at most once, so it uses at most $V-1$ edges; hence $\\mathbf{V-1}$ passes suffice. A $V$-th pass that still relaxes some edge proves a negative-weight cycle reachable from the source. Total time is $\\Theta(VE)$.",
+  "trick": "'What are the distances after $k$ passes?' is answered by finding all shortest paths of at most $k$ edges — no edge-by-edge simulation needed.",
+  "diff": "medium",
+  "tags": [
+   "bellman-ford",
+   "shortest path"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0056",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.10",
+  "q": "An undirected graph on $\\{A,B,C,D,E\\}$ has edges A–B 1, B–C 2, A–C 3, B–D 4, C–E 5, D–E 6 and C–D 7. The weight of its minimum spanning tree is",
+  "opts": [
+   "10",
+   "12",
+   "13",
+   "15"
+  ],
+  "ans": 1,
+  "exp": "Kruskal takes the edges in increasing weight: A–B (1) accepted; B–C (2) accepted; A–C (3) rejected because A and C are already connected; B–D (4) accepted; C–E (5) accepted. That is $V-1=4$ edges spanning all five vertices, with weight $1+2+4+5=\\mathbf{12}$. Since all weights are distinct, this MST is unique.",
+  "trick": "Stop as soon as you have accepted $V-1$ edges — you never need to examine the remaining ones.",
+  "diff": "medium",
+  "tags": [
+   "mst",
+   "kruskal"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0057",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.10",
+  "q": "In a flow network, $s\\to a=8$, $s\\to b=6$, $a\\to b=3$, $a\\to t=5$ and $b\\to t=7$. The value of the maximum $s$–$t$ flow is",
+  "opts": [
+   "11",
+   "13",
+   "14",
+   "12"
+  ],
+  "ans": 3,
+  "exp": "Send 5 along $s\\to a\\to t$ and 6 along $s\\to b\\to t$, giving 11. The residual graph still has $s\\to a$ with 3 left, $a\\to b$ with 3, and $b\\to t$ with 1, so augment by 1 along $s\\to a\\to b\\to t$, reaching $\\mathbf{12}$. No further path exists. The cut $S=\\{s,a,b\\}$, $T=\\{t\\}$ has capacity $5+7=12$, matching the flow — so by max-flow min-cut, 12 is optimal.",
+  "trick": "Check the obvious cuts first: the edges out of $s$ (14 here) and the edges into $t$ (12 here). The answer can never exceed the smaller, and often equals it.",
+  "diff": "hard",
+  "tags": [
+   "maximum flow",
+   "min cut"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0058",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.10",
+  "q": "Which edge types can a depth-first search of an **undirected** graph produce?",
+  "opts": [
+   "Tree and back edges only",
+   "Tree and forward edges only",
+   "Tree, back, forward and cross edges",
+   "Tree, back and cross edges"
+  ],
+  "ans": 0,
+  "exp": "In an undirected graph every edge is explored from both endpoints. When $(u,v)$ is examined, $v$ is either undiscovered — a **tree** edge — or already grey, i.e. an ancestor of $u$ — a **back** edge. A forward edge would require reaching a descendant by a non-tree edge, but that edge would already have been used as a back edge from the other side; and a cross edge would require two branches that cannot see each other, impossible without direction.",
+  "trick": "Because only tree and back edges exist, an undirected graph has a cycle exactly when DFS finds a back edge to a vertex other than the immediate parent.",
+  "diff": "medium",
+  "tags": [
+   "dfs",
+   "edge classification"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0059",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.10",
+  "q": "A directed acyclic graph has vertices $\\{1,2,3,4\\}$ and edges $1\\to2$, $1\\to3$, $2\\to4$, $3\\to4$. How many distinct topological orderings does it have?",
+  "opts": [
+   "1",
+   "3",
+   "2",
+   "4"
+  ],
+  "ans": 2,
+  "exp": "Vertex 1 is the only source, so it must come first; vertex 4 has both 2 and 3 as predecessors, so it must come last. Vertices 2 and 3 are mutually incomparable and may appear in either order, giving exactly $\\mathbf{2}$ orderings: $1,2,3,4$ and $1,3,2,4$.",
+  "trick": "A topological order is unique exactly when at every step precisely one vertex has in-degree 0 — equivalently when the DAG contains a Hamiltonian path.",
+  "diff": "medium",
+  "tags": [
+   "topological sort",
+   "dag"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0060",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.10",
+  "q": "Match List I with List II.\n\n**List I**\n(A) Kruskal's algorithm\n(B) Dijkstra's algorithm with a binary heap\n(C) Floyd–Warshall\n(D) Bellman–Ford\n\n**List II**\n(I) $\\Theta(VE)$\n(II) $\\Theta(V^3)$\n(III) $O(E\\log E)$\n(IV) $O((V+E)\\log V)$",
+  "opts": [
+   "(A)-(IV), (B)-(III), (C)-(II), (D)-(I)",
+   "(A)-(I), (B)-(IV), (C)-(II), (D)-(III)",
+   "(A)-(III), (B)-(IV), (C)-(I), (D)-(II)",
+   "(A)-(III), (B)-(IV), (C)-(II), (D)-(I)"
+  ],
+  "ans": 3,
+  "exp": "Kruskal is dominated by sorting the edge list, $O(E\\log E)$, with union-find operations effectively constant. Dijkstra with a binary heap performs $V$ extract-mins and $E$ decrease-keys, each $O(\\log V)$, giving $O((V+E)\\log V)$. Floyd–Warshall is three nested loops over $V$, so $\\Theta(V^3)$. Bellman–Ford relaxes all $E$ edges $V-1$ times, so $\\Theta(VE)$.",
+  "trick": "$\\Theta(VE)$ and $\\Theta(V^3)$ are the two all-edges-repeatedly algorithms; the $\\log$ terms always belong to the heap-based greedy ones.",
+  "diff": "medium",
+  "tags": [
+   "graph algorithms",
+   "complexity"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0061",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.10",
+  "q": "Consider the following statements about a connected weighted undirected graph.\n\n(a) If all edge weights are distinct, the minimum spanning tree is unique.\n(b) The edge of minimum weight in the whole graph belongs to some minimum spanning tree.\n(c) Multiplying every edge weight by 2 can change which tree is minimum.\n(d) Prim's algorithm applied to a disconnected graph returns a minimum spanning forest.\n\nWhich are true?",
+  "opts": [
+   "All four",
+   "(a) and (b) only",
+   "(a), (b) and (c) only",
+   "(b), (c) and (d) only"
+  ],
+  "ans": 1,
+  "exp": "(a) is true — with distinct weights the cut property forces a unique choice at every cut. (b) is true: take any cut separating that edge's endpoints; being the global minimum it is the cheapest edge across, so it lies in some MST. (c) is false — scaling all weights by a positive constant scales every spanning tree's weight equally, so the ranking is unchanged (the same holds for adding a constant, since every spanning tree has exactly $V-1$ edges). (d) is false: **Kruskal** produces a spanning forest on a disconnected graph; Prim grows a single tree and only covers the start vertex's component.",
+  "trick": "Adding or scaling weights is safe for MST but not for shortest paths, where paths have different edge counts.",
+  "diff": "hard",
+  "tags": [
+   "mst",
+   "cut property"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0062",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.11",
+  "q": "In the name of the complexity class NP, the letter N stands for",
+  "opts": [
+   "Not decidable",
+   "Non-deterministic",
+   "Non-polynomial",
+   "Nearly polynomial"
+  ],
+  "ans": 1,
+  "exp": "NP means decidable by a **non-deterministic** Turing machine in polynomial time, equivalently having polynomial-time verifiable certificates for yes instances. It does **not** mean non-polynomial: every problem in P is also in NP, since a deterministic machine is a non-deterministic one that never branches.",
+  "trick": "'NP problems cannot be solved in polynomial time' is false as stated — it would require $P\\ne NP$, which is unproved.",
+  "diff": "easy",
+  "tags": [
+   "np",
+   "complexity classes"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0063",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.11",
+  "q": "If some NP-complete problem is shown to be solvable in polynomial time, then",
+  "opts": [
+   "$P=NP$",
+   "$NP=\text{co-}NP$ but $P$ and $NP$ are unaffected",
+   "$P\ne NP$",
+   "Nothing follows about $P$ and $NP$"
+  ],
+  "ans": 0,
+  "exp": "By definition every problem in NP reduces to an NP-complete problem $B$ in polynomial time. Given a polynomial algorithm for $B$, any $A\\in NP$ is decided by computing the reduction (polynomial) and then running that algorithm (polynomial), so $A\\in P$. Hence $NP\\subseteq P$, and with $P\\subseteq NP$ already known, $\\mathbf{P=NP}$. ($NP=\\text{co-}NP$ would also follow, but it is a consequence, not the full conclusion.)",
+  "trick": "Easiness flows **backwards** along $A\\le_p B$: if $B$ is easy then so is everything reducing to it.",
+  "diff": "medium",
+  "tags": [
+   "np-completeness",
+   "reduction"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0064",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.11",
+  "q": "Which of the following problems is known to be solvable in polynomial time?",
+  "opts": [
+   "Deciding whether a graph is 3-colourable",
+   "Deciding the satisfiability of a 3-CNF formula",
+   "Deciding whether a connected graph has an Euler circuit",
+   "Deciding whether a graph has a Hamiltonian cycle"
+  ],
+  "ans": 2,
+  "exp": "A connected graph has an Euler circuit iff every vertex has even degree — a single $O(V+E)$ degree scan. The other three are NP-complete: 3-colourability, Hamiltonian cycle and 3-SAT are all standard members of the list. Note the pattern that examiners reuse: Euler is easy while Hamiltonian is hard, and 2-colouring is easy while 3-colouring is hard.",
+  "trick": "Learn the boundary in pairs: 2-SAT/3-SAT, 2-colouring/3-colouring, Euler/Hamiltonian, shortest path/longest path, LP/ILP, fractional knapsack/0-1 knapsack.",
+  "diff": "medium",
+  "tags": [
+   "np-completeness",
+   "euler circuit"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0065",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.11",
+  "q": "Consider the following statements.\n\n(a) Every problem in P is in NP.\n(b) Every NP-hard problem is in NP.\n(c) If $A\\le_p B$ and $B\\in P$, then $A\\in P$.\n(d) The halting problem is NP-hard.\n\nWhich are true?",
+  "opts": [
+   "(a), (b) and (d) only",
+   "(a), (b) and (c) only",
+   "All four",
+   "(a), (c) and (d) only"
+  ],
+  "ans": 3,
+  "exp": "(a) is true by definition. (b) is false — NP-hardness only says everything in NP reduces to the problem; it need not be in NP, need not be a decision problem, and need not be decidable. (c) is true: compose the polynomial-time reduction with the polynomial-time decider for $B$. (d) is true, and it is the standard illustration of (b) being false: the halting problem is NP-hard yet undecidable, hence **not** NP-complete.",
+  "trick": "NP-complete = NP-hard **and** in NP. Two conditions, both required — test them separately.",
+  "diff": "hard",
+  "tags": [
+   "np-hard",
+   "halting problem"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0066",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.12",
+  "q": "For the pattern `AABAACAABAA`, the value of the KMP failure function at the last (11th) position is",
+  "opts": [
+   "4",
+   "3",
+   "6",
+   "5"
+  ],
+  "ans": 3,
+  "exp": "$\\pi[i]$ is the length of the longest proper prefix of $P[1..i]$ that is also a suffix of it. Building up: $\\pi=[0,1,0,1,2,0,1,2,3,4,?]$. At $i=11$ the string is `AABAACAABAA`, whose prefix `AABAA` (5 characters) is also its suffix, while the 6-character prefix `AABAAC` is not a suffix (the string ends in `BAA`). So $\\pi[11]=\\mathbf{5}$.",
+  "trick": "$\\pi$ can rise by at most 1 per position, so the value cannot exceed $\\pi[i-1]+1$. With $\\pi[10]=4$ the answer had to be 5 or less.",
+  "diff": "medium",
+  "tags": [
+   "kmp",
+   "string matching"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0067",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.12",
+  "q": "A dynamic array starts with capacity 1 and doubles whenever it becomes full. How many element copies occur while inserting 1000 elements one at a time?",
+  "opts": [
+   "1000",
+   "2000",
+   "1023",
+   "511"
+  ],
+  "ans": 2,
+  "exp": "A resize happens on inserting element $2^k+1$, copying the $2^k$ elements already present. For 1000 insertions the resizes occur at capacities 1, 2, 4, …, 512, so the total copy count is $1+2+4+\\cdots+512=2^{10}-1=\\mathbf{1023}$ — fewer than $2n$, which is why the amortised cost per insertion is $O(1)$.",
+  "trick": "Geometric growth gives $O(1)$ amortised insertion; growing by a fixed increment $k$ gives $\\Theta(n^2/k)$ total copying, i.e. $\\Theta(n)$ amortised.",
+  "diff": "medium",
+  "tags": [
+   "amortised analysis",
+   "dynamic array"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u7-0068",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 7,
+  "topic": "7.12",
+  "q": "Which of the following is a **Monte Carlo** randomised algorithm?",
+  "opts": [
+   "Skip-list insertion",
+   "The Miller–Rabin primality test",
+   "Randomised quicksort",
+   "Randomised quickselect"
+  ],
+  "ans": 1,
+  "exp": "A Monte Carlo algorithm runs in bounded time but may return a wrong answer with small probability; Miller–Rabin can declare a composite 'probably prime', with error at most $4^{-k}$ after $k$ rounds. The other three are **Las Vegas**: always correct, with a running time that depends on the coin flips.",
+  "trick": "Las Vegas gambles with time, Monte Carlo gambles with correctness. Name the quantity that is random and the classification follows.",
+  "diff": "easy",
+  "tags": [
+   "randomised algorithms",
+   "monte carlo"
+  ],
+  "srcUrl": ""
+ }
+]

@@ -1,0 +1,1941 @@
+[
+ {
+  "id": "prac-u5-0001",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.1",
+  "q": "Consider the assembly fragment below, assembled for a machine with one word per instruction.\n\n```\n        START 200\n        MOVER AREG, X\n        ADD   AREG, ='7'\nA       EQU   500\n        MOVEM AREG, Y\nLOOP    SUB   AREG, Z\n        BC    LT, LOOP\n        LTORG\nX       DS    2\nY       DC    '5'\nZ       DS    1\n        END\n```\n\nThe address entered in SYMTAB for the symbol `Z` is",
+  "opts": [
+   "210",
+   "206",
+   "208",
+   "209"
+  ],
+  "ans": 3,
+  "exp": "Run the location counter. `START 200` sets LC = 200. `MOVER` occupies 200 (LC $\\to$ 201), `ADD` occupies 201 (LC $\\to$ 202). `EQU` defines A = 500 but reserves nothing, so LC stays at 202. `MOVEM` occupies 202 (LC $\\to$ 203), `SUB` occupies 203 so LOOP = 203 (LC $\\to$ 204), `BC` occupies 204 (LC $\\to$ 205). `LTORG` assigns the pending literal `='7'` to 205 (LC $\\to$ 206). Then X = 206 and `DS 2` advances LC to 208, Y = 208 and `DC '5'` advances LC to 209, so **Z = 209**.",
+  "trick": "Only START, DS, DC, ORIGIN, LTORG and real instructions move the LC. EQU never does — that is the single line that separates 209 from 210 here.",
+  "diff": "medium",
+  "tags": [
+   "assembler",
+   "location counter",
+   "symbol table",
+   "ltorg"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0002",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.1",
+  "q": "Match List-I with List-II.\n\n| List-I (table) | List-II (contents) |\n|---|---|\n| (a) SYMTAB | (i) mnemonic $\\to$ opcode and instruction length |\n| (b) LITTAB | (ii) label $\\to$ address |\n| (c) OPTAB | (iii) index of the first literal of each literal pool |\n| (d) POOLTAB | (iv) literal $\\to$ address |",
+  "opts": [
+   "(a)-(ii), (b)-(iv), (c)-(i), (d)-(iii)",
+   "(a)-(i), (b)-(iii), (c)-(ii), (d)-(iv)",
+   "(a)-(iv), (b)-(ii), (c)-(iii), (d)-(i)",
+   "(a)-(ii), (b)-(iii), (c)-(i), (d)-(iv)"
+  ],
+  "ans": 0,
+  "exp": "SYMTAB records each label with the address the location counter held when the label was seen, so (a)-(ii). LITTAB records each literal and the address it finally receives at the LTORG or END, so (b)-(iv). OPTAB is the fixed table shipped with the assembler mapping a mnemonic to its opcode and length, so (c)-(i). POOLTAB stores, for each literal pool, the LITTAB index where that pool begins, so (d)-(iii).",
+  "trick": "OPTAB is the only table that is not built from the source program — it is part of the assembler itself. Spotting that eliminates most permutations immediately.",
+  "diff": "easy",
+  "tags": [
+   "assembler tables",
+   "symtab",
+   "littab",
+   "optab"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0003",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.1",
+  "q": "A source program contains 5 invocations of a macro whose body expands into 7 instructions. The same work could instead be written as a subroutine of 7 instructions, with each call site needing 2 extra instructions for the call and return linkage. How many more instructions does the macro version put into the object program?",
+  "opts": [
+   "25",
+   "28",
+   "10",
+   "18"
+  ],
+  "ans": 3,
+  "exp": "Macro version: the body is copied at every invocation, giving $5 \\times 7 = 35$ instructions. Subroutine version: the body appears exactly once (7 instructions) plus 2 linkage instructions at each of the 5 call sites, so $7 + 5 \\times 2 = 17$ instructions. The difference is $35 - 17 = 18$.",
+  "trick": "Macro cost $= n \\times b$; subroutine cost $= b + n \\times \\ell$. Macros trade memory for speed, subroutines trade speed for memory — the arithmetic only ever confirms that.",
+  "diff": "medium",
+  "tags": [
+   "macro",
+   "subroutine",
+   "object program size"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0004",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.1",
+  "q": "Consider the following statements about static and dynamic linking.\n\n(A) A statically linked executable is larger than the dynamically linked executable of the same program.\n(B) With dynamic linking, a bug fix in a library takes effect without relinking the application.\n(C) Dynamic linking removes the need for the library to be present when the program runs.\n(D) Several processes using the same shared library can share one copy of its code in memory.\n\nWhich of the statements are correct?",
+  "opts": [
+   "(B) and (C) only",
+   "(A), (B) and (D) only",
+   "(A), (C) and (D) only",
+   "(A), (B), (C) and (D)"
+  ],
+  "ans": 1,
+  "exp": "(A) is correct: static linking copies the library code into the image, so the file grows. (B) is correct: since binding happens at run time, replacing the shared object is enough. (D) is correct, and is the main memory argument for shared libraries — one physical copy is mapped into many address spaces. (C) is exactly backwards: dynamic linking *creates* a run-time dependency, and the program fails to start if the shared object is missing or has an incompatible version. That is the property static linking provides, not dynamic linking.",
+  "trick": "Any option crediting dynamic linking with a larger executable or with removing the run-time dependency is wrong. Those two are the standard planted errors.",
+  "diff": "medium",
+  "tags": [
+   "static linking",
+   "dynamic linking",
+   "shared library"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0005",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.2",
+  "q": "Which of the following is NOT a privileged instruction?",
+  "opts": [
+   "Issue a raw I/O instruction to a device controller",
+   "Change the contents of the interrupt vector table",
+   "Read the value of the system clock",
+   "Modify the contents of the memory-management (relocation and limit) registers"
+  ],
+  "ans": 2,
+  "exp": "An instruction is privileged when a user program could use it to break isolation or monopolise the machine. Touching the relocation and limit registers would let a process address memory it does not own; raw I/O would let it bypass the file system's protection; rewriting the interrupt vector would let it capture control on every interrupt. Merely *reading* the clock reveals nothing dangerous and changes nothing, so it is an ordinary unprivileged operation. (Note that *setting* the timer is privileged — it is the mechanism that guarantees the kernel gets the CPU back.)",
+  "trick": "Ask what a malicious process could achieve with the instruction. If the answer is nothing, the instruction is not privileged.",
+  "diff": "easy",
+  "tags": [
+   "dual mode",
+   "privileged instructions"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0006",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.2",
+  "q": "In a multiprogramming system each process spends 60% of its time waiting for I/O. Assuming the waits are statistically independent, the CPU utilisation with 4 processes resident in memory is approximately",
+  "opts": [
+   "76.80%",
+   "93.60%",
+   "87.04%",
+   "40.00%"
+  ],
+  "ans": 2,
+  "exp": "The CPU is idle only when every resident process happens to be waiting, an event of probability $p^{n}$ with $p = 0.6$ and $n = 4$. So $p^{4} = 0.6^{4} = 0.1296$ and the utilisation is $1 - 0.1296 = 0.8704$, i.e. about **87.04%**. The distractor 76.80% is $1 - 0.6 \\times 0.4 \\ldots$ style arithmetic and 93.60% would need $n$ around 6.",
+  "trick": "Utilisation is always $1 - p^{n}$ with $p$ the *waiting* fraction. If the question gives the CPU-burst fraction instead, subtract from 1 first.",
+  "diff": "easy",
+  "tags": [
+   "multiprogramming",
+   "cpu utilisation"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0007",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.2",
+  "q": "Which of the following statements about microkernel operating systems is correct?",
+  "opts": [
+   "Microkernels cannot support message passing between user processes",
+   "In a microkernel, a crash in the file-system server need not bring down the whole system",
+   "A microkernel executes faster than a monolithic kernel because the kernel is smaller",
+   "A microkernel places device drivers and file systems in the kernel address space for speed"
+  ],
+  "ans": 1,
+  "exp": "The defining property of a microkernel is that services such as file systems, drivers and networking run as ordinary user processes; only address spaces, threads and IPC stay in the kernel. Therefore a failing server can be restarted without taking the machine down, which is (B). It is *slower*, not faster, than a monolithic kernel, because every former function call becomes at least two context switches and two message copies, so (A) is wrong and (C) describes a monolithic or modular kernel. (D) inverts the design: message passing is the one thing a microkernel must provide.",
+  "trick": "Reliability, extensibility and isolation point to microkernel. Raw speed points to monolithic. No microkernel question ever answers 'faster'.",
+  "diff": "easy",
+  "tags": [
+   "microkernel",
+   "kernel structure"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0008",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.3",
+  "q": "Consider the following C program.\n\n```c\nint main(void) {\n    fork() || fork();\n    fork();\n    return 0;\n}\n```\n\nAssuming every `fork()` succeeds, how many **new** processes are created?",
+  "opts": [
+   "5",
+   "11",
+   "7",
+   "3"
+  ],
+  "ans": 0,
+  "exp": "Start with one process. It executes `fork() || fork()`. The first `fork` makes 2 processes. In the parent the call returns a non-zero pid, so `||` short-circuits and the second `fork` is skipped. In the child the call returns 0, which is false, so the child must evaluate the second `fork` and creates one more process. After the first statement there are therefore 3 processes. The final unconditional `fork` doubles this to 6 processes in total, of which the original one existed already, so $6 - 1 = \\mathbf{5}$ new processes were created.",
+  "trick": "With `||` only the child continues; with `&&` only the parent continues. Draw the tree one statement at a time instead of using $2^n$, which is valid only for unconditional forks.",
+  "diff": "medium",
+  "tags": [
+   "fork",
+   "process creation",
+   "short circuit"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0009",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.3",
+  "q": "Which of the following process state transitions can never occur in the five-state model?\n\n(A) Running $\\to$ Ready\n(B) Ready $\\to$ Waiting\n(C) Waiting $\\to$ Running\n(D) Waiting $\\to$ Ready",
+  "opts": [
+   "(C) and (D) only",
+   "(B) and (D) only",
+   "(A) and (C) only",
+   "(B) and (C) only"
+  ],
+  "ans": 3,
+  "exp": "(A) happens on preemption when the quantum expires or a better candidate arrives, and (D) happens when the awaited event completes, so both are legal. (B) is impossible: a ready process is not executing, so it cannot issue the blocking request that would make it wait. (C) is impossible because a process whose event has completed must first re-enter the ready queue and be dispatched — there is no direct path from blocked to the CPU.",
+  "trick": "The two impossible arrows always involve the Waiting state: nothing enters Waiting except from Running, and nothing leaves Waiting except to Ready.",
+  "diff": "easy",
+  "tags": [
+   "process states",
+   "state transitions"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0010",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.3",
+  "q": "A child process has terminated but its parent has not yet executed `wait()`. The child is in which state, and what does it still consume?",
+  "opts": [
+   "Zombie; it consumes an entry in the process table but no memory image",
+   "Orphan; it is immediately adopted by `init`",
+   "Zombie; it consumes both an entry in the process table and its full address space",
+   "Orphan; it consumes memory and CPU time"
+  ],
+  "ans": 0,
+  "exp": "A terminated child whose exit status has not been collected is a **zombie**. Its address space, open files and other resources have already been released; what survives is the process-table entry holding the exit status, kept so the parent can still read it with `wait()`. An **orphan** is the opposite situation — the child is still running and it is the *parent* that has died, after which the orphan is re-parented to `init`, which reaps it.",
+  "trick": "Zombie: child dead, parent alive but not reaping. Orphan: child alive, parent dead. A zombie holds a table slot only; an orphan holds everything but has a new parent.",
+  "diff": "easy",
+  "tags": [
+   "zombie",
+   "orphan",
+   "process termination"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0011",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.3",
+  "q": "Which statement correctly compares the two interprocess-communication models?",
+  "opts": [
+   "Message passing is faster for bulk transfer because the kernel copies the data efficiently",
+   "Shared memory requires a kernel call for every individual data transfer",
+   "Shared memory removes the need for synchronisation between the communicating processes",
+   "Shared memory is faster within one machine, while message passing works unchanged across machines"
+  ],
+  "ans": 3,
+  "exp": "After the kernel has mapped a shared region into both address spaces, the processes read and write it at plain memory speed with no further kernel involvement, so (B) is false and (C)'s first half is right. Message passing costs at least two copies and two kernel crossings per message, so it is slower for bulk data — (A) is false — but because it carries no assumption of a common address space, exactly the same `send`/`receive` code works over a network, which is (C)'s second half. (D) is the classic trap: shared memory removes the kernel from the data path and therefore makes synchronisation *entirely* the programmer's problem.",
+  "trick": "Shared memory wins on speed inside one machine; message passing wins on simplicity of synchronisation and on portability across machines.",
+  "diff": "medium",
+  "tags": [
+   "ipc",
+   "shared memory",
+   "message passing"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0012",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.4",
+  "q": "A counting semaphore `S` is initialised to 4. Fifteen processes execute `wait(S)` and eight processes later execute `signal(S)`. Using the convention in which `wait` decrements before testing, the final value of `S` and the number of processes blocked on it are",
+  "opts": [
+   "$S = 0$, 3 blocked",
+   "$S = -3$, 11 blocked",
+   "$S = -3$, 3 blocked",
+   "$S = 3$, 0 blocked"
+  ],
+  "ans": 2,
+  "exp": "The value of a semaphore obeys $S = S_{\\text{init}} - (\\#\\text{wait}) + (\\#\\text{signal}) = 4 - 15 + 8 = -3$. Under the classical definition the value is allowed to go negative, and when it does, its magnitude is exactly the number of processes sleeping on the semaphore's queue, so 3 processes are blocked. Checking it the long way: the first 4 waits succeed, the remaining 11 block, and each of the 8 signals releases one blocked process, leaving $11 - 8 = 3$ still blocked.",
+  "trick": "$S = S_{\\text{init}} - W + V$; if the result is negative its magnitude is the blocked count. One line replaces the whole trace.",
+  "diff": "medium",
+  "tags": [
+   "semaphore",
+   "counting semaphore",
+   "blocked processes"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0013",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.4",
+  "q": "In the semaphore solution to the bounded-buffer problem with `mutex = 1`, `empty = n` and `full = 0`, a programmer writes the producer as\n\n```\nwait(mutex);\nwait(empty);\n... insert item ...\nsignal(mutex);\nsignal(full);\n```\n\nThe consequence of this ordering is",
+  "opts": [
+   "nothing; the two wait operations commute",
+   "deadlock once the buffer becomes full",
+   "loss of mutual exclusion on the buffer",
+   "the buffer may be overwritten before it is read"
+  ],
+  "ans": 1,
+  "exp": "When the buffer is full, `empty` is 0, so the producer blocks inside `wait(empty)` — but it is already holding `mutex`. The consumer that would create a free slot must first acquire `mutex` to enter the buffer, and that mutex will never be released, so both sides sleep forever. Mutual exclusion is never violated (the mutex still admits only one process), and nothing is overwritten; the failure is a clean deadlock.",
+  "trick": "Counting semaphores outermost, mutex innermost. If a solution acquires the mutex before the counter, the answer to 'what happens' is deadlock.",
+  "diff": "medium",
+  "tags": [
+   "producer consumer",
+   "semaphore",
+   "deadlock"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0014",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.4",
+  "q": "Peterson's solution for two processes guarantees bounded waiting. The exact bound — the maximum number of times the other process may enter its critical section after a process has requested entry and before that request is granted — is",
+  "opts": [
+   "0",
+   "$n-1$",
+   "unbounded",
+   "1"
+  ],
+  "ans": 3,
+  "exp": "Once $P_0$ has set `flag[0] = true` and written `turn = 1`, $P_1$ may enter at most once. When $P_1$ leaves and immediately wants to re-enter, it must set `turn = 0`, which releases $P_0$'s loop. So $P_1$ cannot overtake $P_0$ twice and the bound is exactly **1**. The bound $n-1$ belongs to Lamport's bakery algorithm, which generalises to $n$ processes.",
+  "trick": "Peterson's bound is 1 because the loser of the `turn` race is forced to hand the turn back before re-entering. Answer $n-1$ only for the bakery algorithm.",
+  "diff": "medium",
+  "tags": [
+   "peterson's solution",
+   "bounded waiting",
+   "critical section"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0015",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.4",
+  "q": "Consider the following statements about the critical-section problem.\n\n(A) An algorithm in which the two processes strictly alternate satisfies mutual exclusion.\n(B) That same strict-alternation algorithm satisfies progress.\n(C) Progress guarantees freedom from deadlock.\n(D) Bounded waiting guarantees freedom from starvation.\n\nWhich statements are correct?",
+  "opts": [
+   "(A), (B), (C) and (D)",
+   "(A), (C) and (D) only",
+   "(A), (B) and (C) only",
+   "(B) and (D) only"
+  ],
+  "ans": 1,
+  "exp": "Strict alternation using only a `turn` variable does enforce mutual exclusion — only the process whose turn it is can enter — so (A) is correct. But it fails **progress**: if $P_0$ finishes and never wants the critical section again, `turn` is stuck at 0 and $P_1$ can never enter a second time even though nobody is inside. So (B) is wrong. (C) and (D) are the definitions in operational form: progress says the decision about who enters cannot be postponed indefinitely, which rules out deadlock, and bounded waiting caps how often you can be overtaken, which rules out starvation.",
+  "trick": "Mutual exclusion alone is trivial to achieve — an algorithm admitting nobody satisfies it. Progress is always the property a broken solution loses.",
+  "diff": "medium",
+  "tags": [
+   "critical section",
+   "progress",
+   "bounded waiting"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0016",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.4",
+  "q": "Which is the essential difference between `signal` on a counting semaphore and `signal` on a monitor's condition variable?",
+  "opts": [
+   "A semaphore `signal` can only be executed inside a critical section",
+   "A condition-variable `signal` wakes all waiting processes; a semaphore `signal` wakes one",
+   "A semaphore `signal` is remembered by incrementing the count; a condition-variable `signal` with no waiter is lost",
+   "A semaphore `signal` may block the caller; a condition-variable `signal` never does"
+  ],
+  "ans": 2,
+  "exp": "A semaphore carries state: `signal` increments the integer, so a signal issued when nobody is waiting is banked and the *next* `wait` succeeds immediately. A condition variable carries no count at all — it is purely a queue. Issuing `signal` on an empty queue therefore does nothing and the event is lost forever. That is why every condition-variable idiom re-tests the predicate in a loop. (C) confuses `signal` with `broadcast`/`notifyAll`, and (A) and (D) are simply false.",
+  "trick": "Semaphore = counter with a queue. Condition variable = queue with no counter. Every difference between them follows from that one missing integer.",
+  "diff": "medium",
+  "tags": [
+   "monitor",
+   "condition variable",
+   "semaphore",
+   "lost signal"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0017",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.4",
+  "q": "In the dining-philosophers problem, which of the following modifications does NOT prevent deadlock?",
+  "opts": [
+   "Requiring every philosopher to pick up the left chopstick first and then the right",
+   "Making the odd-numbered philosophers pick up the right chopstick first and the even-numbered ones the left",
+   "Allowing at most four of the five philosophers to sit at the table simultaneously",
+   "Requiring a philosopher to pick up both chopsticks in a single operation protected by a mutex"
+  ],
+  "ans": 0,
+  "exp": "Deadlock arises from perfect circular symmetry: if all five simultaneously hold their left chopstick, each waits forever for a right one. Requiring every philosopher to take the left chopstick first is exactly that symmetric rule, so it leaves the deadlock intact. Limiting the table to four diners guarantees at least one philosopher can obtain both sticks. Reversing the order for one parity class breaks the cycle by imposing an effective ordering on the resources. Acquiring both sticks atomically removes hold-and-wait outright.",
+  "trick": "Any fix that destroys the symmetry or the hold-and-wait pattern works. If an option leaves all philosophers doing exactly the same thing in the same order, it fixes nothing.",
+  "diff": "easy",
+  "tags": [
+   "dining philosophers",
+   "deadlock prevention"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0018",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.4",
+  "q": "Under Mesa (signal-and-continue) monitor semantics, a waiting thread must re-test its predicate after waking. The correct code shape is",
+  "opts": [
+   "`while (!condition) wait(c);` because another thread may have consumed the condition before the woken thread runs",
+   "`wait(c); if (!condition) signal(c);` to hand the monitor back",
+   "`signal(c); while (!condition) ;` to avoid sleeping at all",
+   "`if (!condition) wait(c);` because Hoare semantics guarantee the condition holds"
+  ],
+  "ans": 0,
+  "exp": "Under Hoare (signal-and-wait) semantics the signaller yields the monitor immediately, so the woken thread runs while the condition is still true and a single `if` suffices. Under Mesa semantics the signaller keeps running and the woken thread merely becomes runnable; by the time it actually reacquires the monitor, a third thread may have entered and invalidated the predicate. The woken thread must therefore loop and re-check, which is why real systems, including Java's `wait`/`notify`, require `while`.",
+  "trick": "Hoare $\\to$ `if`, Mesa $\\to$ `while`. Every practical system uses Mesa, so `while` is the safe default answer.",
+  "diff": "hard",
+  "tags": [
+   "monitor",
+   "hoare",
+   "mesa",
+   "condition variable"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0019",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.5",
+  "q": "An application spends 20% of its execution time in a strictly sequential phase; the remaining 80% parallelises perfectly. The speedup obtained on 4 processors is",
+  "opts": [
+   "1.60",
+   "3.20",
+   "2.50",
+   "4.00"
+  ],
+  "ans": 2,
+  "exp": "Amdahl's law gives $\\text{Speedup} = \\dfrac{1}{S + (1-S)/N}$ with $S = 0.2$ and $N = 4$. The denominator is $0.2 + 0.8/4 = 0.2 + 0.2 = 0.4$, so the speedup is $1/0.4 = \\mathbf{2.5}$. The distractor 3.20 is the naive $0.8 \\times 4$, and 4.00 would require no serial part at all.",
+  "trick": "Compute the denominator first, not the fraction. $S + (1-S)/N$ is one subtraction and one division; inverting it at the end avoids nested fractions.",
+  "diff": "easy",
+  "tags": [
+   "amdahl's law",
+   "parallelism",
+   "speedup"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0020",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.5",
+  "q": "A program is 10% serial. The minimum number of processors required to achieve a speedup of 5 is",
+  "opts": [
+   "5",
+   "impossible — 5 is above the theoretical limit",
+   "10",
+   "9"
+  ],
+  "ans": 3,
+  "exp": "The theoretical ceiling is $1/S = 1/0.1 = 10$, so a speedup of 5 is attainable and (D) is wrong. Solve $\\dfrac{1}{0.1 + 0.9/N} = 5$, giving $0.1 + 0.9/N = 0.2$, hence $0.9/N = 0.1$ and $N = \\mathbf{9}$. Nine processors for a fivefold speedup — half the theoretical maximum already costs nine machines.",
+  "trick": "First check the request against $1/S$; if it exceeds that, the answer is 'impossible' and no algebra is needed. Otherwise solve $S + (1-S)/N = 1/\\text{speedup}$.",
+  "diff": "medium",
+  "tags": [
+   "amdahl's law",
+   "multicore",
+   "speedup"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0021",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.5",
+  "q": "Which of the following is/are private to each thread of a multithreaded process?\n\n(A) Stack\n(B) Global variables\n(C) Register set and program counter\n(D) Open file descriptors\n(E) `errno` and the signal mask",
+  "opts": [
+   "(B), (D) and (E) only",
+   "(A), (C) and (E) only",
+   "(A), (C), (D) and (E) only",
+   "(A) and (C) only"
+  ],
+  "ans": 1,
+  "exp": "A thread is a flow of control inside a shared address space, so everything needed to describe *where that flow currently is* is private: its stack of activation records (A), its registers and program counter (C), and its per-thread status such as `errno` and the signal mask (E). Everything that belongs to the address space or to the process's kernel bookkeeping is shared: the text and data segments, global variables (B), the heap, and the open-file table (D).",
+  "trick": "Ask whether the item belongs to the address space. If yes it is shared; if it describes the current point of execution it is private.",
+  "diff": "easy",
+  "tags": [
+   "threads",
+   "thread private state"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0022",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.6",
+  "q": "Four processes arrive as shown and are scheduled with FCFS.\n\n| Process | Arrival | Burst |\n|---|---|---|\n| $P_1$ | 0 | 7 |\n| $P_2$ | 2 | 4 |\n| $P_3$ | 4 | 1 |\n| $P_4$ | 5 | 4 |\n\nThe average waiting time is",
+  "opts": [
+   "8.75",
+   "4.75",
+   "5.25",
+   "3.75"
+  ],
+  "ans": 1,
+  "exp": "FCFS runs them in arrival order with no idle time: $P_1$ 0–7, $P_2$ 7–11, $P_3$ 11–12, $P_4$ 12–16. Completion times are 7, 11, 12, 16, so turnaround times ($CT - AT$) are 7, 9, 8, 11 and waiting times ($TAT - BT$) are $0, 5, 7, 7$. The average is $(0+5+7+7)/4 = 19/4 = \\mathbf{4.75}$. The value 8.75 is the average turnaround time, the classic wrong pick.",
+  "trick": "Read only the completion times off the Gantt chart, then apply $TAT = CT - AT$ and $WT = TAT - BT$. Never accumulate waiting intervals by hand.",
+  "diff": "easy",
+  "tags": [
+   "fcfs",
+   "waiting time",
+   "gantt chart"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0023",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.6",
+  "q": "For the workload below, non-preemptive SJF is used.\n\n| Process | Arrival | Burst |\n|---|---|---|\n| $P_1$ | 0 | 6 |\n| $P_2$ | 1 | 8 |\n| $P_3$ | 2 | 7 |\n| $P_4$ | 3 | 3 |\n\nThe average turnaround time is",
+  "opts": [
+   "10.50",
+   "14.00",
+   "6.25",
+   "12.25"
+  ],
+  "ans": 3,
+  "exp": "Only $P_1$ is present at $t=0$, so it runs 0–6. At $t = 6$ all of $P_2(8)$, $P_3(7)$, $P_4(3)$ are waiting, so the shortest, $P_4$, runs 6–9, then $P_3$ runs 9–16, then $P_2$ runs 16–24. Completion times are $P_1{:}\\,6$, $P_2{:}\\,24$, $P_3{:}\\,16$, $P_4{:}\\,9$. Turnaround times are $6-0=6$, $24-1=23$, $16-2=14$, $9-3=6$, summing to 49, so the average is $49/4 = \\mathbf{12.25}$.",
+  "trick": "In non-preemptive SJF a decision is taken only when the CPU falls idle. List which processes have arrived by that instant and pick the smallest burst — no other instants matter.",
+  "diff": "medium",
+  "tags": [
+   "sjf",
+   "turnaround time"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0024",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.6",
+  "q": "The following processes are scheduled with shortest remaining time first (SRTF).\n\n| Process | Arrival | Burst |\n|---|---|---|\n| $P_1$ | 0 | 5 |\n| $P_2$ | 1 | 3 |\n| $P_3$ | 2 | 4 |\n| $P_4$ | 4 | 1 |\n\nThe average waiting time is",
+  "opts": [
+   "4.25",
+   "3.50",
+   "2.75",
+   "6.00"
+  ],
+  "ans": 2,
+  "exp": "At $t=1$, $P_2$ needs 3 against $P_1$'s remaining 4, so $P_2$ preempts. At $t=2$, $P_3$ needs 4, more than $P_2$'s remaining 2, so nothing changes. $P_2$ finishes at $t=4$, exactly when $P_4$ arrives needing 1 — the smallest — so $P_4$ runs 4–5. Then $P_1$ (remaining 4) beats $P_3$ (4) on arrival order and runs 5–9, and $P_3$ runs 9–13. Completion times: $P_1{:}9$, $P_2{:}4$, $P_3{:}13$, $P_4{:}5$. Turnarounds 9, 3, 11, 1 and waiting times $9-5=4$, $3-3=0$, $11-4=7$, $1-1=0$, averaging $11/4 = \\mathbf{2.75}$.",
+  "trick": "SRTF can only change its mind when a process arrives or finishes. Compare remaining times at those few instants only.",
+  "diff": "hard",
+  "tags": [
+   "srtf",
+   "preemptive scheduling",
+   "waiting time"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0025",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.6",
+  "q": "Round-robin scheduling with a time quantum of 2 units is applied to the following workload. A process that arrives at the same instant a quantum expires is placed in the ready queue ahead of the preempted process.\n\n| Process | Arrival | Burst |\n|---|---|---|\n| $P_1$ | 0 | 5 |\n| $P_2$ | 1 | 4 |\n| $P_3$ | 2 | 2 |\n| $P_4$ | 4 | 1 |\n\nThe average turnaround time is",
+  "opts": [
+   "7.75",
+   "4.75",
+   "9.00",
+   "6.50"
+  ],
+  "ans": 0,
+  "exp": "The execution order is $P_1$ 0–2, $P_2$ 2–4, $P_3$ 4–6, $P_1$ 6–8, $P_4$ 8–9, $P_2$ 9–11, $P_1$ 11–12. Completion times are $P_1{:}12$, $P_2{:}11$, $P_3{:}6$, $P_4{:}9$, giving turnaround times $12-0=12$, $11-1=10$, $6-2=4$, $9-4=5$. Their sum is 31 and the average is $31/4 = \\mathbf{7.75}$. (The average waiting time happens to be 4.75 here, which is the planted distractor.)",
+  "trick": "Maintain the ready queue explicitly as a list and append new arrivals *before* re-appending the process whose quantum just ended. That single convention decides most round-robin keys.",
+  "diff": "hard",
+  "tags": [
+   "round robin",
+   "time quantum",
+   "turnaround time"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0026",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.6",
+  "q": "Five processes with burst times 4, 1, 8, 2 and 5 all arrive at time 0 and are scheduled by SJF. The average waiting time is",
+  "opts": [
+   "4.60",
+   "5.60",
+   "8.60",
+   "4.00"
+  ],
+  "ans": 0,
+  "exp": "With every process present at $t=0$, SJF simply runs them in increasing order of burst: 1, 2, 4, 5, 8. Each process waits for the sum of all bursts before it, giving waiting times $0, 1, 3, 7, 12$. The total is 23 and the average is $23/5 = \\mathbf{4.6}$.",
+  "trick": "When all arrivals are at time 0, sort the bursts and take running prefix sums — no Gantt chart is needed at all.",
+  "diff": "easy",
+  "tags": [
+   "sjf",
+   "waiting time"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0027",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.6",
+  "q": "At a scheduling decision point, three processes are waiting under highest-response-ratio-next (HRRN):\n\n| Process | Waiting time so far | Estimated service time |\n|---|---|---|\n| $P_1$ | 10 | 5 |\n| $P_2$ | 6 | 2 |\n| $P_3$ | 12 | 6 |\n\nWhich process is selected?",
+  "opts": [
+   "$P_1$",
+   "$P_2$",
+   "$P_1$ and $P_3$ tie and either may be chosen",
+   "$P_3$"
+  ],
+  "ans": 1,
+  "exp": "The response ratio is $(W + S)/S$. For $P_1$ it is $(10+5)/5 = 3$; for $P_2$ it is $(6+2)/2 = 4$; for $P_3$ it is $(12+6)/6 = 3$. HRRN runs the largest ratio, so $P_2$ wins with 4, even though it has waited the least — its short service time dominates. $P_1$ and $P_3$ do tie at 3, but neither is the maximum.",
+  "trick": "$(W+S)/S = 1 + W/S$, so you only need to compare $W/S$. Here $2, 3, 2$ — the arithmetic shrinks to one division per process.",
+  "diff": "medium",
+  "tags": [
+   "hrrn",
+   "response ratio",
+   "starvation"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0028",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.6",
+  "q": "The predicted length of the next CPU burst is computed by exponential averaging with $\\alpha = 0.5$ and an initial prediction $\\tau_1 = 10$. The actual burst lengths observed are $t_1 = 6$, $t_2 = 4$ and $t_3 = 6$. The prediction $\\tau_4$ is",
+  "opts": [
+   "8",
+   "7",
+   "6",
+   "5"
+  ],
+  "ans": 2,
+  "exp": "Apply $\\tau_{n+1} = \\alpha t_n + (1-\\alpha)\\tau_n$ three times. $\\tau_2 = 0.5(6) + 0.5(10) = 3 + 5 = 8$. $\\tau_3 = 0.5(4) + 0.5(8) = 2 + 4 = 6$. $\\tau_4 = 0.5(6) + 0.5(6) = 3 + 3 = \\mathbf{6}$.",
+  "trick": "With $\\alpha = 0.5$ each step is just the average of the last actual burst and the last prediction, so the whole chain is three mental averages.",
+  "diff": "medium",
+  "tags": [
+   "exponential averaging",
+   "burst prediction",
+   "sjf"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0029",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.6",
+  "q": "A uniprocessor runs three periodic tasks with execution time and period $(C, T)$ equal to $(1, 3)$, $(2, 5)$ and $(1, 10)$. Which statement is correct? (Use $n(2^{1/n}-1) \\approx 0.780$ for $n=3$.)",
+  "opts": [
+   "The set fails the EDF test and cannot be scheduled by any algorithm",
+   "The set is schedulable only if the priorities are assigned by longest period first",
+   "The set is guaranteed schedulable by rate-monotonic scheduling",
+   "The set passes the EDF test but is not guaranteed schedulable by rate-monotonic scheduling"
+  ],
+  "ans": 3,
+  "exp": "Total utilisation is $U = 1/3 + 2/5 + 1/10 = 0.3333 + 0.4 + 0.1 = 0.8333$. EDF succeeds if and only if $U \\le 1$, and $0.8333 \\le 1$, so EDF schedules it. The rate-monotonic sufficient condition requires $U \\le 0.780$, and $0.8333 > 0.780$, so RM is *not guaranteed* — note that the RM bound is sufficient but not necessary, so the set might still happen to be RM-schedulable, which is why (A) is too strong. (D) inverts rate monotonic, which gives the higher priority to the *shorter* period.",
+  "trick": "Compute $U$ once. Compare it with $n(2^{1/n}-1)$ for RM and with 1 for EDF. The bounds 1.000, 0.828, 0.780 and $\\ln 2 \\approx 0.693$ are worth memorising.",
+  "diff": "hard",
+  "tags": [
+   "rate monotonic",
+   "edf",
+   "real time scheduling"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0030",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.6",
+  "q": "Consider these statements about CPU scheduling.\n\n(A) SJF gives the minimum average waiting time among non-preemptive schedules for a given set of processes.\n(B) Round robin with a quantum larger than the longest CPU burst behaves exactly like FCFS.\n(C) Reducing the round-robin quantum always reduces the average turnaround time.\n(D) FCFS is free of starvation.\n\nWhich statements are correct?",
+  "opts": [
+   "(A), (B) and (D) only",
+   "(A), (B), (C) and (D)",
+   "(A), (C) and (D) only",
+   "(B) and (C) only"
+  ],
+  "ans": 0,
+  "exp": "(A) is the standard exchange-argument result. (B) holds because no process is ever preempted, so the queue is served in arrival order. (D) holds because every process eventually reaches the head of a FIFO queue. (C) is false: chopping processes into more pieces usually makes each of them finish *later*, so average turnaround time often rises as the quantum shrinks — the quantum is tuned for response time, not turnaround time.",
+  "trick": "Small quantum improves response time and worsens turnaround time. Any statement claiming it improves both is false.",
+  "diff": "medium",
+  "tags": [
+   "scheduling comparison",
+   "round robin",
+   "sjf",
+   "starvation"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0031",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.6",
+  "q": "Which scheduling algorithm can approximate shortest-job-first behaviour without any advance knowledge of burst lengths?",
+  "opts": [
+   "First-come first-served",
+   "Multilevel queue with fixed queue assignment",
+   "Multilevel feedback queue",
+   "Non-preemptive priority scheduling"
+  ],
+  "ans": 2,
+  "exp": "A multilevel feedback queue starts every process in the highest-priority queue with a small quantum. A process that uses its whole quantum is evidently CPU-bound and is demoted to a lower queue with a longer quantum; a process that blocks early stays near the top. The scheduler therefore *measures* burst behaviour instead of being told it, which is why it favours short jobs the way SJF does. A plain multilevel queue never moves a process between queues and so learns nothing.",
+  "trick": "The word 'feedback' is the whole distinction: feedback means a process may change queue, and that is what makes the scheme adaptive.",
+  "diff": "medium",
+  "tags": [
+   "multilevel feedback queue",
+   "scheduling"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0032",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.7",
+  "q": "A system has five processes sharing identical units of a single resource type. Each process may require a maximum of 4 units. The minimum number of units that guarantees the system is deadlock-free is",
+  "opts": [
+   "15",
+   "16",
+   "20",
+   "19"
+  ],
+  "ans": 1,
+  "exp": "Deadlock is impossible exactly when $R \\ge n(k-1) + 1$. With $n = 5$ and $k = 4$ this is $5(4-1) + 1 = 15 + 1 = \\mathbf{16}$. The reasoning: the worst case has every process holding $k-1 = 3$ units and waiting for one more, consuming 15 units; one spare unit lets some process reach its maximum, finish, and release everything. With only 15 units that configuration is a genuine deadlock, which is why 15 is the planted distractor.",
+  "trick": "$R \\ge n(k-1)+1$ — 'everybody one short of their maximum, plus one spare'. Rearrange the same inequality whichever of $R$, $n$ or $k$ is missing.",
+  "diff": "easy",
+  "tags": [
+   "deadlock",
+   "resource allocation",
+   "deadlock free condition"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0033",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.7",
+  "q": "There are 12 units of a single resource type. Every process may request at most 3 units. The largest number of processes for which deadlock is impossible is",
+  "opts": [
+   "11",
+   "4",
+   "6",
+   "5"
+  ],
+  "ans": 3,
+  "exp": "Rearranging $R \\ge n(k-1)+1$ gives $n \\le \\dfrac{R-1}{k-1} = \\dfrac{12-1}{3-1} = \\dfrac{11}{2} = 5.5$, so $n = \\mathbf{5}$. Verify the boundary: with 5 processes each holding 2 units, only 10 units are used and 2 remain free, so some process can complete. With 6 processes each holding 2 units all 12 are consumed and every process still needs one more — a deadlock.",
+  "trick": "$n \\le (R-1)/(k-1)$, then take the floor. Always test the next integer up to confirm it deadlocks.",
+  "diff": "medium",
+  "tags": [
+   "deadlock",
+   "deadlock free condition"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0034",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.7",
+  "q": "Three processes share units of a single resource type, with maximum requirements of 3, 4 and 6 units respectively. The smallest total number of units that guarantees freedom from deadlock is",
+  "opts": [
+   "13",
+   "11",
+   "10",
+   "12"
+  ],
+  "ans": 1,
+  "exp": "For unequal maximum claims the condition is $\\sum_{i} m_i < R + n$. Here $3 + 4 + 6 = 13$ and $n = 3$, so $13 < R + 3$, giving $R > 10$ and hence $R_{\\min} = \\mathbf{11}$. Checking $R = 10$: the processes could hold 2, 3 and 5 units — exactly 10 — with each still one unit short, which is a deadlock. With 11 units that same configuration leaves one spare unit and someone can finish.",
+  "trick": "Use $\\sum m_i < R + n$ whenever the maximum claims differ. The equal-claims formula $R \\ge n(k-1)+1$ is just its special case.",
+  "diff": "medium",
+  "tags": [
+   "deadlock",
+   "unequal maximum claims"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0035",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.7",
+  "q": "Consider a system state with four processes and three resource types whose totals are $A=7$, $B=4$, $C=6$.\n\n| Process | Allocation (A,B,C) | Max (A,B,C) |\n|---|---|---|\n| $P_0$ | 1, 1, 1 | 4, 2, 2 |\n| $P_1$ | 2, 0, 2 | 3, 1, 4 |\n| $P_2$ | 1, 1, 0 | 3, 2, 1 |\n| $P_3$ | 2, 1, 1 | 3, 2, 3 |\n\nWhich of the following is a safe sequence for this state?",
+  "opts": [
+   "$\\langle P_2, P_0, P_3, P_1 \\rangle$",
+   "$\\langle P_0, P_1, P_2, P_3 \\rangle$",
+   "The state is unsafe; no safe sequence exists",
+   "$\\langle P_1, P_2, P_3, P_0 \\rangle$"
+  ],
+  "ans": 3,
+  "exp": "Allocated totals are $(6,3,4)$, so Available $= (7,4,6) - (6,3,4) = (1,1,2)$. Needs are $P_0{:}(3,1,1)$, $P_1{:}(1,1,2)$, $P_2{:}(2,1,1)$, $P_3{:}(1,1,2)$. Against Work $=(1,1,2)$ only $P_1$ and $P_3$ fit, which already rules out sequences starting with $P_0$ or $P_2$. Taking $P_1$: Work $\\to (1,1,2)+(2,0,2) = (3,1,4)$. Now $P_2$ needs $(2,1,1)$ — fits; Work $\\to (4,2,4)$. $P_3$ needs $(1,1,2)$ — fits; Work $\\to (6,3,5)$. $P_0$ needs $(3,1,1)$ — fits; Work $\\to (7,4,6)$. All four finish, so $\\langle P_1, P_2, P_3, P_0 \\rangle$ is safe.",
+  "trick": "Compute Need and Available first, then test only the first element of each offered sequence — a sequence whose head cannot run is eliminated in one comparison.",
+  "diff": "medium",
+  "tags": [
+   "banker's algorithm",
+   "safe sequence",
+   "deadlock avoidance"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0036",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.7",
+  "q": "For the same state as the previous question (Available $=(1,1,2)$), consider two requests made independently from that state: $P_0$ requests $(1,0,1)$ and $P_1$ requests $(1,0,1)$. Under the Banker's algorithm,",
+  "opts": [
+   "$P_1$'s request is granted and $P_0$'s is refused",
+   "$P_0$'s request is granted and $P_1$'s is refused",
+   "both requests are granted",
+   "both requests are refused"
+  ],
+  "ans": 0,
+  "exp": "Both requests are legal (within Need) and both fit in Available, so the safety test decides.\n\nFor $P_0$: pretend-allocate to get Available $=(0,1,1)$, Need$_0 = (2,1,0)$. Now no process fits — $P_0$ needs 2 of A, $P_1$ needs 1 of A, $P_2$ needs 2 of A, $P_3$ needs 1 of A, and A is exhausted. The state is unsafe, so the request is **refused**.\n\nFor $P_1$: pretend-allocate to get Available $=(0,1,1)$, Need$_1 = (0,1,1)$, which fits exactly. Work becomes $(0,1,1)+(3,0,3) = (3,1,4)$, then $P_2$ fits (Work $\\to (4,2,4)$), then $P_3$ (Work $\\to (6,3,5)$), then $P_0$ (Work $\\to (7,4,6)$). Safe, so the request is **granted**.",
+  "trick": "The identical request vector can be safe for one process and unsafe for another, because the decision depends on the whole resulting state. Never answer such a question from the request alone.",
+  "diff": "hard",
+  "tags": [
+   "banker's algorithm",
+   "safety algorithm",
+   "deadlock avoidance"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0037",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.7",
+  "q": "Which of the following statements about safe and unsafe states is correct?",
+  "opts": [
+   "A safe state may still lead to deadlock if requests arrive in an unlucky order",
+   "Every unsafe state eventually becomes a deadlocked state",
+   "Every deadlocked state is unsafe, but an unsafe state need not be deadlocked",
+   "Safe and unsafe states are defined only for single-instance resource types"
+  ],
+  "ans": 2,
+  "exp": "A safe state carries a guarantee: a sequence exists in which every process can obtain its maximum claim and finish, so deadlock cannot occur while the system stays safe — which disposes of (C). An unsafe state merely means no such guarantee can be produced; whether deadlock actually happens depends on what the processes do next, so (A) is too strong. Deadlocked states are a strict subset of unsafe states, which is (B). The notion applies to multiple-instance systems as well — indeed that is where the Banker's algorithm is needed — so (D) is false.",
+  "trick": "Remember the containment: deadlocked $\\subset$ unsafe. The Banker's algorithm refuses unsafe states precisely because it cannot tell which of them will become deadlocks.",
+  "diff": "easy",
+  "tags": [
+   "safe state",
+   "unsafe state",
+   "deadlock"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0038",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.7",
+  "q": "A resource-allocation graph contains a cycle. Which conclusion is justified?",
+  "opts": [
+   "The system is definitely deadlocked",
+   "The system is deadlocked if every resource type in the cycle has exactly one instance",
+   "The system is definitely not deadlocked",
+   "No conclusion is possible even when every resource type has one instance"
+  ],
+  "ans": 1,
+  "exp": "A cycle is a *necessary* condition for deadlock: without one, no deadlock exists. It becomes sufficient only when each resource type involved has a single instance, because then the process holding the instance the next one wants is itself in the cycle, and nobody outside can release it. With multiple instances an off-cycle process may hold a spare instance and release it, breaking the wait. So (C) is exactly the right strength of claim.",
+  "trick": "Single instance: cycle $\\Leftrightarrow$ deadlock. Multiple instances: cycle is necessary, not sufficient. No cycle always means no deadlock.",
+  "diff": "easy",
+  "tags": [
+   "resource allocation graph",
+   "cycle",
+   "deadlock detection"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0039",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.7",
+  "q": "Match the deadlock-prevention technique in List-I with the necessary condition it denies in List-II.\n\n| List-I | List-II |\n|---|---|\n| (a) Spooling a printer so many jobs can 'use' it | (i) Hold and wait |\n| (b) Requiring a process to request all resources before it starts | (ii) No preemption |\n| (c) Rolling back and reclaiming resources from a waiting process | (iii) Circular wait |\n| (d) Numbering resource types and requesting only in increasing order | (iv) Mutual exclusion |",
+  "opts": [
+   "(a)-(iv), (b)-(i), (c)-(ii), (d)-(iii)",
+   "(a)-(iv), (b)-(ii), (c)-(i), (d)-(iii)",
+   "(a)-(ii), (b)-(i), (c)-(iv), (d)-(iii)",
+   "(a)-(i), (b)-(iv), (c)-(iii), (d)-(ii)"
+  ],
+  "ans": 0,
+  "exp": "Spooling turns a non-sharable device into many virtual sharable ones, attacking **mutual exclusion**: (a)-(iv). Demanding the entire resource set up front means a process never holds some resources while waiting for others, attacking **hold and wait**: (b)-(i). Taking resources away from a blocked process and restarting it later denies **no preemption**: (c)-(ii). A total ordering on resource types makes a cycle arithmetically impossible, denying **circular wait**: (d)-(iii).",
+  "trick": "Resource ordering is the only prevention technique that is cheap enough to use in practice, so it is the answer whenever a question asks for a *practical* prevention method.",
+  "diff": "medium",
+  "tags": [
+   "deadlock prevention",
+   "necessary conditions"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0040",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.7",
+  "q": "A deadlock-detection algorithm for multiple resource instances differs from the Banker's safety algorithm in that it",
+  "opts": [
+   "can only be applied when every resource type has a single instance",
+   "requires each process to declare its maximum claim in advance",
+   "runs in $O(n)$ time instead of $O(m \\cdot n^2)$",
+   "uses the current `Request` matrix instead of the `Need` matrix"
+  ],
+  "ans": 3,
+  "exp": "Detection is used precisely when maximum claims are unknown, so (B) is wrong — that is the requirement of *avoidance*. The detection algorithm has the same shape as the safety algorithm but asks a weaker question: can a process finish given what it is *currently requesting*? A process making no request right now is assumed able to complete, so the current `Request` matrix replaces `Need`. Its cost is $O(m \\cdot n^{2})$, and it applies to multiple-instance systems — the single-instance case is handled more cheaply by cycle detection in a wait-for graph.",
+  "trick": "Avoidance needs future information (`Max`); detection needs only present information (`Request`). If a question says maximum needs are unknown, the Banker's algorithm is off the table.",
+  "diff": "hard",
+  "tags": [
+   "deadlock detection",
+   "wait-for graph",
+   "banker's algorithm"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0041",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.8",
+  "q": "A machine uses 32-bit logical addresses and a page size of 8 KB. The number of entries in a single-level page table and the width of the offset field are",
+  "opts": [
+   "$2^{22}$ entries, 10-bit offset",
+   "$2^{20}$ entries, 12-bit offset",
+   "$2^{19}$ entries, 13-bit offset",
+   "$2^{19}$ entries, 12-bit offset"
+  ],
+  "ans": 2,
+  "exp": "A page of 8 KB is $2^{13}$ bytes, so the offset occupies the low **13 bits**. The remaining $32 - 13 = 19$ bits form the page number, so the page table has $2^{19}$ entries — equivalently, $2^{32}/2^{13} = 2^{19}$.",
+  "trick": "Offset bits $= \\log_2(\\text{page size})$; page-number bits are whatever remains; entries $= 2^{\\text{page-number bits}}$. Three steps, always in that order.",
+  "diff": "easy",
+  "tags": [
+   "paging",
+   "address translation",
+   "page table size"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0042",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.8",
+  "q": "Main memory access takes 120 ns and a TLB lookup takes 15 ns. The page table is single-level and resides in main memory, and the TLB hit ratio is 85%. The effective memory access time is",
+  "opts": [
+   "153 ns",
+   "171 ns",
+   "255 ns",
+   "135 ns"
+  ],
+  "ans": 0,
+  "exp": "On a hit (probability 0.85) the cost is the TLB lookup plus one memory access: $15 + 120 = 135$ ns. On a miss (probability 0.15) the TLB is searched, the page-table entry is fetched from memory and then the datum is fetched: $15 + 120 + 120 = 255$ ns. So $\\text{EAT} = 0.85(135) + 0.15(255) = 114.75 + 38.25 = \\mathbf{153}$ ns. The compact form confirms it: $t + (2-h)m = 15 + 1.15 \\times 120 = 153$ ns.",
+  "trick": "$\\text{EAT} = t + (2-h)m$ for a single-level table held in memory. The two distractors here are exactly the hit cost and the miss cost taken alone.",
+  "diff": "medium",
+  "tags": [
+   "tlb",
+   "effective access time",
+   "paging"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0043",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.8",
+  "q": "Memory access takes 100 ns, the TLB access time is negligible, and the page table is single-level and held in memory. What TLB hit ratio is required for an effective access time of 120 ns?",
+  "opts": [
+   "0.90",
+   "0.70",
+   "0.60",
+   "0.80"
+  ],
+  "ans": 3,
+  "exp": "With a negligible TLB time, a hit costs $m = 100$ ns and a miss costs $2m = 200$ ns, so $\\text{EAT} = h(100) + (1-h)(200) = 200 - 100h$. Setting $200 - 100h = 120$ gives $100h = 80$ and $h = \\mathbf{0.8}$. Equivalently, using $\\text{EAT} = (2-h)m$: $120/100 = 2 - h$, so $h = 0.8$.",
+  "trick": "When the TLB time is ignored, $\\text{EAT}/m = 2 - h$. Divide the target EAT by the memory time and subtract from 2 — one line.",
+  "diff": "medium",
+  "tags": [
+   "tlb",
+   "hit ratio",
+   "effective access time"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0044",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.8",
+  "q": "A system uses a **two-level** page table held in main memory. Memory access time is 100 ns, the TLB access time is 20 ns and the TLB hit ratio is 90%. The effective access time is",
+  "opts": [
+   "120 ns",
+   "140 ns",
+   "320 ns",
+   "150 ns"
+  ],
+  "ans": 1,
+  "exp": "A TLB hit still costs one lookup plus one data access: $20 + 100 = 120$ ns. A miss must read the outer page table, then the inner page table, then the data: $20 + 100 + 100 + 100 = 320$ ns. So $\\text{EAT} = 0.9(120) + 0.1(320) = 108 + 32 = \\mathbf{140}$ ns. Note how each additional level of paging adds only $(1-h) \\times m = 10$ ns here — a good TLB hides the cost of deep page tables almost completely.",
+  "trick": "For $k$ levels, $\\text{EAT} = t + \\big(1 + (1-h)k\\big)m$. Check: $20 + (1 + 0.1 \\times 2)(100) = 20 + 120 = 140$ ns.",
+  "diff": "hard",
+  "tags": [
+   "multilevel page table",
+   "tlb",
+   "effective access time"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0045",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.8",
+  "q": "A process has a 40-bit logical address space, the page size is 16 KB and each page-table entry occupies 4 bytes. The size of a single-level page table for this process is",
+  "opts": [
+   "1 GB",
+   "128 MB",
+   "256 MB",
+   "64 MB"
+  ],
+  "ans": 2,
+  "exp": "A 16 KB page is $2^{14}$ bytes, so the number of pages is $2^{40}/2^{14} = 2^{26}$. Each entry is 4 bytes $=2^{2}$, so the table occupies $2^{26} \\times 2^{2} = 2^{28}$ bytes $= \\mathbf{256\\ \\text{MB}}$. A table of this size is exactly why real systems use hierarchical, hashed or inverted page tables.",
+  "trick": "Keep everything as powers of two: entries $= 2^{(\\text{addr bits} - \\log_2 p)}$, size $=$ entries $\\times$ entry width. Then convert once at the end.",
+  "diff": "medium",
+  "tags": [
+   "page table size",
+   "paging"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0046",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.8",
+  "q": "A segmented system has the segment table below.\n\n| Segment | Base | Limit |\n|---|---|---|\n| 0 | 1219 | 700 |\n| 1 | 2300 | 14 |\n| 2 | 90 | 100 |\n| 3 | 1327 | 580 |\n\nWhat happens to the logical addresses $(2, 88)$ and $(1, 20)$?",
+  "opts": [
+   "$(2,88)$ causes a trap; $(1,20)$ translates to 2320",
+   "$(2,88)$ translates to 178; $(1,20)$ causes a trap to the operating system",
+   "Both cause traps to the operating system",
+   "Both are translated: to 178 and to 2320 respectively"
+  ],
+  "ans": 1,
+  "exp": "Segment translation first checks the offset against the limit. For $(2, 88)$: the limit of segment 2 is 100 and $88 < 100$, so the reference is legal and the physical address is $\\text{base} + d = 90 + 88 = 178$. For $(1, 20)$: the limit of segment 1 is only 14 and $20 \\ge 14$, so the address is outside the segment and the hardware raises an addressing trap instead of translating it.",
+  "trick": "In segmentation the limit is checked before the base is added; in paging no check is needed because the offset cannot exceed the page size by construction.",
+  "diff": "medium",
+  "tags": [
+   "segmentation",
+   "address translation",
+   "segment table"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0047",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.8",
+  "q": "Free memory holes, in address order, are 100 KB, 500 KB, 200 KB, 300 KB and 600 KB. Processes of 212 KB, 417 KB, 112 KB and 426 KB arrive in that order. Under **first fit**, which process fails to be allocated?",
+  "opts": [
+   "112 KB",
+   "212 KB",
+   "417 KB",
+   "426 KB"
+  ],
+  "ans": 3,
+  "exp": "First fit scans from the start each time. 212 KB takes the first hole of at least 212, which is the 500 KB hole, leaving 288 KB. 417 KB then takes the 600 KB hole, leaving 183 KB. 112 KB takes the first adequate hole, now the 288 KB remainder, leaving 176 KB. The remaining holes are 100, 176, 200, 300 and 183 KB, none of which can hold **426 KB**, so that process fails even though $100+176+200+300+183 = 959$ KB is free — a textbook case of external fragmentation.",
+  "trick": "Track the hole list after every placement; the failure is almost always the last and largest request, and the check is whether any single hole (not the total) still fits.",
+  "diff": "medium",
+  "tags": [
+   "first fit",
+   "contiguous allocation",
+   "external fragmentation"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0048",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.8",
+  "q": "Which of the following statements is correct?",
+  "opts": [
+   "Compaction eliminates internal fragmentation",
+   "Paging suffers from external fragmentation; segmentation suffers from internal fragmentation",
+   "Paging suffers from internal fragmentation; segmentation suffers from external fragmentation",
+   "Segmentation with paging eliminates both kinds of fragmentation"
+  ],
+  "ans": 2,
+  "exp": "Fixed-size allocation units cause **internal** fragmentation — the unused tail of a process's last page averages half a page — and because any free frame fits any page, paging has no external fragmentation. Variable-size units, as in segmentation, fit exactly and so waste nothing internally, but they leave awkward gaps between segments, which is **external** fragmentation. Compaction only slides allocated regions together to merge free holes, so it addresses external fragmentation alone, making (C) false. Segmentation with paging removes the external kind but each segment still ends in a partly used page, so (D) is false.",
+  "trick": "Fixed unit $\\to$ internal; variable unit $\\to$ external. No calculation is ever needed for this family of questions.",
+  "diff": "easy",
+  "tags": [
+   "fragmentation",
+   "paging",
+   "segmentation"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0049",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.9",
+  "q": "For the reference string $1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5$ with **three** frames and FIFO replacement, the number of page faults is",
+  "opts": [
+   "9",
+   "7",
+   "10",
+   "12"
+  ],
+  "ans": 0,
+  "exp": "Frames fill with 1, 2, 3 (3 faults). Then 4 evicts 1, 1 evicts 2, 2 evicts 3, 5 evicts 4 — 4 more faults, memory now holds 1, 2, 5. The next references to 1 and 2 are hits. Then 3 evicts 1, 4 evicts 2 (2 more faults) leaving 5, 3, 4, and the final 5 is a hit. Total $= 3 + 4 + 2 = \\mathbf{9}$ faults. (For the record, LRU needs 10 on this string and OPT needs 7.)",
+  "trick": "Every distinct page costs one compulsory fault, so the answer can never be below the number of distinct pages — here 5. That lower bound kills impossible options instantly.",
+  "diff": "medium",
+  "tags": [
+   "fifo",
+   "page replacement",
+   "page fault"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0050",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.9",
+  "q": "Using the same reference string $1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5$, FIFO gives 9 faults with three frames. With **four** frames FIFO gives",
+  "opts": [
+   "9 faults",
+   "8 faults",
+   "10 faults",
+   "6 faults"
+  ],
+  "ans": 2,
+  "exp": "Loading 1, 2, 3, 4 costs 4 faults; references to 1 and 2 are then hits. Now 5 evicts the oldest page 1, then 1 evicts 2, 2 evicts 3, 3 evicts 4, 4 evicts 5 and finally 5 evicts 1 — six further faults. The total is $4 + 6 = \\mathbf{10}$, which is *more* than the 9 faults obtained with three frames. This is **Belady's anomaly**, and this is the standard string used to exhibit it.",
+  "trick": "FIFO and clock can show Belady's anomaly; LRU and OPT are stack algorithms and never can. If a question offers 'more frames, more faults', FIFO is the algorithm involved.",
+  "diff": "hard",
+  "tags": [
+   "belady's anomaly",
+   "fifo",
+   "page replacement"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0051",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.9",
+  "q": "For the reference string $7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1$ with **four** frames, the number of page faults under LRU is",
+  "opts": [
+   "10",
+   "12",
+   "15",
+   "8"
+  ],
+  "ans": 3,
+  "exp": "After the first four distinct references 7, 0, 1, 2 (4 faults), the trace proceeds: 0 hit; 3 evicts the least recently used page 7 (fault); 0 hit; 4 evicts 1 (fault); 2 hit; 3 hit; 0 hit; 3 hit; 2 hit; 1 evicts 4 (fault); 2 hit; 0 hit; 1 hit; 7 evicts 3 (fault); 0 hit; 1 hit. That is $4 + 4 = \\mathbf{8}$ faults. FIFO needs 10 on the same string, which is the planted distractor.",
+  "trick": "To run LRU quickly, at each fault scan *backwards* from the current position and evict the resident page you encounter last. It is the mirror image of the OPT rule.",
+  "diff": "hard",
+  "tags": [
+   "lru",
+   "page replacement",
+   "page fault"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0052",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.9",
+  "q": "For the reference string $1, 2, 3, 4, 2, 1, 5, 6, 2, 1, 2, 3, 7, 6, 3, 2, 1, 2, 3, 6$ with **four** frames, the optimal (OPT) algorithm produces how many page faults?",
+  "opts": [
+   "10",
+   "8",
+   "7",
+   "14"
+  ],
+  "ans": 1,
+  "exp": "The string contains 7 distinct pages, so at least 7 compulsory faults are unavoidable. Running OPT — at each fault evict the resident page whose next use lies furthest in the future, preferring any page never used again — gives faults on 1, 2, 3, 4 (filling the frames), then 5 (evicting 4, whose next use is never), then 6 (evicting 5, never used again), then 3 (evicting 6, next used at position 14, which is later than 1 and 2), then 7 (evicting 1 or the page needed latest). That is $4 + 4 = \\mathbf{8}$ faults in total. LRU needs 10 and FIFO 14 on this string.",
+  "trick": "At each fault write beside each resident page the index of its next occurrence, using $\\infty$ for pages that never return, and evict the largest. Pages that never return always go first.",
+  "diff": "hard",
+  "tags": [
+   "optimal page replacement",
+   "page fault"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0053",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.9",
+  "q": "For the reference string $1, 2, 3, 4, 2, 1, 5, 2, 1, 2, 3, 6$ with **three** frames, the second-chance (clock) algorithm produces how many page faults?",
+  "opts": [
+   "8",
+   "7",
+   "6",
+   "9"
+  ],
+  "ans": 0,
+  "exp": "Load 1, 2, 3 (3 faults, all reference bits 0, hand at frame 0). Reference 4: the hand finds frame 0 with bit 0, so 1 is replaced by 4 (fault). Reference 2 is a hit and sets 2's bit. Reference 1: the hand is at frame 1 holding 2 with bit 1, so the bit is cleared and the hand advances to frame 2 holding 3 with bit 0 — 3 is replaced by 1 (fault). Reference 5 replaces 4 at frame 0 (fault). References 2, 1, 2 are hits. Reference 3 replaces 5 (fault) and reference 6 replaces 2 (fault). Total $= 3 + 5 = \\mathbf{8}$. (FIFO gives 9 and OPT gives 7 here, so clock behaves as the LRU approximation it is.)",
+  "trick": "Clock is FIFO with a reprieve: a page with its reference bit set gets one extra lap and its bit cleared. If every bit is set, clock degenerates to plain FIFO.",
+  "diff": "hard",
+  "tags": [
+   "second chance",
+   "clock algorithm",
+   "page replacement"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0054",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.9",
+  "q": "Memory access time is 100 ns and servicing a page fault takes 5 ms. If one memory reference in 5000 causes a page fault, the effective access time is approximately",
+  "opts": [
+   "5100 ns",
+   "1000 ns",
+   "600 ns",
+   "1100 ns"
+  ],
+  "ans": 3,
+  "exp": "The fault rate is $p = 1/5000 = 0.0002$ and the service time is $5\\ \\text{ms} = 5{,}000{,}000$ ns. Then $\\text{EAT} = (1-p)m + pF = 0.9998 \\times 100 + 0.0002 \\times 5{,}000{,}000 = 99.98 + 1000 = 1099.98 \\approx \\mathbf{1100}$ ns. Note that the fault term contributes ten times as much as all the successful accesses combined, even at one fault in five thousand.",
+  "trick": "The $(1-p)m$ term is always very close to $m$, so a quick estimate is $m + pF$. Here $100 + 1000 = 1100$ ns, which is accurate to two decimal places.",
+  "diff": "medium",
+  "tags": [
+   "demand paging",
+   "effective access time",
+   "page fault rate"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0055",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.9",
+  "q": "Memory access time is 200 ns and a page fault takes 10 ms to service. For the effective access time to be at most 10% higher than the access time without paging, the page-fault rate must not exceed approximately",
+  "opts": [
+   "$2 \\times 10^{-6}$",
+   "$2 \\times 10^{-7}$",
+   "$2 \\times 10^{-5}$",
+   "$2 \\times 10^{-4}$"
+  ],
+  "ans": 0,
+  "exp": "A 10% degradation means $\\text{EAT} \\le 220$ ns. With $F = 10\\ \\text{ms} = 10^{7}$ ns, $200(1-p) + 10^{7}p \\le 220$, so $200 + (10^{7} - 200)p \\le 220$ and $p \\le 20 / 9{,}999{,}800 \\approx \\mathbf{2 \\times 10^{-6}}$, i.e. fewer than one fault in half a million references.",
+  "trick": "Because $F \\gg m$, the inequality collapses to $p \\le (\\text{allowed increase})/F$. Here $20/10^{7} = 2 \\times 10^{-6}$ directly.",
+  "diff": "hard",
+  "tags": [
+   "page fault rate",
+   "effective access time",
+   "demand paging"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0056",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.9",
+  "q": "Which of the following statements is correct?",
+  "opts": [
+   "LRU always produces fewer page faults than FIFO for any reference string",
+   "An algorithm is free of Belady's anomaly if and only if it is a stack algorithm",
+   "The clock algorithm is an exact implementation of LRU",
+   "Optimal replacement can be implemented in a real operating system with hardware support"
+  ],
+  "ans": 1,
+  "exp": "A stack algorithm keeps, with $n$ frames, a resident set that is always a subset of the resident set with $n+1$ frames — which is exactly what makes adding a frame unable to increase the fault count, so (B) is the correct characterisation. (A) is false: on $1,2,3,4,1,2,5,1,2,3,4,5$ with three frames FIFO takes 9 faults while LRU takes 10. (C) overstates clock, which approximates LRU with a single reference bit and can evict a recently used page. (D) is false because OPT needs the future reference string, which no hardware can supply.",
+  "trick": "LRU and OPT are stack algorithms; FIFO and clock are not. 'LRU is always better than FIFO' is a planted absolute and is false.",
+  "diff": "medium",
+  "tags": [
+   "belady's anomaly",
+   "stack algorithm",
+   "lru",
+   "clock"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0057",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.9",
+  "q": "A system is thrashing: CPU utilisation is 15% and the paging device is 98% busy. Which action will help?",
+  "opts": [
+   "Increase the degree of multiprogramming so the CPU has more work",
+   "Increase the page size so fewer page-table entries are needed",
+   "Decrease the degree of multiprogramming by suspending some processes",
+   "Switch the replacement policy from local to global"
+  ],
+  "ans": 2,
+  "exp": "Thrashing means the resident processes collectively need more frames than exist, so each keeps stealing frames from the others and faulting again. Suspending processes returns their frames to the survivors, letting each hold its working set. Admitting more processes — the scheduler's instinct on seeing low CPU utilisation — makes the shortage worse, so (A) is exactly the wrong move. Page size affects table size, not the working-set shortfall. Global replacement lets a faulting process take frames from a well-behaved one, which spreads thrashing rather than curing it.",
+  "trick": "Thrashing is a frame shortage. Every correct remedy either gives a process more frames or removes a competitor; nothing else works.",
+  "diff": "easy",
+  "tags": [
+   "thrashing",
+   "working set",
+   "degree of multiprogramming"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0058",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.10",
+  "q": "A disk has cylinders numbered 0 to 199. The head is at cylinder 53 and the pending request queue, in arrival order, is 98, 183, 37, 122, 14, 124, 65, 67. The total head movement under **FCFS** is",
+  "opts": [
+   "236 cylinders",
+   "640 cylinders",
+   "642 cylinders",
+   "331 cylinders"
+  ],
+  "ans": 1,
+  "exp": "FCFS serves requests in arrival order, so the movement is $|53-98| + |98-183| + |183-37| + |37-122| + |122-14| + |14-124| + |124-65| + |65-67|$, which is $45 + 85 + 146 + 85 + 108 + 110 + 59 + 2 = \\mathbf{640}$ cylinders. The distractor 236 is the SSTF figure for the same queue.",
+  "trick": "Add the absolute differences down the list in one pass; the head position for the next term is always the request just served.",
+  "diff": "easy",
+  "tags": [
+   "fcfs",
+   "disk scheduling",
+   "head movement"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0059",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.10",
+  "q": "For the same disk (head at 53, queue 98, 183, 37, 122, 14, 124, 65, 67), the total head movement under **SSTF** is",
+  "opts": [
+   "299 cylinders",
+   "208 cylinders",
+   "331 cylinders",
+   "236 cylinders"
+  ],
+  "ans": 3,
+  "exp": "SSTF always jumps to the nearest pending request. From 53 the nearest is 65 (12), then 67 (2), then 37 (30), then 14 (23), then 98 (84), then 122 (24), then 124 (2), then 183 (59). The total is $12 + 2 + 30 + 23 + 84 + 24 + 2 + 59 = \\mathbf{236}$ cylinders.",
+  "trick": "SSTF usually sweeps to the nearer end of the queue first and only then crosses to the other side — spotting that pattern lets you write the order down before adding anything.",
+  "diff": "medium",
+  "tags": [
+   "sstf",
+   "disk scheduling",
+   "head movement"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0060",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.10",
+  "q": "A disk has cylinders 0 to 199. The head is at cylinder 100 moving **towards higher** numbers, and the pending requests are 23, 89, 132, 42, 187. The total head movement under **SCAN** and under **LOOK** respectively are",
+  "opts": [
+   "251 and 275",
+   "176 and 164",
+   "275 and 251",
+   "387 and 317"
+  ],
+  "ans": 2,
+  "exp": "Moving upward, both algorithms first serve 132 and 187. SCAN then continues to the physical end at cylinder 199 before reversing and serving 89, 42, 23: the distance is $(199 - 100) + (199 - 23) = 99 + 176 = \\mathbf{275}$. LOOK reverses at 187, the highest pending request, so the distance is $(187 - 100) + (187 - 23) = 87 + 164 = \\mathbf{251}$. The difference of 24 is exactly twice the 12 cylinders SCAN wastes travelling to 199 and back.",
+  "trick": "SCAN up $= (\\text{top} - \\text{start}) + (\\text{top} - \\text{lowest request})$; LOOK up $= (\\text{highest request} - \\text{start}) + (\\text{highest} - \\text{lowest})$. LOOK can never exceed SCAN.",
+  "diff": "medium",
+  "tags": [
+   "scan",
+   "look",
+   "disk scheduling"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0061",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.10",
+  "q": "With the head at cylinder 100 moving towards higher numbers and pending requests 23, 89, 132, 42, 187 on a 0–199 disk, the total head movement under **C-LOOK** (counting the return jump) is",
+  "opts": [
+   "317 cylinders",
+   "275 cylinders",
+   "387 cylinders",
+   "251 cylinders"
+  ],
+  "ans": 0,
+  "exp": "C-LOOK serves everything above the head in increasing order — 132 then 187 — then jumps directly back to the lowest pending request, 23, and continues upward through 42 and 89. The movement is $(187-100) + (187-23) + (89-23) = 87 + 164 + 66 = \\mathbf{317}$ cylinders. C-SCAN on the same queue would cost 387 because it travels all the way to 199 and to 0.",
+  "trick": "C-LOOK up $= (\\text{highest} - \\text{start}) + (\\text{highest} - \\text{lowest}) + (\\text{last served} - \\text{lowest})$. Always state whether you counted the return jump — standard exam keys include it.",
+  "diff": "hard",
+  "tags": [
+   "c-look",
+   "disk scheduling",
+   "head movement"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0062",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.10",
+  "q": "A disk rotates at 10,000 RPM, has an average seek time of 4 ms and a sustained transfer rate of 200 MB/s. The average time to read one 8 KB block is approximately",
+  "opts": [
+   "7.04 ms",
+   "3.0 ms",
+   "7.0 ms",
+   "11.0 ms"
+  ],
+  "ans": 0,
+  "exp": "One revolution takes $60/10000 = 6$ ms, so the average rotational latency is half of that, $3$ ms. Transferring 8 KB at 200 MB/s takes $8192 / (200 \\times 10^{6}) = 41\\ \\mu\\text{s} \\approx 0.04$ ms. The total is $4 + 3 + 0.04 = \\mathbf{7.04}$ ms. The transfer is roughly half a percent of the cost — the whole justification for large blocks, read-ahead and disk scheduling.",
+  "trick": "Average rotational latency in milliseconds is simply $30000/\\text{RPM}$: 5.56 at 5400, 4.17 at 7200, 3.0 at 10000, 2.0 at 15000 RPM.",
+  "diff": "medium",
+  "tags": [
+   "disk access time",
+   "rotational latency",
+   "seek time"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0063",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.10",
+  "q": "Match List-I with List-II.\n\n| List-I (RAID level) | List-II (property with $n$ disks) |\n|---|---|\n| (a) RAID 0 | (i) usable capacity $n-1$, parity distributed over all disks |\n| (b) RAID 1 | (ii) usable capacity $n$, tolerates no disk failure |\n| (c) RAID 5 | (iii) usable capacity $n-2$, tolerates two simultaneous failures |\n| (d) RAID 6 | (iv) usable capacity $n/2$, tolerates one failure per mirrored pair |",
+  "opts": [
+   "(a)-(iv), (b)-(ii), (c)-(iii), (d)-(i)",
+   "(a)-(ii), (b)-(i), (c)-(iv), (d)-(iii)",
+   "(a)-(i), (b)-(iv), (c)-(ii), (d)-(iii)",
+   "(a)-(ii), (b)-(iv), (c)-(i), (d)-(iii)"
+  ],
+  "ans": 3,
+  "exp": "RAID 0 stripes with no redundancy at all: full capacity, zero fault tolerance, so (a)-(ii). RAID 1 mirrors, halving capacity and surviving one failure in each mirrored pair, so (b)-(iv). RAID 5 spends one disk's worth of space on parity but rotates the parity block across all members to avoid a bottleneck, so (c)-(i). RAID 6 adds a second independent parity (P and Q), costing two disks and tolerating two concurrent failures, so (d)-(iii).",
+  "trick": "Capacity in one glance: striping keeps $n$, mirroring gives $n/2$, single parity gives $n-1$, dual parity gives $n-2$. Failures tolerated: 0, 1, 1, 2.",
+  "diff": "easy",
+  "tags": [
+   "raid",
+   "storage reliability"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0064",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.10",
+  "q": "Updating a single data block in a RAID 5 array requires how many disk I/O operations, and why?",
+  "opts": [
+   "1 — only the data block is written",
+   "4 — read the old data and old parity, then write the new data and new parity",
+   "2 — the data block and the parity block are written",
+   "$n$ — the entire stripe must be read to recompute the parity"
+  ],
+  "ans": 1,
+  "exp": "New parity can be computed incrementally as $P_{\\text{new}} = P_{\\text{old}} \\oplus D_{\\text{old}} \\oplus D_{\\text{new}}$, so the whole stripe need not be read and (D) is wrong. That formula needs the old data block and the old parity block, which is two reads, followed by writing the new data block and the new parity block, which is two writes — **four** I/Os in total. This is the well-known small-write penalty of parity RAID; RAID 6 costs six, RAID 1 costs two writes and RAID 0 costs one.",
+  "trick": "Any parity RAID pays 2 reads + 2 writes for a small write. Only full-stripe writes escape it, which is why controllers buffer to assemble whole stripes.",
+  "diff": "medium",
+  "tags": [
+   "raid 5",
+   "small write penalty",
+   "parity"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0065",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.11",
+  "q": "A file system uses 8 KB blocks and 4-byte disk-block pointers. An inode contains 12 direct pointers, one single-indirect, one double-indirect and one triple-indirect pointer. The maximum file size is approximately",
+  "opts": [
+   "16 MB",
+   "32 GB",
+   "64 TB",
+   "4 TB"
+  ],
+  "ans": 2,
+  "exp": "One block holds $8192/4 = 2048 = 2^{11}$ pointers. The regions then reach $12$ blocks directly, $2^{11}$ blocks via single indirection, $2^{22}$ via double and $2^{33}$ via triple. In bytes: $12 \\times 8\\,\\text{KB} = 96$ KB, $2^{11} \\times 8\\,\\text{KB} = 16$ MB, $2^{22} \\times 8\\,\\text{KB} = 32$ GB, and $2^{33} \\times 8\\,\\text{KB} = 2^{46}$ bytes $= \\mathbf{64\\ \\text{TB}}$. The triple-indirect region dominates so completely that the sum is still about 64 TB.",
+  "trick": "Compute pointers per block first, then the four regions contribute $d$, $P$, $P^2$ and $P^3$ blocks. The top region alone gives the answer unless two options are very close.",
+  "diff": "medium",
+  "tags": [
+   "inode",
+   "maximum file size",
+   "indexed allocation"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0066",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.11",
+  "q": "Match List-I with List-II.\n\n| List-I (allocation method) | List-II (characteristic) |\n|---|---|\n| (a) Contiguous | (i) reaching block $i$ costs $i+1$ disk reads; no external fragmentation |\n| (b) Linked | (ii) one disk access reaches any block, but the file cannot easily grow |\n| (c) Indexed | (iii) two accesses reach any block; one block per file is spent on overhead |\n| (d) Linked with a cached FAT | (iv) chain traversal happens in memory, making direct access practical |",
+  "opts": [
+   "(a)-(ii), (b)-(i), (c)-(iii), (d)-(iv)",
+   "(a)-(iii), (b)-(i), (c)-(ii), (d)-(iv)",
+   "(a)-(i), (b)-(ii), (c)-(iv), (d)-(iii)",
+   "(a)-(ii), (b)-(iii), (c)-(i), (d)-(iv)"
+  ],
+  "ans": 0,
+  "exp": "Contiguous allocation stores a start block and a length, so block $i$ is at $\\text{start}+i$ — one access — but the file cannot grow unless the following space is free: (a)-(ii). Linked allocation must follow the chain block by block, costing $i+1$ reads, though it never fragments externally: (b)-(i). Indexed allocation reads the index block and then the data block, two accesses, at the cost of one block of overhead per file: (c)-(iii). Pulling the pointers into a FAT and caching it moves the traversal into memory: (d)-(iv).",
+  "trick": "Three facts per method — direct-access cost, fragmentation behaviour, and ability to grow — generate every match-the-following question on this topic.",
+  "diff": "medium",
+  "tags": [
+   "file allocation",
+   "contiguous",
+   "linked",
+   "indexed"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0067",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.11",
+  "q": "A file occupies 200 blocks. Using **linked** allocation with the pointers stored inside the blocks, how many disk reads are required to read the 150th block of the file, assuming nothing is cached?",
+  "opts": [
+   "1",
+   "2",
+   "150",
+   "200"
+  ],
+  "ans": 2,
+  "exp": "With linked allocation the only way to find block 150 is to start at the first block recorded in the directory entry and follow the chain, reading each block to discover the address of the next. Reaching the 150th block therefore costs 150 reads. Contiguous allocation would cost 1 and indexed allocation 2 — the two distractors — and 200 would be reading the whole file.",
+  "trick": "Linked allocation is the one method with no direct access at all: cost is linear in the block index, which is precisely why FAT lifts the pointers out into a cacheable table.",
+  "diff": "easy",
+  "tags": [
+   "linked allocation",
+   "disk accesses"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0068",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.11",
+  "q": "Which statement about I/O techniques is correct?",
+  "opts": [
+   "DMA transfers data without any CPU involvement whatsoever",
+   "DMA replaces one interrupt per word with one interrupt per block, and the CPU still sets up and completes the transfer",
+   "Interrupt-driven I/O frees the CPU from handling individual words",
+   "Programmed I/O with polling is more CPU-efficient than interrupt-driven I/O"
+  ],
+  "ans": 1,
+  "exp": "With DMA the CPU programs the controller with a source, destination and count, then does other work while the controller moves the whole block, stealing bus cycles as it goes; one interrupt announces completion. So the CPU is involved at both ends but not per word, which is (B) and makes (A) too strong. In interrupt-driven I/O the CPU still executes a service routine for **every** word transferred, so (C) is false. Polling wastes the CPU entirely while waiting, so (D) is backwards.",
+  "trick": "Order the three by CPU cost per byte: polling (worst), interrupt-driven (one ISR per word), DMA (one interrupt per block). Every comparison question follows that ordering.",
+  "diff": "easy",
+  "tags": [
+   "dma",
+   "interrupt driven io",
+   "polling"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0069",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.12",
+  "q": "In RSA, $p = 5$ and $q = 11$ are chosen and the public exponent is $e = 3$. The ciphertext for the plaintext $M = 7$ is",
+  "opts": [
+   "21",
+   "28",
+   "33",
+   "13"
+  ],
+  "ans": 3,
+  "exp": "Here $n = pq = 55$ and $\\phi(n) = (5-1)(11-1) = 40$; since $\\gcd(3, 40) = 1$, $e = 3$ is valid. Encryption is $C = M^{e} \\bmod n = 7^{3} \\bmod 55 = 343 \\bmod 55$. Since $55 \\times 6 = 330$, we get $343 - 330 = \\mathbf{13}$. (For completeness, $d$ satisfies $3d \\equiv 1 \\pmod{40}$, so $d = 27$ because $81 = 2 \\times 40 + 1$, and indeed $13^{27} \\bmod 55 = 7$.)",
+  "trick": "Reduce modulo $n$ as you go rather than computing the full power. And remember $\\phi(n)$ uses $(p-1)(q-1)$ while the modular arithmetic uses $n = pq$ — mixing the two is the commonest error.",
+  "diff": "medium",
+  "tags": [
+   "rsa",
+   "public key cryptography"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0070",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.12",
+  "q": "An access matrix is stored **by rows**, so that each subject carries the list of objects it may access together with the permitted operations. This representation is a",
+  "opts": [
+   "access control list, in which revocation of a right is easy",
+   "capability list, in which revocation of a right is difficult",
+   "access control list, in which revocation of a right is difficult",
+   "capability list, in which revocation of a right is easy"
+  ],
+  "ans": 1,
+  "exp": "A row of the access matrix belongs to one domain and lists the objects it may touch, which is a **capability list** carried by the subject. It answers 'what may this process do?' instantly, but revoking a right means finding and destroying every copy of the capability wherever it has been passed, so revocation is hard and needs indirection or expiry. Storing the matrix by **columns** gives an access control list attached to each object, where revocation is a simple edit of that object's list.",
+  "trick": "Row = capability (subject-side, hard to revoke). Column = ACL (object-side, easy to revoke). Every question in this family turns on revocation or on which lookup direction is cheap.",
+  "diff": "medium",
+  "tags": [
+   "access matrix",
+   "capability list",
+   "access control list"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0071",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.12",
+  "q": "Which of the following statements is correct?",
+  "opts": [
+   "A logic bomb propagates automatically once its trigger condition is met",
+   "Both viruses and worms require a host program",
+   "A virus requires a host program, while a worm is self-contained and propagates over a network by itself",
+   "A worm requires a host program to propagate, while a virus is self-contained"
+  ],
+  "ans": 2,
+  "exp": "The definitional split is that a **virus** is a fragment of code that embeds itself in a host program and only runs when a user runs that program, whereas a **worm** is a complete standalone program that copies itself to other machines using network services, with no host and no user action. (A) reverses this, (C) is wrong about worms, and a **logic bomb** does not propagate at all — it is dormant hostile code inside an existing program that fires on a condition such as a date or a missing employee record.",
+  "trick": "One word decides it: 'host'. Virus needs a host, worm does not. The secondary clue is that worms are described as spreading across a network without user action.",
+  "diff": "easy",
+  "tags": [
+   "virus",
+   "worm",
+   "program threats"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0072",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.12",
+  "q": "Alice wants to send Bob a message that only Bob can read and that Bob can prove came from Alice. She should",
+  "opts": [
+   "encrypt with Alice's private key only",
+   "encrypt with Bob's private key, then with Alice's public key",
+   "encrypt with Bob's public key only",
+   "sign the message hash with Alice's private key, then encrypt with Bob's public key"
+  ],
+  "ans": 3,
+  "exp": "Confidentiality requires encryption under the **recipient's public** key, since only Bob's private key reverses it. Authentication and non-repudiation require transformation with the **sender's private** key, since only Alice can produce that and anyone can verify it with her public key. Both goals therefore need both operations, and in practice the signature is applied to a hash of the message because public-key arithmetic is slow. Encrypting with Bob's *private* key is impossible — Alice does not possess it.",
+  "trick": "Ask what the attacker must not be able to do. 'Read it' $\\to$ recipient's public key. 'Forge it' $\\to$ sender's private key. Needing both means doing both.",
+  "diff": "medium",
+  "tags": [
+   "digital signature",
+   "confidentiality",
+   "public key cryptography"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0073",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.13",
+  "q": "Which statement correctly distinguishes the virtualisation approaches?",
+  "opts": [
+   "Full virtualisation runs an unmodified guest; paravirtualisation requires the guest to be modified to issue hypercalls",
+   "A type 2 hypervisor runs directly on the hardware with no host operating system",
+   "Hardware-assisted virtualisation removes the need for a hypervisor entirely",
+   "Paravirtualisation runs an unmodified guest operating system; full virtualisation requires the guest to be modified"
+  ],
+  "ans": 0,
+  "exp": "Full virtualisation presents an exact hardware interface and traps the guest's privileged instructions, so an unmodified operating system boots on it. Paravirtualisation changes the guest so it calls the hypervisor explicitly through hypercalls, which is faster but rules out legacy guests — so (A) is exactly reversed. A **type 1** hypervisor runs on bare metal; a type 2 runs as a process on a host OS, making (C) false. Hardware assistance (VT-x, AMD-V) makes the hypervisor's job easier by ensuring sensitive instructions trap cleanly; it does not eliminate it.",
+  "trick": "If the question mentions a host operating system, it is type 2. If it mentions an unmodified legacy guest, paravirtualisation is wrong.",
+  "diff": "medium",
+  "tags": [
+   "virtualisation",
+   "hypervisor",
+   "paravirtualisation"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0074",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.13",
+  "q": "In a distributed system of 20 nodes using the Ricart–Agrawala algorithm, the number of messages exchanged for one critical-section entry is",
+  "opts": [
+   "3",
+   "40",
+   "20",
+   "38"
+  ],
+  "ans": 3,
+  "exp": "Ricart–Agrawala is fully distributed: the requester broadcasts a timestamped REQUEST to all $n-1 = 19$ other nodes and must collect a REPLY from each before entering, giving $2(n-1) = 2 \\times 19 = \\mathbf{38}$ messages. The value 3 belongs to the centralised coordinator scheme (REQUEST, REPLY, RELEASE), which is cheaper in messages but is a single point of failure — and Ricart–Agrawala's cost includes turning that one point of failure into $n$, since every node must be alive to reply.",
+  "trick": "Memorise the message counts: centralised 3, Ricart–Agrawala $2(n-1)$, token ring 1 to $n$, bully $O(n^2)$, ring election $O(n)$.",
+  "diff": "medium",
+  "tags": [
+   "distributed mutual exclusion",
+   "ricart-agrawala"
+  ],
+  "srcUrl": ""
+ },
+ {
+  "id": "prac-u5-0075",
+  "src": "practice",
+  "year": null,
+  "session": null,
+  "num": null,
+  "unit": 5,
+  "topic": "5.13",
+  "q": "For two events $a$ and $b$ with Lamport logical timestamps $C(a)$ and $C(b)$, which statement is correct?",
+  "opts": [
+   "Lamport timestamps give no information about ordering at all",
+   "$a \\to b$ implies $C(a) < C(b)$, and $C(a) < C(b)$ implies $a \\to b$",
+   "$a \\to b$ implies $C(a) < C(b)$, but $C(a) < C(b)$ does not imply $a \\to b$",
+   "$C(a) < C(b)$ implies $a \\to b$, but $a \\to b$ does not imply $C(a) < C(b)$"
+  ],
+  "ans": 2,
+  "exp": "Lamport's rules (increment before every event, piggyback the counter on messages, and set $C = \\max(C, C_{\\text{msg}}) + 1$ on receipt) guarantee that a causally earlier event gets a strictly smaller timestamp. The converse fails: two events in different processes that never influenced each other are **concurrent**, yet their counters are still comparable numbers, so one is smaller purely by accident. Recovering the exact 'happens-before' relation in both directions requires **vector clocks**, for which $V(a) < V(b)$ if and only if $a \\to b$.",
+  "trick": "Lamport is one-directional, vector clocks are bidirectional. Any option that reads causality off a Lamport timestamp comparison is wrong.",
+  "diff": "medium",
+  "tags": [
+   "lamport clocks",
+   "vector clocks",
+   "happens-before"
+  ],
+  "srcUrl": ""
+ }
+]

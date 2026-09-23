@@ -1,0 +1,11 @@
+import { chromium } from 'playwright-core';
+const b = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium' });
+const p = await b.newPage();
+p.on('pageerror',e=>console.log('PAGEERROR:', e.message, '\n', (e.stack||'').split('\n').slice(0,4).join('\n')));
+p.on('console',m=>{if(m.type()==='error')console.log('CONSOLE:',m.text())});
+await p.goto('http://localhost:8099/#/mock',{waitUntil:'networkidle'}); await p.waitForTimeout(500);
+await p.click('.card:has-text("Quick 25") button'); await p.waitForTimeout(1500);
+console.log('URL:', p.url());
+console.log('live key:', await p.evaluate(()=>{const v=localStorage.getItem('net:v1:live'); return v? JSON.parse(v).qids.length+' qids' : 'NONE';}));
+console.log('main text:', (await p.$eval('#main',n=>n.innerText)).slice(0,400));
+await b.close();

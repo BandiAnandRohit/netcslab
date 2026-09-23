@@ -1,0 +1,135 @@
+{
+  "exam": {
+    "name": "UGC NET Computer Science and Applications",
+    "code": "87",
+    "paper": 2,
+    "questions": 100,
+    "marks": 200,
+    "perCorrect": 2,
+    "negative": 0,
+    "durationMin": 180,
+    "note": "Paper 1 (50 Q, 100 marks) and Paper 2 (100 Q, 200 marks) are attempted in a single 3-hour CBT session. No negative marking."
+  },
+  "units": [
+    { "n": 1, "id": "u1", "title": "Discrete Structures and Optimization", "topics": [
+      {"id":"1.1","title":"Mathematical Logic"},
+      {"id":"1.2","title":"Sets and Relations"},
+      {"id":"1.3","title":"Counting, Induction and Discrete Probability"},
+      {"id":"1.4","title":"Group Theory and Algebraic Structures"},
+      {"id":"1.5","title":"Graph Theory"},
+      {"id":"1.6","title":"Boolean Algebra"},
+      {"id":"1.7","title":"Optimization: LP, Transportation, Assignment, PERT-CPM"}
+    ]},
+    { "n": 2, "id": "u2", "title": "Computer System Architecture", "topics": [
+      {"id":"2.1","title":"Digital Logic Circuits and Components"},
+      {"id":"2.2","title":"Data Representation and Computer Arithmetic"},
+      {"id":"2.3","title":"Register Transfer and Microoperations"},
+      {"id":"2.4","title":"Basic Computer Organization and Design"},
+      {"id":"2.5","title":"Programming the Basic Computer"},
+      {"id":"2.6","title":"Microprogrammed Control"},
+      {"id":"2.7","title":"Central Processing Unit"},
+      {"id":"2.8","title":"Pipeline and Vector Processing"},
+      {"id":"2.9","title":"Input-Output Organization"},
+      {"id":"2.10","title":"Memory Hierarchy"},
+      {"id":"2.11","title":"Multiprocessors"}
+    ]},
+    { "n": 3, "id": "u3", "title": "Programming Languages and Computer Graphics", "topics": [
+      {"id":"3.1","title":"Language Design and Translation Issues"},
+      {"id":"3.2","title":"Elementary Data Types"},
+      {"id":"3.3","title":"Programming in C"},
+      {"id":"3.4","title":"Object Oriented Programming and C++"},
+      {"id":"3.5","title":"Web Programming: HTML, XML, Java, Servlets, Applets"},
+      {"id":"3.6","title":"Graphics Devices and Scan Conversion Algorithms"},
+      {"id":"3.7","title":"2-D Transformations, Viewing and Clipping"},
+      {"id":"3.8","title":"3-D Representation, Transformations and Viewing"}
+    ]},
+    { "n": 4, "id": "u4", "title": "Database Management Systems", "topics": [
+      {"id":"4.1","title":"Database Concepts and Architecture"},
+      {"id":"4.2","title":"ER Modeling and the Relational Model"},
+      {"id":"4.3","title":"Relational Algebra and Relational Calculus"},
+      {"id":"4.4","title":"SQL"},
+      {"id":"4.5","title":"Functional Dependencies and Normalization"},
+      {"id":"4.6","title":"Query Processing, Transactions, Concurrency and Recovery"},
+      {"id":"4.7","title":"Enhanced and Distributed Data Models"},
+      {"id":"4.8","title":"Data Warehousing and Data Mining"},
+      {"id":"4.9","title":"Big Data and NOSQL"}
+    ]},
+    { "n": 5, "id": "u5", "title": "System Software and Operating System", "topics": [
+      {"id":"5.1","title":"System Software: Assemblers, Loaders, Linkers, Macros"},
+      {"id":"5.2","title":"Operating System Basics, Structure and Services"},
+      {"id":"5.3","title":"Process Management and Interprocess Communication"},
+      {"id":"5.4","title":"Process Synchronization"},
+      {"id":"5.5","title":"Threads and Multicore Programming"},
+      {"id":"5.6","title":"CPU Scheduling"},
+      {"id":"5.7","title":"Deadlocks"},
+      {"id":"5.8","title":"Memory Management"},
+      {"id":"5.9","title":"Virtual Memory and Page Replacement"},
+      {"id":"5.10","title":"Storage Management, Disk Scheduling and RAID"},
+      {"id":"5.11","title":"File and Input/Output Systems"},
+      {"id":"5.12","title":"Protection and Security"},
+      {"id":"5.13","title":"Virtual Machines, Linux, Windows and Distributed Systems"}
+    ]},
+    { "n": 6, "id": "u6", "title": "Software Engineering", "topics": [
+      {"id":"6.1","title":"Software Process Models"},
+      {"id":"6.2","title":"Agile Process Models"},
+      {"id":"6.3","title":"Software Requirements"},
+      {"id":"6.4","title":"Software Design"},
+      {"id":"6.5","title":"Software Quality and Risk Management"},
+      {"id":"6.6","title":"Estimation and Scheduling: LOC, FP, COCOMO"},
+      {"id":"6.7","title":"Software Testing"},
+      {"id":"6.8","title":"Configuration Management, Reuse and Re-engineering"}
+    ]},
+    { "n": 7, "id": "u7", "title": "Data Structures and Algorithms", "topics": [
+      {"id":"7.1","title":"Arrays, Stacks, Queues and Linked Lists"},
+      {"id":"7.2","title":"Trees: Binary, BST, AVL, B and B+ Trees, Heaps"},
+      {"id":"7.3","title":"Hashing and Data Structures for Sets"},
+      {"id":"7.4","title":"Sorting and Searching"},
+      {"id":"7.5","title":"Asymptotic Analysis and Recurrences"},
+      {"id":"7.6","title":"Divide and Conquer"},
+      {"id":"7.7","title":"Greedy Algorithms"},
+      {"id":"7.8","title":"Dynamic Programming"},
+      {"id":"7.9","title":"Backtracking and Branch and Bound"},
+      {"id":"7.10","title":"Graph Algorithms"},
+      {"id":"7.11","title":"Complexity Theory: P, NP and NP-completeness"},
+      {"id":"7.12","title":"Selected and Advanced Algorithms"}
+    ]},
+    { "n": 8, "id": "u8", "title": "Theory of Computation and Compilers", "topics": [
+      {"id":"8.1","title":"Foundations: Formal Languages and Non-computability"},
+      {"id":"8.2","title":"Regular Languages, Finite Automata and Regular Expressions"},
+      {"id":"8.3","title":"Context Free Languages, PDA and Normal Forms"},
+      {"id":"8.4","title":"Turing Machines and the Chomsky Hierarchy"},
+      {"id":"8.5","title":"Unsolvable Problems and Computational Complexity"},
+      {"id":"8.6","title":"Lexical and Syntax Analysis: LL, LR and LALR Parsing"},
+      {"id":"8.7","title":"Semantic Analysis and Attribute Grammars"},
+      {"id":"8.8","title":"Run Time System and Storage Organization"},
+      {"id":"8.9","title":"Intermediate Code Generation"},
+      {"id":"8.10","title":"Code Generation and Code Optimization"}
+    ]},
+    { "n": 9, "id": "u9", "title": "Data Communication and Computer Networks", "topics": [
+      {"id":"9.1","title":"Data Communication Fundamentals"},
+      {"id":"9.2","title":"Transmission Media, Encoding, Modulation and Multiplexing"},
+      {"id":"9.3","title":"Transmission Errors: Detection and Correction"},
+      {"id":"9.4","title":"Network Models: OSI and TCP/IP"},
+      {"id":"9.5","title":"Data Link Layer: Flow Control, Sliding Window, HDLC"},
+      {"id":"9.6","title":"Multiple Access, LANs and Network Devices"},
+      {"id":"9.7","title":"Network Layer: IPv4, IPv6, Addressing and Subnetting"},
+      {"id":"9.8","title":"Routing Algorithms"},
+      {"id":"9.9","title":"Transport Layer: TCP, UDP, SCTP and Congestion Control"},
+      {"id":"9.10","title":"Application Layer and the World Wide Web"},
+      {"id":"9.11","title":"Network Security and Cryptography"},
+      {"id":"9.12","title":"Mobile Technology"},
+      {"id":"9.13","title":"Cloud Computing and IoT"}
+    ]},
+    { "n": 10, "id": "u10", "title": "Artificial Intelligence", "topics": [
+      {"id":"10.1","title":"Approaches to AI and Heuristic Search"},
+      {"id":"10.2","title":"Game Playing: Minimax and Alpha-Beta Pruning"},
+      {"id":"10.3","title":"Knowledge Representation and Expert Systems"},
+      {"id":"10.4","title":"Planning"},
+      {"id":"10.5","title":"Natural Language Processing"},
+      {"id":"10.6","title":"Multi Agent Systems"},
+      {"id":"10.7","title":"Fuzzy Sets and Fuzzy Logic"},
+      {"id":"10.8","title":"Genetic Algorithms"},
+      {"id":"10.9","title":"Artificial Neural Networks"}
+    ]}
+  ]
+}
